@@ -6,11 +6,28 @@ Porting Anders and Briegel to Python
 
 stab_rep = {None: "-", 0: "X", 1: "Y", 2: "Z"}
 
+
+def rightphase(n):
+    """ This is dumb. TODO: get rid """
+    return n % 4
+
+
 class Stabilizer(object):
 
     def __init__(self, graph):
-        self.paulis = [[None for i in range(graph.nqubits)]
-                       for j in range(graph.nqubits)]
+        n = graph.nqubits
+        self.paulis = [[None for i in range(n)] for j in range(n)]
+        self.signs = [None for i in range(n)]
+
+        for i in range(n):
+            signs[i] = 0
+            for j in range(n):
+                if i == j:
+                    self.paulis[i][j] = lco_x
+                elif j in g.vertices[i].neighbors:
+                    self.paulis[i][j] = lco_z
+                else:
+                    self.paulis[i][j] = lco_id
 
     def __str__(self):
         return "\n".join(" ".join(stab_rep[x] for x in row) for row in self.paulis)
