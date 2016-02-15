@@ -1,7 +1,14 @@
+from clifford import *
+
+""" 
+Porting Anders and Briegel to Python 
+"""
+
 class Vertex(object):
 
     def __init__(self, index):
         self.index = index
+        self.vertex_operator = lco_h;
         self.neighbors = set()
 
     def edgelist(self):

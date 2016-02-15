@@ -12,5 +12,5 @@ def test_adding():
     g.toggle_edge(2,0)
     g.toggle_edge(2,3)
     g.toggle_edge(3,2)
-    print list(g.edgelist())
+    assert(len(g.edgelist()) == 3)
 
