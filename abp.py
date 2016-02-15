@@ -7,9 +7,18 @@ Porting Anders and Briegel to Python
 stab_rep = {None: "-", 0: "X", 1: "Y", 2: "Z"}
 
 
-def rightphase(n):
-    """ This is dumb. TODO: get rid """
-    return n % 4
+class RightPhase(object):
+
+    def __init__(self, phase):
+        self.phase = phase % 4
+
+    def conjugate
+
+
+class LocalOperator(object):
+
+    def __init__(self):
+        pass
 
 
 class Stabilizer(object):
@@ -20,7 +29,7 @@ class Stabilizer(object):
         self.rowsigns = [None for i in range(n)]
 
         for i in range(n):
-            self.rowsigns[i] = 0
+            self.rowsigns[i] = RightPhase(0)
             for j in range(n):
                 if i == j:
                     self.paulis[i][j] = lco_x
@@ -32,7 +41,8 @@ class Stabilizer(object):
                 self.conjugate(i, j, graph.vertices[j].vertex_operator)
 
     def conjugate(self, i, j, vertex_operator):
-        self.rowsigns[j] = self.rowsigns[j] + self.paulis[i][j].conjugate(vertex_operator)
+        self.rowsigns[j] = self.rowsigns[j] + \
+            self.paulis[i][j].conjugate(vertex_operator)
 
     def __str__(self):
         return "\n".join(" ".join(stab_rep[x] for x in row) for row in self.paulis)
