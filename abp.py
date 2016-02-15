@@ -17,10 +17,10 @@ class Stabilizer(object):
     def __init__(self, graph):
         n = graph.nqubits
         self.paulis = [[None for i in range(n)] for j in range(n)]
-        self.signs = [None for i in range(n)]
+        self.rowsigns = [None for i in range(n)]
 
         for i in range(n):
-            signs[i] = 0
+            self.rowsigns[i] = 0
             for j in range(n):
                 if i == j:
                     self.paulis[i][j] = lco_x
@@ -28,6 +28,11 @@ class Stabilizer(object):
                     self.paulis[i][j] = lco_z
                 else:
                     self.paulis[i][j] = lco_id
+
+                self.conjugate(i, j, graph.vertices[j].vertex_operator)
+
+    def conjugate(self, i, j, vertex_operator):
+        self.rowsigns[j] = self.rowsigns[j] + self.paulis[i][j].conjugate(vertex_operator)
 
     def __str__(self):
         return "\n".join(" ".join(stab_rep[x] for x in row) for row in self.paulis)
