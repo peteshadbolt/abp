@@ -24,5 +24,5 @@ def setup_stab():
 @with_setup(setup_stab)
 def test_adding():
     s = abp.Stabilizer(g)
-    print s
+    
 

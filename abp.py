@@ -1,25 +1,11 @@
 from clifford import *
+from rightphase import RightPhase
 
 """
 Porting Anders and Briegel to Python
 """
 
-stab_rep = {None: "-", 0: "X", 1: "Y", 2: "Z"}
-
-
-class RightPhase(object):
-
-    def __init__(self, phase):
-        self.phase = phase % 4
-
-    def conjugate
-
-
-class LocalOperator(object):
-
-    def __init__(self):
-        pass
-
+stab_rep = {None: "-", 0: "I", 1: "X", 2: "Y", 3:"Z"}
 
 class Stabilizer(object):
 
@@ -33,12 +19,12 @@ class Stabilizer(object):
             for j in range(n):
                 if i == j:
                     self.paulis[i][j] = lco_x
-                elif j in g.vertices[i].neighbors:
+                elif j in graph.vertices[i].neighbors:
                     self.paulis[i][j] = lco_z
                 else:
                     self.paulis[i][j] = lco_id
 
-                self.conjugate(i, j, graph.vertices[j].vertex_operator)
+                #self.conjugate(i, j, graph.vertices[j].vertex_operator)
 
     def conjugate(self, i, j, vertex_operator):
         self.rowsigns[j] = self.rowsigns[j] + \
