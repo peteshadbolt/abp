@@ -1,5 +1,4 @@
 from clifford import *
-from rightphase import RightPhase
 
 """
 Porting Anders and Briegel to Python
@@ -15,7 +14,7 @@ class Stabilizer(object):
         self.rowsigns = [None for i in range(n)]
 
         for i in range(n):
-            self.rowsigns[i] = RightPhase(0)
+            self.rowsigns[i] = 0 % 4
             for j in range(n):
                 if i == j:
                     self.paulis[i][j] = lco_x
@@ -24,7 +23,7 @@ class Stabilizer(object):
                 else:
                     self.paulis[i][j] = lco_id
 
-                #self.conjugate(i, j, graph.vertices[j].vertex_operator)
+                self.conjugate(i, j, graph.vertices[j].vertex_operator)
 
     def conjugate(self, i, j, vertex_operator):
         self.rowsigns[j] = self.rowsigns[j] + \
@@ -74,8 +73,8 @@ class GraphRegister(object):
                                     for n in v.neighbors))
 
     def __str__(self, ):
-        return "\n".join(str(v) for v in self.vertices
-                         if len(v.neighbors) > 0)
+        return "graph:\n"+"\n".join(str(v) for v in self.vertices if len(v.neighbors) > 0)
+
 
 if __name__ == '__main__':
     g = GraphRegister(10)
