@@ -6,7 +6,7 @@ class Graph(object):
 
     def __init__(self, n):
         self.vertices = [set() for i in xrange(n)]
-        self.vops = ["hadamard" for i in xrange(n)]
+        self.vops = [hadamard for i in xrange(n)]
 
     def add_edge(self, v1, v2):
         self.vertices[v1].add(v2)
@@ -31,7 +31,7 @@ class Graph(object):
         for i, vop in enumerate(self.vops):
             if not i in pos: continue
             x, y = pos[i]
-            plt.text(x, y+0.1, "hadamard", ha="center")
+            plt.text(x, y+0.1, vops[vop], ha="center")
 
         plt.axis('off')
         plt.savefig(filename)
