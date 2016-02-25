@@ -28,22 +28,41 @@ s_names = ["i", "p", "pp", "ppp"]
 c_rotations = [i, h, h*p, h*p*p, h*p*p*p, h*p*p*h]
 c_names = ["i", "h", "hp", "hpp", "hppp", "hpph"]
 
+def get_sign(x):
+    """ Get the sign of a number """
+    return "+" if x>=0 else "-"
+
 def identify_pauli(m):
     """ Given a signed Pauli matrix, name it. """
-    for sign in [+1, -1]:
-        for label, pauli in zip("xyz", paulis):
+    for sign_label, sign in (("+", +1), ("-", -1)):
+        for pauli_label, pauli in zip("xyz", paulis):
             if allclose(sign*pauli, m):
-                return "{}{}".format("+" if sign>0 else "-", label)
+                return "{}{}".format(sign_label, pauli_label)
 
 def get_action(u):
     """ Get the action of a Pauli matrix on three qubits """
     return tuple(identify_pauli(u*p*u.H) for p in paulis)
 
-
+def cliff_action(permutation, op):
+    """ Computes the action of a particular local Clifford """
 
 
 if __name__ == '__main__':
-    permutations = ["xyz", "yxz", "zyx", "xzy", "yzx", "zxy"]
+    labels =       ("a"   , "b"   , "c"   , "d"   , "e"   , "f")
+    signs =        (+1    , -1    , -1    , -1    , +1    , +1)
+    permutations = ("xyz" , "yxz" , "zyx" , "xzy" , "yzx" , "zxy")
+
+    for label, sign, permutation in zip(labels, signs, permutations):
+        for op in "ixyz":
+            signs = [sign if (a == op or op == "i") else -sign for a in "xyz"]
+            print label, op
+            print tuple("{}{}".format(get_sign(x), y) for x, y in zip(signs, permutation))
+
+
+
+
+            #print "{}{} = ({}, {})".format(op, label, "+" if sign>=0 else "-", permutation),
+        print
 
 
     #for s, sn in zip(s_rotations, s_names):
