@@ -13,7 +13,6 @@ Following the prescription of Anders (thesis pg. 26):
 
 # TODO:
 # - check that we re-generate the table
-# - sort of re-map to an ordering 
 # - do conjugation
 # - do times table
 # - write tests
@@ -26,10 +25,6 @@ def identify_pauli(m):
         for pauli_label, pauli in zip("xyz", paulis):
             if allclose(sign*pauli, m):
                 return sign, pauli_label
-
-def anders_sign_rule(sign, column, p):
-    """ Anders' sign rule from thesis """
-    return sign if (p==column or column=="i") else -sign, p
 
 def format_action(action):
     return "".join("{}{}".format("+" if s>=0 else "-", p) for s, p in action)
@@ -51,16 +46,27 @@ c_names = ["i", "h", "hp", "hpp", "hppp", "hpph"]
 
 # Build the table of VOPs according to Anders (verbatim from thesis)
 table = (("a", "xyz", +1), ("b", "yxz", -1), ("c", "zyx", -1),
-          ("d", "xzy", -1), ("e", "yxz", +1), ("f", "zxy", +1))
+          ("d", "xzy", -1), ("e", "yzx", +1), ("f", "zxy", +1))
+
+# Build a big ol lookup table
+vop_names = []
+vop_actions = []
+vop_gates = [None]*24
+vop_unitaries = [None]*24
 
 for label, permutation, sign in table:
     for column, operator in zip("ixyz", "i"+permutation):
-        effect = [anders_sign_rule(sign, column, p) for p in "xyz"]
-        print label+operator, format_action(effect)
+        effect = [((sign if (p==column or column=="i") else -sign), p)
+                        for p in permutation]
+        vop_names.append(label+operator)
+        vop_actions.append(format_action(effect))
 
 for s, sn in zip(s_rotations, s_names):
     for c, cn in zip(c_rotations, c_names):
         u = s*c
-        action = tuple(identify_pauli(u*p*u.H) for p in paulis)
-        print cn, sn, format_action(action)
+        action = format_action(identify_pauli(u*p*u.H) for p in paulis)
+        index = vop_actions.index(action)
+        vop_gates[index] = sn+cn
+        vop_unitaries[index] = u
 
+# Add some more useful lookups
