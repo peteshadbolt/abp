@@ -51,22 +51,24 @@ if __name__ == '__main__':
     labels =       ("a"   , "b"   , "c"   , "d"   , "e"   , "f")
     signs =        (+1    , -1    , -1    , -1    , +1    , +1)
     permutations = ("xyz" , "yxz" , "zyx" , "xzy" , "yzx" , "zxy")
+    anders = {}
+    anders_inv = {}
 
     for label, sign, permutation in zip(labels, signs, permutations):
         for op in "ixyz":
             signs = [sign if (a == op or op == "i") else -sign for a in "xyz"]
-            print label, op
-            print tuple("{}{}".format(get_sign(x), y) for x, y in zip(signs, permutation))
+            effect = "".join("{}{}".format(get_sign(x), y) 
+                    for x, y in zip(signs, permutation))
+            anders["{}{}".format(op, label)] = effect
+            anders_inv[effect] = "{}{}".format(op, label)
+
+    print anders
+    print anders_inv
 
 
-
-
-            #print "{}{} = ({}, {})".format(op, label, "+" if sign>=0 else "-", permutation),
-        print
-
-
-    #for s, sn in zip(s_rotations, s_names):
-        #for c, cn in zip(c_rotations, c_names):
-            #print sn, "\t", cn, "\t", get_action(s*c)
+    for s, sn in zip(s_rotations, s_names):
+        for c, cn in zip(c_rotations, c_names):
+            action = "".join(get_action(s*c))
+            print anders_inv[action]
 
 
