@@ -7,3 +7,7 @@ def test_identify_pauli():
 
 def test_get_action():
     assert lc.get_action(lc.i) == ("+x", "+y", "+z")
+
+def test_crap():
+    lc.vops[0]
+
