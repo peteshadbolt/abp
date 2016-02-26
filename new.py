@@ -1,4 +1,5 @@
 from numpy import *
+from scipy.linalg import sqrtm
 
 # Some two-qubit matrices
 i = matrix(eye(2, dtype=complex))
@@ -23,17 +24,35 @@ def get_action(u):
 def format_action(action):
     return "".join("{}{}".format("+" if s>=0 else "-", p) for s, p in action)
 
-#print get_action(i)
-#print get_action(px)
-#print get_action(py)
-#print get_action(pz)
+#permuters = (i, h*p*h*pz, p*h*p*h, px*p, p*h, p*p*h*pz)
+permuters = (i, h, p, h*p, h*p*h, h*p*h*p)
+signs = (i, px, py, pz)
+unitaries = []
+actions = []
+for perm in permuters:
+    for sign in signs:
+        action = format_action(get_action(sign*perm))
+        actions.append(action)
+        unitaries.append(perm*sign)
+        #print (perm*sign).round(2).reshape(1,4)[0],
+        print action,
+    print
 
-permuters = 
 
-print format_action(get_action(i))
-print format_action(get_action(h*p*h*pz))
-print format_action(get_action(p*h*p*h))
-print format_action(get_action(px*p))
-print format_action(get_action(p*h))
-print format_action(get_action(p*p*h*pz))
+assert len(set(actions)) == 24
+
+sqy = sqrtm(1j*py)
+msqy = sqrtm(-1j*py)
+sqz = sqrtm(1j*pz)
+msqz = sqrtm(-1j*pz)
+sqx = sqrtm(1j*px)
+msqx = sqrtm(-1j*px)
+for m in i, px, py, pz, h, p, sqz, msqz, sqy, msqy, sqx, msqx:
+    if any([allclose(u, m) for u in unitaries]):
+        print "found it"
+    else:
+        if any([allclose(exp(1j*pi*phi/4.)*u, m) for phi in range(8) for u in unitaries]):
+            print "found up to global phase"
+        else:
+            print "lost"
 
