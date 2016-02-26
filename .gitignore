@@ -1,7 +1,8 @@
 *.pdf
+papers/
 # Project-specific
 ab/
-anders_briegel
+anders_briegel/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
