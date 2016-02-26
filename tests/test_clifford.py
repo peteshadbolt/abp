@@ -1,4 +1,4 @@
-import local_cliffords as lc
+import clifford as lc
 from numpy import *
 
 def test_identify_pauli():
