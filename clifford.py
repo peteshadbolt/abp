@@ -46,6 +46,10 @@ pz = matrix([[1, 0], [0, -1]], dtype=complex)
 h = matrix([[1, 1], [1, -1]], dtype=complex) / sqrt(2)
 p = matrix([[1, 0], [0, 1j]], dtype=complex)
 paulis = (px, py, pz)
+# Some two-qubit matrices
+i = matrix(eye(2, dtype=complex))
+h = matrix([[1, 1], [1, -1]], dtype=complex) / sqrt(2)
+p = matrix([[1, 0], [0, 1j]], dtype=complex)
 
 # Basic single-qubit gates
 s_gates = (("i", i), ("p", p), ("pp", p * p), ("ppp", p * p * p))
@@ -82,3 +86,22 @@ vop_by_name = {n: {"name":n, "index": i, "action": a, "gates": g, "unitary": u}
                for n, i, a, g, u in zip(vop_names, xrange(24), vop_actions, vop_gates, vop_unitaries)}
 vop_by_action = {a: {"name": n, "index": i, "action":a, "gates": g, "unitary": u}
                  for n, i, a, g, u in zip(vop_names, xrange(24), vop_actions, vop_gates, vop_unitaries)}
+
+names, unitaries = [], []
+for c_name, c_gate in c_gates:
+    for s_name, s_gate in s_gates:
+        names.append(s_name+c_name)
+        unitaries.append(s_gate * c_gate)
+        print s_gate * c_gate.round(2)
+        print 
+
+i = matrix(eye(2, dtype=complex))
+px = matrix([[0, 1], [1, 0]], dtype=complex)
+py = matrix([[0, -1j], [1j, 0]], dtype=complex)
+pz = matrix([[1, 0], [0, -1]], dtype=complex)
+h = matrix([[1, 1], [1, -1]], dtype=complex) / sqrt(2)
+p = matrix([[1, 0], [0, 1j]], dtype=complex)
+
+#for m in i, px, py, pz:
+    #print any([allclose(x, m) for x in unitaries])
+
