@@ -36,13 +36,3 @@ anders = [
     ir2 * matrix([[1,-1],[-1j,-1j]], dtype=complex),
 ]
 
-
-def test_everything():
-    for i, (a, b) in enumerate(zip(lc.vop_actions, anders)):
-        a2 = lc.format_action(lc.get_action(b))
-        if i %4==0:
-            print
-        print "({} {})".format(a, a2),
-        #if not any([allclose(a, x) for x in anders]):
-            #print lc.vop_gates[i], "is not in {anders}"
-
