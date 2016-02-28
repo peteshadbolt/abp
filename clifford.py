@@ -13,16 +13,31 @@ Following the prescription of Anders (thesis pg. 26):
 
 from numpy import *
 
-i = matrix(eye(2, dtype=complex))
+def find_up_to_phase(u):
+    """ Find the index of a given u within a list of unitaries, up to a global phase  """
+    global unitaries
+    for i, t in enumerate(unitaries):
+        for phase in range(8):
+            if allclose(t, exp(1j*phase*pi/4.)*u):
+                return i, phase
+    raise IndexError
+
+id = matrix(eye(2, dtype=complex))
 px = matrix([[0, 1], [1, 0]], dtype=complex)
 py = matrix([[0, -1j], [1j, 0]], dtype=complex)
 pz = matrix([[1, 0], [0, -1]], dtype=complex)
-h = matrix([[1, 1], [1, -1]], dtype=complex) / sqrt(2)
-p = matrix([[1, 0], [0, 1j]], dtype=complex)
+ha = matrix([[1, 1], [1, -1]], dtype=complex) / sqrt(2)
+ph= matrix([[1, 0], [0, 1j]], dtype=complex)
 
-permutations = (i, h, p, h*p, h*p*h, h*p*h*p)
-signs = (i, px, py, pz)
+permutations = (id, ha, ph, ha*ph, ha*ph*ha, ha*ph*ha*ph)
+signs = (id, px, py, pz)
 unitaries = [p*s for p in permutations for s in signs]
+
+conjugation_table = []
+
+for i, u in enumerate(unitaries):
+    i, phase = find_up_to_phase(u.H)
+    conjugation_table.append(i)
 
 
 # TODO:
