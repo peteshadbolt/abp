@@ -11,33 +11,37 @@ Following the prescription of Anders (thesis pg. 26):
 > indicated by the column header and the opposite sign otherwise.
 """
 
-from numpy import *
+import numpy as np
+from qi import *
 from tqdm import tqdm
+import cPickle,os
 
 def find_up_to_phase(u):
     """ Find the index of a given u within a list of unitaries, up to a global phase  """
     global unitaries
     for i, t in enumerate(unitaries):
         for phase in range(8):
-            if allclose(t, exp(1j*phase*pi/4.)*u):
+            if np.allclose(t, np.exp(1j*phase*np.pi/4.)*u):
                 return i, phase
     raise IndexError
 
 def construct_tables():
     """ Constructs multiplication and conjugation tables """
-    permutations = (id, ha, ph, ha*ph, ha*ph*ha, ha*ph*ha*ph)
-    signs = (id, px, py, pz)
-    unitaries = [p*s for p in permutations for s in signs]
     conjugation_table = [find_up_to_phase(u.H)[0] for i, u in enumerate(unitaries)]
     times_table = [[find_up_to_phase(u*v)[0] for v in unitaries] 
             for u in tqdm(unitaries, "Building times-table")]
+    with open("tables.pkl", "w") as f:
+        cPickle.dump((conjugation_table, times_table), f)
 
-id = matrix(eye(2, dtype=complex))
-px = matrix([[0, 1], [1, 0]], dtype=complex)
-py = matrix([[0, -1j], [1j, 0]], dtype=complex)
-pz = matrix([[1, 0], [0, -1]], dtype=complex)
-ha = matrix([[1, 1], [1, -1]], dtype=complex) / sqrt(2)
-ph = matrix([[1, 0], [0, 1j]], dtype=complex)
+permutations = (id, ha, ph, ha*ph, ha*ph*ha, ha*ph*ha*ph)
+signs = (id, px, py, pz)
+unitaries = [p*s for p in permutations for s in signs]
 
+# Build / reload lookup tables
+if not os.path.exists("tables.pkl"):
+    construct_tables()
+
+with open("tables.pkl") as f:
+    conjugation_table, times_table = cPickle.load(f)
 
 

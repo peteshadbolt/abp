@@ -1,14 +1,8 @@
 import clifford as lc
 from numpy import *
 from scipy.linalg import sqrtm
+from qi import *
 
-sqy = sqrtm(1j * lc.py)
-msqy = sqrtm(-1j * lc.py)
-sqz = sqrtm(1j * lc.pz)
-msqz = sqrtm(-1j * lc.pz)
-sqx = sqrtm(1j * lc.px)
-msqx = sqrtm(-1j * lc.px)
-paulis = (lc.px, lc.py, lc.pz)
 
 
 def identify_pauli(m):
@@ -21,9 +15,9 @@ def identify_pauli(m):
 
 def test_find_up_to_phase():
     """ Test that slightly suspicious function """
-    assert lc.find_up_to_phase(lc.id) == (0, 0)
-    assert lc.find_up_to_phase(lc.px) == (1, 0)
-    assert lc.find_up_to_phase(exp(1j*pi/4.)*lc.ha) == (4, 7)
+    assert lc.find_up_to_phase(id) == (0, 0)
+    assert lc.find_up_to_phase(px) == (1, 0)
+    assert lc.find_up_to_phase(exp(1j*pi/4.)*ha) == (4, 7)
 
 def get_action(u):
     """ What does this unitary operator do to the Paulis? """
@@ -42,7 +36,7 @@ def test_we_have_24_matrices():
 
 def test_we_have_all_useful_gates():
     """ Check that all the interesting gates are included up to a global phase """
-    common_us = lc.id, lc.px, lc.py, lc.pz, lc.ha, lc.ph, sqz, msqz, sqy, msqy, sqx, msqx
+    common_us = id, px, py, pz, ha, ph, sqz, msqz, sqy, msqy, sqx, msqx
     for u in common_us:
         lc.find_up_to_phase(u)
 
