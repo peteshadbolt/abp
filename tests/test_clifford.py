@@ -59,3 +59,16 @@ def test_we_have_all_useful_gates():
         assert any(x > 0 for x in results)
         phase, index = [(i, r) for i, r in enumerate(results) if r>=0][0]
         print "exp(1j*{}*pi/4) . {}\t=\tlc.unitaries[{}]".format(phase, name, index)
+
+
+def test_group():
+    """ Test we are really in a group """
+    for a in lc.unitaries:
+        for b in lc.unitaries:
+            unitary = a*b
+            rotated = [exp(1j * phase * pi / 4.) * unitary for phase in range(8)]
+            results = [find_u(r, lc.unitaries) for r in rotated]
+            assert len([x for x in results if x>=0])==1
+
+
+
