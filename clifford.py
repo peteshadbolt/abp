@@ -12,6 +12,7 @@ Following the prescription of Anders (thesis pg. 26):
 """
 
 from numpy import *
+from tqdm import tqdm
 
 def find_up_to_phase(u):
     """ Find the index of a given u within a list of unitaries, up to a global phase  """
@@ -22,27 +23,21 @@ def find_up_to_phase(u):
                 return i, phase
     raise IndexError
 
+def construct_tables():
+    """ Constructs multiplication and conjugation tables """
+    permutations = (id, ha, ph, ha*ph, ha*ph*ha, ha*ph*ha*ph)
+    signs = (id, px, py, pz)
+    unitaries = [p*s for p in permutations for s in signs]
+    conjugation_table = [find_up_to_phase(u.H)[0] for i, u in enumerate(unitaries)]
+    times_table = [[find_up_to_phase(u*v)[0] for v in unitaries] 
+            for u in tqdm(unitaries, "Building times-table")]
+
 id = matrix(eye(2, dtype=complex))
 px = matrix([[0, 1], [1, 0]], dtype=complex)
 py = matrix([[0, -1j], [1j, 0]], dtype=complex)
 pz = matrix([[1, 0], [0, -1]], dtype=complex)
 ha = matrix([[1, 1], [1, -1]], dtype=complex) / sqrt(2)
-ph= matrix([[1, 0], [0, 1j]], dtype=complex)
-
-permutations = (id, ha, ph, ha*ph, ha*ph*ha, ha*ph*ha*ph)
-signs = (id, px, py, pz)
-unitaries = [p*s for p in permutations for s in signs]
-
-conjugation_table = []
-
-for i, u in enumerate(unitaries):
-    i, phase = find_up_to_phase(u.H)
-    conjugation_table.append(i)
+ph = matrix([[1, 0], [0, 1j]], dtype=complex)
 
 
-# TODO:
-# - check that we re-generate the table
-# - do conjugation
-# - do times table
-# - write tests
 

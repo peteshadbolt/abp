@@ -61,3 +61,6 @@ def test_conjugation_table():
     """ Check that the table of Hermitian conjugates is okay """
     assert len(set(lc.conjugation_table))==24
 
+def test_times_table():
+    """ Check the times table """
+    assert lc.times_table[0][4]==4
