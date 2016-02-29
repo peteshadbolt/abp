@@ -2,6 +2,7 @@ import clifford as lc
 from numpy import *
 from scipy.linalg import sqrtm
 from qi import *
+from tqdm import tqdm
 
 
 
@@ -44,7 +45,7 @@ def test_we_have_all_useful_gates():
 def test_group():
     """ Test we are really in a group """
     matches = set()
-    for a in lc.unitaries:
+    for a in tqdm(lc.unitaries, "Testing this is a group"):
         for b in lc.unitaries:
             i, phase = lc.find_up_to_phase(a*b)
             matches.add(i)

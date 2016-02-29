@@ -1,0 +1,55 @@
+cphase (vertex a, vertex b):
+    if ngbh a\{b} =/= {}:
+        remove VOP (a, b)
+    end if
+    if ngbh b\{a} =/= {}:
+        remove VOP (b, a)
+    end if
+    [It may happen that the condition in line 2 has not been fulfilled then, but is now due to the effect of line 5. So we check again:]
+    if ngbh a\{b} =/= {}:
+        remove VOP (a, b)
+    end if
+    [Now we can be sure that the the condition (ngbh c\{a, b} = {} or VOP[c] ∈ Z) is fulfilled for c = a, b and we may use the lookup table (cf.  Eq. (9)).]
+    if {a, b} ∈ E :
+        edge ← true
+    else:
+        edge ← false
+    end if
+    (edge, VOP[a], VOP[b]) ← cphase_table[edge, VOP[a], VOP[b]]
+
+
+remove_VOP (vertex a, vertex b):
+    [This reduces VOP[a] to I, avoiding (if possible) to use b as swapping partner.]
+    [First, we choose a swapping partner c.]
+    if ngbh a\{b} = {}:
+        c ← any element of ngbh a\{b}
+    else:
+        c←b
+    end if
+    d ← decomposition lookup table [a]
+    [c contains now a decomposition such as Eq. (7)]
+    for v from last factor of d to first factor of d
+        if v = −iX:
+            local complementation (a)
+        else: ( this means that v = iZ)
+            local complementation (b)
+    end if
+    [Now, VOP[a] = I.]
+
+
+local complementation (vertex a)
+    [performs the operation specified in Definition 4]
+    nv ← ngbh v
+    for i ∈ nv :
+        for j ∈ nv :
+            if i < j:
+                if (i, j) ∈ E:
+                    remove edge (i, j)
+                else:
+                    add edge (i, j)
+                end if
+            end if
+        end for
+        VOP[i] ← VOP[i]sqrt(−iZ)
+    VOP[v] ← VOP[v]sqrt(iX)
+    end for
