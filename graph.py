@@ -7,7 +7,7 @@ def graph(n):
     """ Generate a graph with Hadamards on each qubit """
     graph = [set() for i in xrange(n)]
     vops = [0 for i in xrange(n)]
-    return graph, vops
+    return graph, vops # TODO: seems ugly
 
 def add_edge(graph, v1, v2):
     """ Add an edge between two vertices in the graph """
