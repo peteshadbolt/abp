@@ -14,6 +14,17 @@ def local_complementation(g, vops, v):
     for i in g[v]:
         vops[i] = clifford.times_table[vops[i]][clifford.msqz]
 
+
+def remove_vop(g, vops, a, b):
+    """ Reduces VOP[a] to the identity, avoiding (if possible) the use of vertex b as a swapping partner """
+    free_neighbours = g[a] - {b}
+    c = b if len(free_neighbours) == 0 else free_neighbours.pop()
+    d = clifford.decompositions[a]
+    for v in reversed(d):
+        target = a if v == clifford.sqx else b
+        local_complementation(g, vops, target)
+
+
 if __name__ == '__main__':
     g, vops = graph()
     add_edge(g, 0, 1)

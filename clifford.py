@@ -12,6 +12,7 @@ from functools import reduce
 from util import cache_to_disk
 
 
+# TODO: make this more efficient / shorter
 def find_up_to_phase(u):
     """ Find the index of a given u within a list of unitaries, up to a global phase  """
     for i, t in enumerate(unitaries):
@@ -44,8 +45,12 @@ decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
 elements = {"x": qi.sqx, "z": qi.msqz}
 unitaries = [compose_u(d) for d in decompositions]
 conjugation_table, times_table = construct_tables()
+
+# TODO: generate these global names automatically via search
 sqx = 15
 msqz = 5
+
+
 
 if __name__ == '__main__':
     print find_up_to_phase(qi.sqx)
