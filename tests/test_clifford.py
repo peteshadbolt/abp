@@ -41,7 +41,7 @@ def test_we_have_all_useful_gates():
         lc.find_up_to_phase(u)
 
 
-def test_group():
+def _test_group():
     """ Test we are really in a group """
     matches = set()
     for a, b in tqdm(it.combinations(lc.unitaries, 2), "Testing this is a group"):
