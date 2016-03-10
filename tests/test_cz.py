@@ -1,6 +1,4 @@
-import cz
 from graph import *
-import viz
 
 def test_local_complementation():
     """ Test that local complementation works as expected """
@@ -9,7 +7,7 @@ def test_local_complementation():
     add_edge(g, 0, 2)
     add_edge(g, 1, 2)
     add_edge(g, 0, 3)
-    cz.local_complementation(g, vops, 0)
+    local_complementation(g, vops, 0)
     assert has_edge(g, 0, 1)
     assert has_edge(g, 0, 2)
     assert not has_edge(g, 1, 2)

@@ -3,6 +3,7 @@ Provides an extremely basic graph structure, based on neighbour lists
 """
 
 from collections import defaultdict
+import itertools as it
 import clifford
 
 def graph():
@@ -38,4 +39,33 @@ def edgelist(g):
             for i, v in enumerate(g)
             for n in v)
     return [tuple(e) for e in edges]
+
+def cphase(g, vops, a, b):
+    """ Act a controlled-phase gate on two qubits """
+    if g[a]-{b}: remove_vop(g, vops, a, b)
+    if g[b]-{a}: remove_vop(g, vops, b, a)
+    if g[a]-{b}: remove_vop(g, vops, a, b)
+    edge = has_edge(g, a, b)
+    new_edge, vops[a], vops[b] = cphase_table[edge, vops[a], vops[b]]
+    if new_edge != edge:
+        toggle_edge(g, a, b)
+    
+
+def remove_vop(g, vops, a, avoid):
+    """ Reduces VOP[a] to the identity, avoiding (if possible) the use of vertex b as a swapping partner """
+    others = g[a] - {avoid}
+    swap_qubit = others.pop() if others else avoid
+    for v in reversed(clifford.decompositions[vops[a]]):
+        local_complementation(g, vops, a if v == "x" else swap_qubit)
+
+
+def local_complementation(g, vops, v):
+    """ As defined in LISTING 1 of Anders & Briegel """
+    for i, j in it.combinations(g[v], 2):
+        toggle_edge(g, i, j)
+
+    # Update VOPs
+    vops[v] = clifford.times_table[vops[v]][clifford.by_name["sqx"]]
+    for i in g[v]:
+        vops[i] = clifford.times_table[vops[i]][clifford.by_name["msqz"]]
 

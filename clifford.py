@@ -32,7 +32,7 @@ def name_of(vop):
     return "%s" % get_name[vop] if vop in get_name else "VOP%d" % vop
 
 
-@cache_to_disk("tables.pkl")
+@cache_to_disk("clifford_tables.pkl")
 def construct_tables():
     """ Constructs / caches multiplication and conjugation tables """
     by_name = {name: find_up_to_phase(u)[0] for name, u in qi.by_name.items()}
@@ -50,9 +50,4 @@ decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
 elements = {"x": qi.sqx, "z": qi.msqz}
 unitaries = [compose_u(d) for d in decompositions]
 by_name, get_name, conjugation_table, times_table = construct_tables()
-
-
-if __name__ == '__main__':
-    print by_name
-    print get_name
 
