@@ -2,11 +2,11 @@
 Provides an extremely basic graph structure, based on neighbour lists
 """
 
-def graph(n):
+from collections import defaultdict
+
+def graph():
     """ Generate a graph with Hadamards on each qubit """
-    graph = [set() for i in xrange(n)]
-    vops = [0 for i in xrange(n)] # TODO: seems ugly
-    return graph, vops 
+    return defaultdict(set), defaultdict(int)
 
 def add_edge(graph, v1, v2):
     """ Add an edge between two vertices in the graph """
@@ -29,10 +29,10 @@ def toggle_edge(graph, v1, v2):
     else:
         add_edge(graph, v1, v2)
 
-def edgelist(graph):
+def edgelist(g):
     """ Describe a graph as an edgelist """
     edges = frozenset(frozenset((i, n))
-            for i, v in enumerate(graph)
+            for i, v in enumerate(g.values())
             for n in v)
     return [tuple(e) for e in edges]
 

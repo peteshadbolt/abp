@@ -14,12 +14,11 @@ def identify_pauli(m):
                 return sign, pauli_label
 
 
-def test_find_up_to_phase():
+def _test_find_up_to_phase():
     """ Test that slightly suspicious function """
-    pass
-    #assert lc.find_up_to_phase(id) == (0, 0)
-    #assert lc.find_up_to_phase(px) == (1, 0)
-    #assert lc.find_up_to_phase(exp(1j*pi/4.)*ha) == (4, 7)
+    assert lc.find_up_to_phase(id) == (0, 0)
+    assert lc.find_up_to_phase(px) == (1, 0)
+    assert lc.find_up_to_phase(exp(1j*pi/4.)*ha) == (4, 7)
 
 def get_action(u):
     """ What does this unitary operator do to the Paulis? """
@@ -40,7 +39,7 @@ def test_we_have_all_useful_gates():
     """ Check that all the interesting gates are included up to a global phase """
     common_us = id, px, py, pz, ha, ph, sqz, msqz, sqy, msqy, sqx, msqx
     for u in common_us:
-        print lc.find_up_to_phase(u)
+        lc.find_up_to_phase(u)
 
 
 def test_group():

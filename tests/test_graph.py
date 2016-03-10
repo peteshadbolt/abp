@@ -1,7 +1,7 @@
 from graph import *
 
 def test_graph():
-    g, v = graph(3)
+    g, v = graph()
     add_edge(g, 0,1)
     add_edge(g, 1,2)
     add_edge(g, 2,0)
