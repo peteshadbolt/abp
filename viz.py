@@ -6,10 +6,11 @@ import networkx as nx
 from matplotlib import pyplot as plt
 from graph import *
 
-VOP_COLORS = ["red", "green", "blue"]
+VOP_COLORS = ["red", "green", "blue", "orange", "yellow", "purple", "black", "white"]
 
 def draw(graph, vops, filename="out.pdf", ns=500):
     """ Draw a graph with networkx layout """
+    plt.clf()
     g = nx.from_edgelist(edgelist(graph))
     pos = nx.spring_layout(g)
     colors = [VOP_COLORS[vop % len(VOP_COLORS)] for vop in vops]
@@ -21,7 +22,7 @@ def draw(graph, vops, filename="out.pdf", ns=500):
     plt.savefig(filename)
 
 if __name__ == '__main__':
-    g, vops = graph(10)
+    g, vops = graph()
     add_edge(g, 0, 1)
     add_edge(g, 1, 3)
     add_edge(g, 3, 2)
