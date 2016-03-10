@@ -1,20 +1,8 @@
- #!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-"""
-Generates and enumerates the 24 elements of the local Clifford group
-Following the prescription of Anders (thesis pg. 26):
-> Table 2.1: The 24 elements of the local Clifford group. The row index (here called the “sign symbol”) shows how the operator
-> U permutes the Pauli operators σ = X, Y, Z under the conjugation σ = ±UσU† . The column index (the “permutation
-> symbol”) indicates the sign obtained under the conjugation: For operators U in the I column it is the sign of the permutation
-> (indicated on the left). For elements in the X, Y and Z columns, it is this sign only if the conjugated Pauli operator is the one
-> indicated by the column header and the opposite sign otherwise.
-"""
-
 import numpy as np
-from qi import *
 from tqdm import tqdm
-import cPickle,os
+import os
+from qi import *
+import cPickle
 
 def find_up_to_phase(u):
     """ Find the index of a given u within a list of unitaries, up to a global phase  """
@@ -25,6 +13,13 @@ def find_up_to_phase(u):
                 return i, phase
     raise IndexError
 
+
+def compose_u(decomposition):
+    """ Get the unitary representation of a particular decomposition """
+    us = (elements[c] for c in decomposition)
+    return np.matrix(reduce(np.dot, us), dtype=complex)
+
+
 def construct_tables():
     """ Constructs multiplication and conjugation tables """
     conjugation_table = [find_up_to_phase(u.H)[0] for i, u in enumerate(unitaries)]
@@ -33,15 +28,22 @@ def construct_tables():
     with open("tables.pkl", "w") as f:
         cPickle.dump((conjugation_table, times_table), f)
 
-permutations = (id, ha, ph, ha*ph, ha*ph*ha, ha*ph*ha*ph)
-signs = (id, px, py, pz)
-unitaries = [p*s for p in permutations for s in signs]
+
+#permutations = (id, ha, ph, ha*ph, ha*ph*ha, ha*ph*ha*ph)
+#signs = (id, px, py, pz)
+#unitaries = [p*s for p in permutations for s in signs]
+decompositions = \
+("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
+"xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
+"zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
+elements = {"x": sqx, "z": msqz}
+unitaries = [compose_u(d) for d in decompositions]
 
 # Build / reload lookup tables
 if not os.path.exists("tables.pkl"):
     construct_tables()
-
 with open("tables.pkl") as f:
     conjugation_table, times_table = cPickle.load(f)
 
-
+if __name__ == '__main__':
+    pass
