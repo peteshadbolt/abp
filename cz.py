@@ -2,11 +2,13 @@ from matplotlib import pyplot as plt
 from graph import *
 from viz import draw
 
-def local_complementation(g, vops, a):
-    for i in g[a]:
-        for j in g[a]:
+def local_complementation(g, vops, v):
+    for i in g[v]:
+        for j in g[v]:
             if i<j:
                 toggle_edge(g, i, j)
+        # vops[i] = times_table[vop[i]][sqrtmiz]
+        # vops[v] = times_table[vop[v]][sqrtix]
 
 if __name__ == '__main__':
     g, vops = graph(10)

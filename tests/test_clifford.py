@@ -3,7 +3,7 @@ from numpy import *
 from scipy.linalg import sqrtm
 from qi import *
 from tqdm import tqdm
-
+import itertools as it
 
 
 def identify_pauli(m):
@@ -45,10 +45,9 @@ def test_we_have_all_useful_gates():
 def test_group():
     """ Test we are really in a group """
     matches = set()
-    for a in tqdm(lc.unitaries, "Testing this is a group"):
-        for b in lc.unitaries:
-            i, phase = lc.find_up_to_phase(a*b)
-            matches.add(i)
+    for a, b in tqdm(it.combinations(lc.unitaries, 2), "Testing this is a group"):
+        i, phase = lc.find_up_to_phase(a*b)
+        matches.add(i)
     assert len(matches)==24
 
 
