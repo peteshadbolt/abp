@@ -12,7 +12,7 @@ def draw(graph, vops, filename="out.pdf", ns=500):
     """ Draw a graph with networkx layout """
     g = nx.from_edgelist(edgelist(graph))
     pos = nx.spring_layout(g)
-    colors = [VOP_COLORS[vop] for vop in vops]
+    colors = [VOP_COLORS[vop % len(VOP_COLORS)] for vop in vops]
     nx.draw_networkx_nodes(g, pos, node_color="white", node_size=ns)
     nx.draw_networkx_nodes(g, pos, node_color=colors, node_size=ns, alpha=.4)
     nx.draw_networkx_labels(g, pos)

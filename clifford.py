@@ -7,7 +7,7 @@ unitaries = [p*s for p in permutations for s in signs]
 
 import numpy as np
 from tqdm import tqdm
-from qi import *
+import qi
 from functools import reduce
 from util import cache_to_disk
 
@@ -41,6 +41,13 @@ def construct_tables():
 decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
      "xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
      "zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
-elements = {"x": sqx, "z": msqz}
+elements = {"x": qi.sqx, "z": qi.msqz}
 unitaries = [compose_u(d) for d in decompositions]
 conjugation_table, times_table = construct_tables()
+sqx = 15
+msqz = 5
+
+if __name__ == '__main__':
+    print find_up_to_phase(qi.sqx)
+    print find_up_to_phase(qi.msqz)
+
