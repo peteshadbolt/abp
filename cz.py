@@ -7,13 +7,13 @@ import clifford
     #""" Act a controlled-phase gate on two qubits """
     #if g
 
-def remove_vop(g, vops, a, b):
+def remove_vop(g, vops, a, avoid):
     """ Reduces VOP[a] to the identity, avoiding (if possible) the use of vertex b as a swapping partner """
-    free_neighbours = g[a] - {b}
-    c = b if len(free_neighbours) == 0 else free_neighbours.pop()
-    d = clifford.decompositions[a]
+    other_neighbours = g[a] - {avoid}
+    c = avoid if len(other_neighbours) == 0 else other_neighbours.pop()
+    d = clifford.decompositions[vops[a]]
     for v in reversed(d):
-        target = a if v == clifford.by_name["msqx"] else b
+        target = a if v == "x" else c
         local_complementation(g, vops, target)
 
 
@@ -28,7 +28,6 @@ def local_complementation(g, vops, v):
         vops[i] = clifford.times_table[vops[i]][clifford.by_name["msqz"]]
 
 
-
 if __name__ == '__main__':
     g, vops = graph()
     add_edge(g, 0, 1)
@@ -38,5 +37,5 @@ if __name__ == '__main__':
     add_edge(g, 6, 7)
 
     pos = viz.draw(g, vops, "out.pdf")
-    local_complementation(g, vops, 0)
+    remove_vop(g, vops, 0, 1)
     viz.draw(g, vops, "out2.pdf", pos)
