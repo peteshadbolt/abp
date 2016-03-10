@@ -3,10 +3,13 @@ Provides an extremely basic graph structure, based on neighbour lists
 """
 
 from collections import defaultdict
+import clifford
 
 def graph():
     """ Generate a graph with Hadamards on each qubit """
-    return defaultdict(set), defaultdict(int)
+    #return defaultdict(set), defaultdict(lambda: clifford.by_name["hadamard"])
+    return [set() for i in range(100)], [clifford.by_name["hadamard"] for i in range(100)]
+
 
 def add_edge(graph, v1, v2):
     """ Add an edge between two vertices in the graph """
@@ -32,7 +35,7 @@ def toggle_edge(graph, v1, v2):
 def edgelist(g):
     """ Describe a graph as an edgelist """
     edges = frozenset(frozenset((i, n))
-            for i, v in enumerate(g.values())
+            for i, v in enumerate(g)
             for n in v)
     return [tuple(e) for e in edges]
 

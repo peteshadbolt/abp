@@ -17,3 +17,9 @@ def test_local_complementation():
     assert has_edge(g, 3, 1)
 
     # TODO: test VOP conditions
+
+def test_remove_vop():
+    """ Test that removing VOPs really works """
+    pass
+
+    

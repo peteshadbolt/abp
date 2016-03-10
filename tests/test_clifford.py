@@ -1,7 +1,7 @@
 import clifford as lc
 from numpy import *
 from scipy.linalg import sqrtm
-from qi import *
+import qi
 from tqdm import tqdm
 import itertools as it
 
@@ -9,7 +9,7 @@ import itertools as it
 def identify_pauli(m):
     """ Given a signed Pauli matrix, name it. """
     for sign in (+1, -1):
-        for pauli_label, pauli in zip("xyz", paulis):
+        for pauli_label, pauli in zip("xyz", qi.paulis):
             if allclose(sign * pauli, m):
                 return sign, pauli_label
 
@@ -22,7 +22,7 @@ def _test_find_up_to_phase():
 
 def get_action(u):
     """ What does this unitary operator do to the Paulis? """
-    return [identify_pauli(u * p * u.H) for p in paulis]
+    return [identify_pauli(u * p * u.H) for p in qi.paulis]
 
 
 def format_action(action):
@@ -37,8 +37,7 @@ def test_we_have_24_matrices():
 
 def test_we_have_all_useful_gates():
     """ Check that all the interesting gates are included up to a global phase """
-    common_us = id, px, py, pz, ha, ph, sqz, msqz, sqy, msqy, sqx, msqx
-    for u in common_us:
+    for name, u in qi.by_name.items():
         lc.find_up_to_phase(u)
 
 

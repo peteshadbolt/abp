@@ -22,3 +22,7 @@ msqz = sqrtm(-1j * pz)
 sqx = sqrtm(1j * px)
 msqx = sqrtm(-1j * px)
 paulis = (px, py, pz)
+
+common_us = id, px, py, pz, ha, ph, sqz, msqz, sqy, msqy, sqx, msqx
+names = "identity", "px", "py", "pz", "hadamard", "phase", "sqz", "msqz", "sqy", "msqy", "sqx", "msqx"
+by_name = dict(zip(names, common_us))
