@@ -19,11 +19,11 @@ def draw(graph, vops, filename="out.pdf", pos=None, ns=500):
     nx.draw_networkx_nodes(g, pos, node_color="white", node_size=ns)
     nx.draw_networkx_nodes(g, pos, node_color=colors, node_size=ns, alpha=.4)
     nx.draw_networkx_edges(g, pos, edge_color="gray")
-    nx.draw_networkx_labels(g, pos)
+    nx.draw_networkx_labels(g, pos, font_family="FreeSans")
 
     labels = {i: clifford.name_of(vops[i]) for i in g.nodes()}
     pos = {k: v + np.array([0, -.1]) for k, v in pos.items()}
-    nx.draw_networkx_labels(g, pos, labels)
+    nx.draw_networkx_labels(g, pos, labels, font_family="FreeSans")
     plt.axis('off')
     plt.savefig(filename)
     return pos

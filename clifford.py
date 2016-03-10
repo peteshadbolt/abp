@@ -29,7 +29,7 @@ def compose_u(decomposition):
 
 def name_of(vop):
     """ Get the formatted name of a VOP """
-    return get_name[vop].title() if vop in get_name else "VOP%d" % vop
+    return "%s" % get_name[vop] if vop in get_name else "VOP%d" % vop
 
 
 @cache_to_disk("tables.pkl")

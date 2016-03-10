@@ -9,12 +9,10 @@ import clifford
 
 def remove_vop(g, vops, a, avoid):
     """ Reduces VOP[a] to the identity, avoiding (if possible) the use of vertex b as a swapping partner """
-    other_neighbours = g[a] - {avoid}
-    c = avoid if len(other_neighbours) == 0 else other_neighbours.pop()
-    d = clifford.decompositions[vops[a]]
-    for v in reversed(d):
-        target = a if v == "x" else c
-        local_complementation(g, vops, target)
+    others = g[a] - {avoid}
+    swap_qubit = others.pop() if others else avoid
+    for v in reversed(clifford.decompositions[vops[a]]):
+        local_complementation(g, vops, a if v == "x" else swap_qubit)
 
 
 def local_complementation(g, vops, v):
@@ -38,4 +36,5 @@ if __name__ == '__main__':
 
     pos = viz.draw(g, vops, "out.pdf")
     remove_vop(g, vops, 0, 1)
+    remove_vop(g, vops, 1, 2)
     viz.draw(g, vops, "out2.pdf", pos)
