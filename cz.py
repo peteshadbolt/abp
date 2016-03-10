@@ -3,9 +3,16 @@ import viz
 import itertools as it
 import clifford
 
-#def cphase(a, b):
-    #""" Act a controlled-phase gate on two qubits """
-    #if g
+def cphase(g, vops, a, b):
+    """ Act a controlled-phase gate on two qubits """
+    if g[a]-{b}: remove_vop(g, vops, a, b)
+    if g[b]-{a}: remove_vop(g, vops, b, a)
+    if g[a]-{b}: remove_vop(g, vops, a, b)
+    edge = has_edge(g, a, b)
+    new_edge, vops[a], vops[b] = cphase_table[edge, vops[a], vops[b]]
+    if new_edge != edge:
+        toggle_edge(g, a, b)
+    
 
 def remove_vop(g, vops, a, avoid):
     """ Reduces VOP[a] to the identity, avoiding (if possible) the use of vertex b as a swapping partner """
@@ -37,4 +44,5 @@ if __name__ == '__main__':
     pos = viz.draw(g, vops, "out.pdf")
     remove_vop(g, vops, 0, 1)
     remove_vop(g, vops, 1, 2)
+    cphase(g, vops, 0, 1)
     viz.draw(g, vops, "out2.pdf", pos)

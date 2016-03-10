@@ -28,13 +28,3 @@ def draw(graph, vops, filename="out.pdf", pos=None, ns=500):
     plt.savefig(filename)
     return pos
 
-if __name__ == '__main__':
-    g, vops = graph()
-    add_edge(g, 0, 1)
-    add_edge(g, 1, 3)
-    add_edge(g, 3, 2)
-    add_edge(g, 3, 0)
-    add_edge(g, 2, 0)
-    edgelist(g)
-    draw(g, vops)
-
