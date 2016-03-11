@@ -8,6 +8,5 @@ def test_viz():
     g.add_edge(2,0)
     g.add_edge(0,3)
     g.add_edge(100,200)
-    print g.vops
     #g.remove_vop(0, 1)
     viz.draw(g)
