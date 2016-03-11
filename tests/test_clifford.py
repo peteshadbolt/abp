@@ -1,4 +1,4 @@
-import clifford as lc
+import tables as lc
 from numpy import *
 from scipy.linalg import sqrtm
 import qi
