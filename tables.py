@@ -7,24 +7,10 @@ unitaries = [p*s for p in permutations for s in signs]
 
 import numpy as np
 from tqdm import tqdm
-import qi
+import os
 from functools import reduce
 import cPickle
-
-def cache_to_disk(file_name):
-    """ A decorator to cache the output of a function to disk """
-    def wrap(func):
-        def modified(*args, **kwargs):
-            try:
-                output = cPickle.load(open(file_name, "r"))
-            except (IOError, ValueError):
-                output = func(*args, **kwargs)
-                with open(file_name, "w") as f:
-                    cPickle.dump(output, f)
-            return output
-        return modified
-    return wrap
-
+import qi
 
 # TODO: make this more efficient / shorter
 def find_up_to_phase(u):
@@ -47,9 +33,11 @@ def name_of(vop):
     return "%s" % get_name[vop] if vop in get_name else "VOP%d" % vop
 
 
-@cache_to_disk("tables.cache")
-def construct_tables():
+def construct_tables(filename="tables.cache"):
     """ Constructs / caches multiplication and conjugation tables """
+    if os.path.exists(filename):
+        return cPickle.load(open(filename, "r"))
+
     by_name = {name: find_up_to_phase(u)[0] for name, u in qi.by_name.items()}
     get_name = {v:k for k, v in by_name.items()}
     conjugation_table = [find_up_to_phase(u.H)[0]
@@ -57,7 +45,10 @@ def construct_tables():
     times_table = [[find_up_to_phase(u * v)[0] for v in unitaries]
                    for u in tqdm(unitaries)]
     cz_table = None
-    return by_name, get_name, conjugation_table, times_table, cz_table
+    output = by_name, get_name, conjugation_table, times_table, cz_table
+    with open(filename, "w") as f:
+        cPickle.dump(output, f)
+    return output
 
 
 decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",

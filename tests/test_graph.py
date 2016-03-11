@@ -58,9 +58,9 @@ def test_edgelist():
 
 
 def test_million_sites():
-    """ Testing making really big graphs """
+    """ Testing that making a graph of tent housand qubits takes less than half a second"""
     g = GraphState()
     t = time.clock()
     for i in xrange(100000):
         g.add_edge(i, i + 1)
-    print time.clock() - t
+    assert time.clock() - t < .5
