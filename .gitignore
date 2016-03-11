@@ -1,3 +1,4 @@
+*.cache
 *.pkl
 *.pdf
 papers/
