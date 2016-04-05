@@ -14,6 +14,10 @@ py = np.matrix([[0, -1j], [1j, 0]], dtype=complex)
 pz = np.matrix([[1, 0], [0, -1]], dtype=complex)
 ha = np.matrix([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)
 ph = np.matrix([[1, 0], [0, 1j]], dtype=complex)
+cz = np.matrix(np.eye(4), dtype=complex)
+cz[3,3]=-1
+
+plus = np.matrix([[1],[1]], dtype=complex) / np.sqrt(2)
 
 sqy = sqrtm(1j * py)
 msqy = sqrtm(-1j * py)
