@@ -1,32 +1,42 @@
 import qi
 import numpy as np
 import tables
-import tqdm
+from tqdm import tqdm
+import itertools as it
 
-# TODO: ensure that Constraint 1 is met. i.e. 
-# if C1 is in Z, choose C1' such that it is in Z
+def get_krontable():
+    table = np.zeros((24,24,4,4), dtype=complex)
+    for i, j in it.product(range(24), range(24)):
+        u1 = tables.unitaries[i]
+        u2 = tables.unitaries[j]
+        table[i, j, :, :] = np.kron(u1, u2)
+    return table
 
-table1 = []
-table2 = []
+def find(bond, c1, c2, z, krontable):
+    # Figure out the target state
+    state = qi.bond if bond else qi.nobond
+    target = qi.cz * krontable[c1, c2] * state
 
-bond = qi.cz * np.kron(qi.plus, qi.plus)
-no_bond = np.kron(qi.plus, qi.plus)
+    # Choose the sets to search over
+    s1 = z if c1 in z else xrange(24)
+    s2 = z if c2 in z else xrange(24)
 
-def find(thing, table):
-    for index, trial in enumerate(table):
-        for qq in range(16):
-            if np.allclose(thing, np.exp(2j*np.pi*qq/16.) * trial):
-                yield index
+    for bond, c1p, c2p in it.product([0,1], s1, s2):
+        state = qi.bond if bond else qi.nobond
+        trial = krontable[c1p, c2p] * state
+        for phase in range(8):
+            if np.allclose(target, np.exp(1j * phase * np.pi / 4.) * trial):
+                return bond, c1p, c2p
 
-for state in bond, no_bond:
-    for a in tables.unitaries:
-        for b in tables.unitaries:
-            state = np.kron(a, b) * state
-            table1.append(state)
-            table2.append(qi.cz*state)
-
-for index, thing in enumerate(table2):
-    print "{} -> {}".format(index, list(find(thing, table1)))
+    raise IndexError
 
 
+z = [tables.find(u, tables.unitaries) for u in qi.id, qi.px, qi.pz, qi.ph, qi.ph.H]
+krontable = get_krontable()
+
+cz_table = np.zeros((2, 24, 24, 3))
+for bond, c1, c2 in tqdm(list(it.product([0,1], range(24), range(24)))):
+    cz_table[bond, c1, c2] = find(bond, c1, c2, z, krontable)
+
+np.save("cz_table.npy", cz_table)
 

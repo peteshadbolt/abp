@@ -30,3 +30,6 @@ paulis = (px, py, pz)
 common_us = id, px, py, pz, ha, ph, sqz, msqz, sqy, msqy, sqx, msqx
 names = "identity", "px", "py", "pz", "hadamard", "phase", "sqz", "msqz", "sqy", "msqy", "sqx", "msqx"
 by_name = dict(zip(names, common_us))
+
+bond = cz * np.kron(plus, plus)
+nobond = np.kron(plus, plus)

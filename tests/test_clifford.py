@@ -14,11 +14,11 @@ def identify_pauli(m):
                 return sign, pauli_label
 
 
-def _test_find_up_to_phase():
+def _test_find():
     """ Test that slightly suspicious function """
-    assert lc.find_up_to_phase(id) == (0, 0)
-    assert lc.find_up_to_phase(px) == (1, 0)
-    assert lc.find_up_to_phase(exp(1j*pi/4.)*ha) == (4, 7)
+    assert lc.find(id, lc.unitaries) == 0
+    assert lc.find(px, lc.unitaries) == 1
+    assert lc.find(exp(1j*pi/4.)*ha, lc.unitaries) == 4
 
 def get_action(u):
     """ What does this unitary operator do to the Paulis? """
@@ -38,14 +38,14 @@ def test_we_have_24_matrices():
 def test_we_have_all_useful_gates():
     """ Check that all the interesting gates are included up to a global phase """
     for name, u in qi.by_name.items():
-        lc.find_up_to_phase(u)
+        lc.find(u, lc.unitaries)
 
 
 def _test_group():
     """ Test we are really in a group """
     matches = set()
     for a, b in tqdm(it.combinations(lc.unitaries, 2), "Testing this is a group"):
-        i, phase = lc.find_up_to_phase(a*b)
+        i, phase = lc.find(a*b, lc.unitaries)
         matches.add(i)
     assert len(matches)==24
 
