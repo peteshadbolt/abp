@@ -70,7 +70,7 @@ def get_conjugation_table(unitaries):
 def get_times_table(unitaries):
     """ Construct the times-table """
     return np.array([[find_clifford(u.dot(v), unitaries) for v in unitaries]
-                     for u in tqdm(unitaries)])
+                     for u in tqdm(unitaries, desc="Building times-table")])
 
 
 def get_state_table():
@@ -90,7 +90,8 @@ def get_cz_table(unitaries):
     state_table = get_state_table()
 
     cz_table = np.zeros((2, 24, 24, 3))
-    for bond, c1, c2 in tqdm(list(it.product([0, 1], range(24), range(24)))):
+    rows = list(it.product([0, 1], range(24), range(24)))
+    for bond, c1, c2 in tqdm(rows, desc="Building CZ table"):
         cz_table[bond, c1, c2] = find_cz(bond, c1, c2, commuters, state_table)
     return cz_table
 
