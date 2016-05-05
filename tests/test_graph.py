@@ -4,6 +4,7 @@ import time
 
 
 def demograph():
+    """ A graph for testing with """
     g = GraphState()
     g.add_edge(0, 1)
     g.add_edge(1, 2)
@@ -13,7 +14,8 @@ def demograph():
     return g
 
 
-def test_graph():
+def test_graph_basic():
+    """ Test that we can construct graphs, delete edges, whatever """
     g = demograph()
     assert g.ngbh[0] == set([1, 2, 3])
     g.del_edge(0, 1)
@@ -58,9 +60,10 @@ def test_edgelist():
 
 
 def test_million_sites():
-    """ Testing that making a graph of tent housand qubits takes less than half a second"""
+    """ Testing that making a graph of ten thousand qubits takes less than half a second"""
     g = GraphState()
     t = time.clock()
     for i in xrange(100000):
         g.add_edge(i, i + 1)
     assert time.clock() - t < .5
+

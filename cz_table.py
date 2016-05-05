@@ -11,6 +11,7 @@ no_bond = np.kron(qi.plus, qi.plus)
 
 for u in tables.unitaries:
     psi = qi.cz*np.kron(u, qi.ha)*bond
+    print u
 
     for bb in bond, no_bond:
         for a in tables.unitaries:
