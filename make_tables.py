@@ -11,9 +11,9 @@ from tqdm import tqdm
 from functools import reduce
 import itertools as it
 
-DECOMPOSITIONS = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
-     "xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
-     "zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
+decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
+                  "xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
+                  "zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
 
 
 def find_clifford(needle, haystack):
@@ -70,7 +70,7 @@ def get_conjugation_table(unitaries):
 def get_times_table(unitaries):
     """ Construct the times-table """
     return np.array([[find_clifford(u.dot(v), unitaries) for v in unitaries]
-                   for u in tqdm(unitaries)])
+                     for u in tqdm(unitaries)])
 
 
 def get_state_table():
@@ -79,9 +79,8 @@ def get_state_table():
     for bond, i, j in it.product([0, 1], range(24), range(24)):
         state = qi.bond if bond else qi.nobond
         kp = np.kron(unitaries[i], unitaries[j])
-        state_table[bond, i, j,:] = np.dot(kp, state).T
+        state_table[bond, i, j, :] = np.dot(kp, state).T
     return state_table
-
 
 
 def get_cz_table(unitaries):
@@ -95,8 +94,19 @@ def get_cz_table(unitaries):
         cz_table[bond, c1, c2] = find_cz(bond, c1, c2, commuters, state_table)
     return cz_table
 
-if __name__ == '__main__':
-    unitaries = get_unitaries(DECOMPOSITIONS)
+
+if not __name__ == "__main__":
+    try:
+        unitaries = np.load("tables/unitaries.npy")
+        conjugation_table = np.load("tables/conjugation_table.npy")
+        times_table = np.load("tables/times_table.npy")
+        cz_table = np.load("tables/cz_table.npy")
+    except IOError:
+        print "Precomputed tables not found, try running `python make_tables.py`"
+
+
+if __name__ == "__main__":
+    unitaries = get_unitaries(decompositions)
     conjugation_table = get_conjugation_table(unitaries)
     times_table = get_times_table(unitaries)
     cz_table = get_cz_table(unitaries)
@@ -104,4 +114,4 @@ if __name__ == '__main__':
     np.save("tables/unitaries.npy", unitaries)
     np.save("tables/conjugation_table.npy", conjugation_table)
     np.save("tables/times_table.npy", times_table)
-    np.save("cz_table.npy", cz_table)
+    np.save("tables/cz_table.npy", cz_table)
