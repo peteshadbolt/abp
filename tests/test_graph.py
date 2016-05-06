@@ -41,13 +41,13 @@ def test_remove_vop():
     """ Test that removing VOPs really works """
     g = demograph()
     g.remove_vop(0, 1)
-    #assert g.vops[0] == lc.by_name["identity"]
+    assert g.vops[0] == clifford.by_name["identity"]
     g.remove_vop(1, 1)
-    #assert g.vops[1] == lc.by_name["identity"]
+    assert g.vops[1] == clifford.by_name["identity"]
     g.remove_vop(2, 1)
-    #assert g.vops[2] == lc.by_name["identity"]
+    assert g.vops[2] == clifford.by_name["identity"]
     g.remove_vop(0, 1)
-    #assert g.vops[0] == lc.by_name["identity"]
+    assert g.vops[0] == clifford.by_name["identity"]
 
 
 def test_edgelist():
@@ -59,7 +59,7 @@ def test_edgelist():
     assert (100, 200) in el
 
 
-def test_million_sites():
+def test_stress():
     """ Testing that making a graph of ten thousand qubits takes less than half a second"""
     g = GraphState()
     t = time.clock()
