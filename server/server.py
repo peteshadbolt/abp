@@ -7,7 +7,8 @@ import json
 import threading
 import time
 
-class MyHandler(SimpleHTTPRequestHandler):
+class VizHandler(SimpleHTTPRequestHandler):
+    """ Handles requests to the server """
     def __init__(self, *args, **kwargs):
         SimpleHTTPRequestHandler.__init__(self, *args, **kwargs)
 
@@ -25,15 +26,27 @@ class MyHandler(SimpleHTTPRequestHandler):
         else:
             return SimpleHTTPRequestHandler.do_GET(self, *args, **kwargs)
 
-if __name__ == '__main__':
-    port = int(sys.argv[1]) if len(sys.argv)==2 else 8000
-    server = SocketServer.TCPServer(("127.0.0.1", port), MyHandler)
+class VizServer(SocketServer.TCPServer):
+    """ Runs the server in a new thread """
+    allow_reuse_address = True
+    def __init__(self, port = 8000):
+        self.port = port
+        SocketServer.TCPServer.__init__(self, ("127.0.0.1", self.port), VizHandler)
 
-    print "Go to 127.0.0.0:{}".format(port)
-    thread = threading.Thread(None, server.serve_forever)
-    thread.daemon = True
-    thread.start()
+    def run(self):
+        try:
+            self.serve_forever()
+        except KeyboardInterrupt:
+            "Caught keyboard interrupt"
+            self.shutdown()
+
+    def start(self):
+        thread = threading.Thread(None, self.run)
+        thread.start()
+        print "Go to 127.0.0.0:{}".format(self.port)
+
+if __name__ == '__main__':
+    server = VizServer()
+    server.start()
     time.sleep(5)
-    print "Shutting down ... "
     server.shutdown()
-    #thread.join()
