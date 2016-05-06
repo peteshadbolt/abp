@@ -7,6 +7,8 @@ import json
 import threading
 import time
 
+state = 0
+
 class VizHandler(SimpleHTTPRequestHandler):
     """ Handles requests to the server """
     def __init__(self, *args, **kwargs):
@@ -16,7 +18,7 @@ class VizHandler(SimpleHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
-        self.wfile.write(json.dumps({"state":"here is the state"}))
+        self.wfile.write(json.dumps({"state":"{}".format(state)}))
     
     def do_GET(self, *args, **kwargs):
         parsed_path = urlparse.urlparse(self.path)
@@ -49,5 +51,7 @@ class VizServer(SocketServer.TCPServer):
 if __name__ == '__main__':
     server = VizServer()
     server.start()
-    time.sleep(5)
+    while True:
+        state += 1
+        time.sleep(1)
     server.shutdown()

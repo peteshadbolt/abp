@@ -1,11 +1,14 @@
+var body;
+
 function poll() {
     var xhr = new XMLHttpRequest();
 
     xhr.onload=function() {
-        console.log(xhr.responseText);
+        soft_console.innerHTML = "\n" + xhr.responseText;
     };
 
     xhr.onerror = function(e){
+        soft_console.innerHTML = "\n" + "Lost connection to server";
     };
 
     xhr.open("GET", "/state", true);
