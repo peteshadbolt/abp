@@ -1,12 +1,11 @@
 function poll() {
-    console.log("polling");
     var xhr = new XMLHttpRequest();
-    xhr.load=function() {
-        console.log(JSON.parse(xhr.responseText));
+
+    xhr.onload=function() {
+        console.log(xhr.responseText);
     };
 
     xhr.onerror = function(e){
-        console.log(e);
     };
 
     xhr.open("GET", "/state", true);
