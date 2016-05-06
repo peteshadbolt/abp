@@ -93,13 +93,16 @@ def get_state_table(unitaries):
 
 def get_cz_table(unitaries):
     """ Compute the lookup table for the CZ (A&B eq. 9) """
+    # This is the set of Cliffords which commute with CZ
     commuters = (qi.id, qi.px, qi.pz, qi.ph, qi.hermitian_conjugate(qi.ph))
     commuters = [find_clifford(u, unitaries) for u in commuters]
+
+    # Get a cached state table
     state_table = get_state_table(unitaries)
 
-    # TODO: it's symmetric. this can be much faster
+    # And now build the CZ table
     cz_table = np.zeros((2, 24, 24, 3))
-    rows = list(it.product([0, 1], it.combinations(range(24), 2)))
+    rows = list(it.product([0, 1], it.combinations(range(24), 2)))  # CZ is symmetric so we only need combinations
     for bond, (c1, c2) in tqdm(rows, desc="Building CZ table"):
         newbond, c1p, c2p = find_cz(bond, c1, c2, commuters, state_table)
         cz_table[bond, c1, c2] = [newbond, c1p, c2p]
@@ -108,7 +111,7 @@ def get_cz_table(unitaries):
 
 
 if __name__ == "__main__":
-    # Spend time loading the stuff
+    # Spend time building the tables
     unitaries = get_unitaries()
     by_name = get_by_name(unitaries)
     conjugation_table = get_conjugation_table(unitaries)
