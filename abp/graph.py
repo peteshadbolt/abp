@@ -13,6 +13,12 @@ class GraphState(object):
         self.ngbh = defaultdict(set)
         self.vops = defaultdict(int)
 
+    def add_vertex(self, v):
+        """ Add a vertex if it doesn't already exist """
+        if not v in self.ngbh:
+            self.ngbh[v] = set()
+            self.vops[v] = clifford.by_name["hadamard"]
+
     def add_edge(self, v1, v2):
         """ Add an edge between two vertices in the self """
         if not v1 in self.ngbh:

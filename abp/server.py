@@ -7,51 +7,63 @@ import json
 import threading
 import time
 
-state = 0
-
 class VizHandler(SimpleHTTPRequestHandler):
     """ Handles requests to the server """
     def __init__(self, *args, **kwargs):
         SimpleHTTPRequestHandler.__init__(self, *args, **kwargs)
 
     def get_state(self):
+        """ Get the current graph state """
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
+        state = self.server.state
         self.wfile.write(json.dumps({"state":"{}".format(state)}))
     
     def do_GET(self, *args, **kwargs):
+        """ Someone belled the server """
         parsed_path = urlparse.urlparse(self.path)
-        print parsed_path.path
         if parsed_path.path == "/state":
             return self.get_state()
         else:
             return SimpleHTTPRequestHandler.do_GET(self, *args, **kwargs)
 
-class VizServer(SocketServer.TCPServer):
-    """ Runs the server in a new thread """
+class Server(SocketServer.TCPServer):
+    """ Serves the good stuff """
     allow_reuse_address = True
+
     def __init__(self, port = 8000):
         self.port = port
+        self.state = None
         SocketServer.TCPServer.__init__(self, ("127.0.0.1", self.port), VizHandler)
 
+    def update(self, state):
+        """ Update the in-memory state """
+        self.state = state
+
     def run(self):
+        """ Run in such a way that keyboard interrupts are caught properly """
         try:
             self.serve_forever()
         except KeyboardInterrupt:
-            "Caught keyboard interrupt"
             self.shutdown()
 
     def start(self):
+        """ Start in a new thread """
         thread = threading.Thread(None, self.run)
         thread.daemon = True
         thread.start()
         print "Go to 127.0.0.0:{}".format(self.port)
 
 if __name__ == '__main__':
-    server = VizServer()
+    server = Server()
     server.start()
+
+    i=0
     while True:
-        state += 1
+        server.update(i)
+        i += 1
         time.sleep(1)
+
     server.shutdown()
+

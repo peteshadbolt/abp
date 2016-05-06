@@ -67,3 +67,5 @@ def test_stress():
         g.add_edge(i, i + 1)
     assert time.clock() - t < .5
 
+def test_cz():
+    """ Test CZ gate """

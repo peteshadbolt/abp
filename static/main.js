@@ -1,9 +1,11 @@
 var body;
+var state;
 
 function poll() {
     var xhr = new XMLHttpRequest();
 
     xhr.onload=function() {
+        state = JSON.parse(xhr.response);
         soft_console.innerHTML = "\n" + xhr.responseText;
     };
 
@@ -17,6 +19,5 @@ function poll() {
 }
 
 window.onload = function () {
-    console.log("booting");
     setInterval(poll, 1000);
 }
