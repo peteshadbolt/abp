@@ -17,7 +17,8 @@ def draw(state, filename="out.pdf", pos=None, ns=500):
     nx.draw_networkx_edges(graph, pos, edge_color="gray")
     nx.draw_networkx_labels(graph, pos, font_family="FreeSans")
 
-    labels = {i: tables.name_of(v) for i, v in state.vops.items()}
+    # tables.name_of(v)
+    labels = {i: "no name" for i, v in state.vops.items()}
     pos = {k: v + np.array([0, -.1]) for k, v in pos.items()}
     nx.draw_networkx_labels(graph, pos, labels, font_family="FreeSans")
     plt.axis('off')

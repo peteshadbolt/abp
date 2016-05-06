@@ -103,7 +103,7 @@ if __name__ == "__main__":
     by_name = get_by_name(unitaries)
     conjugation_table = get_conjugation_table(unitaries)
     times_table = get_times_table(unitaries)
-    #cz_table = get_cz_table(unitaries)
+    # cz_table = get_cz_table(unitaries)
 
     # Write it all to disk
     directory = os.path.dirname(os.path.abspath(__file__))
@@ -112,8 +112,7 @@ if __name__ == "__main__":
     np.save("unitaries.npy", unitaries)
     np.save("conjugation_table.npy", conjugation_table)
     np.save("times_table.npy", times_table)
-    #np.save("cz_table.npy", cz_table)
+    # np.save("cz_table.npy", cz_table)
 
     with open("by_name.json", "wb") as f:
         json.dump(by_name, f)
-

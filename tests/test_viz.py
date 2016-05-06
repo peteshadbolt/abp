@@ -1,5 +1,5 @@
-from graph import GraphState
-import viz
+from abp.graph import GraphState
+from abp import viz
 
 
 def test_viz():
