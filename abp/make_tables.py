@@ -18,17 +18,14 @@ def find_clifford(needle, haystack):
     """ Find the index of a given u within a list of unitaries, up to a global phase  """
     needle = normalize_global_phase(needle)
     for i, t in enumerate(haystack):
-        for phase in range(8):
-            if np.allclose(t, np.exp(1j * phase * np.pi / 4.) * needle):
-                return i
+        if np.allclose(t, needle):
+            return i
     raise IndexError
 
 
 def normalize_global_phase(m):
     """ Normalize the global phase of a matrix """
-    f = m.flatten()
-    v = f[np.flatnonzero(f)[0]]
-    print v
+    v = [x for x in m.flatten() if np.abs(x)>0.001][0]
     phase = np.arctan2(v.imag, v.real) % np.pi
     rot = np.exp(-1j*phase) 
     return rot * m if rot * v > 0 else -rot*m
@@ -39,6 +36,7 @@ def find_cz(bond, c1, c2, commuters, state_table):
     # Figure out the target state
     state = qi.bond if bond else qi.nobond
     target = qi.cz.dot(state_table[bond, c1, c2])
+    target = normalize_global_phase(target)
 
     # Choose the sets to search over
     s1 = commuters if c1 in commuters else xrange(24)
@@ -47,9 +45,8 @@ def find_cz(bond, c1, c2, commuters, state_table):
     # Find a match
     for bond, c1p, c2p in it.product([0, 1], s1, s2):
         trial = state_table[bond, c1p, c2p]
-        for phase in range(8):
-            if np.allclose(target, np.exp(1j * phase * np.pi / 4.) * trial):
-                return bond, c1p, c2p
+        if np.allclose(target, trial):
+            return bond, c1p, c2p
 
     # Didn't find anything - this should never happen
     raise IndexError
@@ -58,7 +55,7 @@ def find_cz(bond, c1, c2, commuters, state_table):
 def compose_u(decomposition):
     """ Get the unitary representation of a particular decomposition """
     matrices = ({"x": qi.sqx, "z": qi.msqz}[c] for c in decomposition)
-    output = reduce(np.dot, matrices, np.matrix(np.eye(2, dtype=complex)))
+    output = reduce(np.dot, matrices, np.eye(2, dtype=complex))
     return normalize_global_phase(output)
 
 
@@ -115,16 +112,18 @@ if __name__ == "__main__":
     by_name = get_by_name(unitaries)
     conjugation_table = get_conjugation_table(unitaries)
     times_table = get_times_table(unitaries)
-    # cz_table = get_cz_table(unitaries)
+    cz_table = get_cz_table(unitaries)
 
     # Write it all to disk
-    directory = os.path.dirname(os.path.abspath(__file__))
-    where = os.path.join(directory, "tables/")
-    os.chdir(where)
-    np.save("unitaries.npy", unitaries)
-    np.save("conjugation_table.npy", conjugation_table)
-    np.save("times_table.npy", times_table)
+    #print __file__
+    #directory = os.path.dirname(os.path.realpath(__file__))
+    #print directory
+    #where = os.path.join(directory, "tables/")
+    #os.chdir(where)
+    #np.save("unitaries.npy", unitaries)
+    #np.save("conjugation_table.npy", conjugation_table)
+    #np.save("times_table.npy", times_table)
     # np.save("cz_table.npy", cz_table)
 
-    with open("by_name.json", "wb") as f:
-        json.dump(by_name, f)
+    #with open("by_name.json", "wb") as f:
+        #json.dump(by_name, f)
