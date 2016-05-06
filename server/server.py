@@ -42,6 +42,7 @@ class VizServer(SocketServer.TCPServer):
 
     def start(self):
         thread = threading.Thread(None, self.run)
+        thread.daemon = True
         thread.start()
         print "Go to 127.0.0.0:{}".format(self.port)
 
