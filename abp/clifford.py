@@ -8,7 +8,7 @@ This program generates lookup tables
 import os, json
 from functools import reduce
 import itertools as it
-from . import qi
+import qi
 import numpy as np
 import tempfile
 from tqdm import tqdm
