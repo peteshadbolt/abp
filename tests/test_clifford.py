@@ -75,4 +75,7 @@ def test_cz_table_is_symmetric():
 
 def test_cz_table_makes_sense():
     """ Test the CZ table is symmetric """
+    hadamard = clifford.by_name["hadamard"]
     assert all(clifford.cz_table[0, 0, 0] == [1, 0, 0])
+    assert all(clifford.cz_table[1, 0, 0] == [0, 0, 0])
+    assert all(clifford.cz_table[0, hadamard, hadamard] == [0, hadamard, hadamard])
