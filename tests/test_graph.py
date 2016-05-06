@@ -1,4 +1,4 @@
-from abp.graph import GraphState
+from abp.graph import GraphState, DiffedGraphState
 from abp import clifford
 import time
 
@@ -72,12 +72,25 @@ def test_cz():
     g = GraphState()
     g.add_vertex(0)
     g.add_vertex(1)
-    g.local(0, clifford.by_name["hadamard"])
-    g.local(1, clifford.by_name["hadamard"])
-    g.local(1, clifford.by_name["py"])
+    g.act_local_rotation(0, clifford.by_name["hadamard"])
+    g.act_local_rotation(1, clifford.by_name["hadamard"])
+    g.act_local_rotation(1, clifford.by_name["py"])
     print g
-    g.cphase(0, 1)
+    g.act_cz(0, 1)
     print g
+
+
+def test_diff():
+    """ Test diffing """
+    g = DiffedGraphState()
+    g.add_vertex(0)
+    g.add_vertex(1)
+    g.act_local_rotation(0, clifford.by_name["hadamard"])
+    g.act_local_rotation(1, clifford.by_name["hadamard"])
+    g.act_local_rotation(1, clifford.by_name["py"])
+    print g
+    g.act_cz(0, 1)
+    print g.diff
     
 
 

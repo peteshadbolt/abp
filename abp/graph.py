@@ -63,18 +63,18 @@ class GraphState(object):
         for i, j in it.combinations(self.ngbh[v], 2):
             self.toggle_edge(i, j)
 
-        # Update VOPs
+        # Update VOPs: TODO check ordering and replace by self.act_local_rotation
         self.vops[v] = clifford.times_table[
             self.vops[v]][clifford.by_name["sqx"]]
         for i in self.ngbh[v]:
             self.vops[i] = clifford.times_table[
                 self.vops[i]][clifford.by_name["msqz"]]
 
-    def local(self, a, op):
+    def act_local_rotation(self, a, op):
         """ Act a local rotation """
         self.vops[a] = clifford.times_table[op,self.vops[a]]
 
-    def cphase(self, a, b):
+    def act_cz(self, a, b):
         """ Act a controlled-phase gate on two qubits """
         if self.ngbh[a] - {b}:
             self.remove_vop(a, b)
@@ -83,6 +83,7 @@ class GraphState(object):
         if self.ngbh[a] - {b}:
             self.remove_vop(a, b)
         edge = self.has_edge(a, b)
+        # TODO put this in a new function for diff hook
         new_edge, self.vops[a], self.vops[b] = clifford.cz_table[edge, self.vops[a], self.vops[b]]
         if new_edge != edge:
             self.toggle_edge(a, b)
@@ -92,3 +93,20 @@ class GraphState(object):
         return "graph:\n vops: {}\n ngbh: {}\n"\
                 .format(str(dict(self.vops)), str(dict(self.ngbh)))
 
+
+class DiffedGraphState(GraphState):
+    """ Just like a graph state, but tracks changes for rendering purposes """
+
+    def __init__(self):
+        GraphState.__init__(self)
+        self.diff = []
+
+    def add_vertex(self, v):
+        GraphState.add_vertex(self, v)
+        self.diff.append("add_vertex {}".format(v))
+
+    def add_edge(self, v1, v2):
+        GraphState.add_edge(self, v1, v2)
+        self.diff.append("add_edge {} {}".format(v1, v2))
+
+        
