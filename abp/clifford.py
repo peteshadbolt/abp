@@ -106,7 +106,7 @@ def get_cz_table(unitaries):
 
     # And now build the CZ table
     cz_table = np.zeros((2, 24, 24, 3))
-    rows = list(it.product([0, 1], it.combinations(range(24), 2)))
+    rows = list(it.product([0, 1], it.combinations_with_replacement(range(24), 2)))
                 # CZ is symmetric so we only need combinations
     for bond, (c1, c2) in tqdm(rows, desc="Building CZ table"):
         newbond, c1p, c2p = find_cz(bond, c1, c2, commuters, state_table)
@@ -135,7 +135,7 @@ except IOError:
     conjugation_table = get_conjugation_table(unitaries)
     times_table = get_times_table(unitaries)
     cz_table = get_cz_table(unitaries)
-
+    
     # Write it all to disk
     np.save("unitaries.npy", unitaries)
     np.save("conjugation_table.npy", conjugation_table)
