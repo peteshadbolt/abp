@@ -70,6 +70,10 @@ class GraphState(object):
             self.vops[i] = clifford.times_table[
                 self.vops[i]][clifford.by_name["msqz"]]
 
+    def local(self, a, op):
+        """ Act a local rotation """
+        self.vops[a] = clifford.times_table[op,self.vops[a]]
+
     def cphase(self, a, b):
         """ Act a controlled-phase gate on two qubits """
         if self.ngbh[a] - {b}:
@@ -79,7 +83,12 @@ class GraphState(object):
         if self.ngbh[a] - {b}:
             self.remove_vop(a, b)
         edge = self.has_edge(a, b)
-        new_edge, vops[a], vops[b] = cphase_table[edge, vops[a], vops[b]]
+        new_edge, self.vops[a], self.vops[b] = clifford.cz_table[edge, self.vops[a], self.vops[b]]
         if new_edge != edge:
             self.toggle_edge(a, b)
+
+    def __str__(self):
+        """ Represent as a string for quick debugging """
+        return "graph:\n vops: {}\n ngbh: {}\n"\
+                .format(str(dict(self.vops)), str(dict(self.ngbh)))
 

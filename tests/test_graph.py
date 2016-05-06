@@ -69,3 +69,16 @@ def test_stress():
 
 def test_cz():
     """ Test CZ gate """
+    g = GraphState()
+    g.add_vertex(0)
+    g.add_vertex(1)
+    g.local(0, clifford.by_name["hadamard"])
+    g.local(1, clifford.by_name["hadamard"])
+    g.local(1, clifford.by_name["py"])
+    print g
+    g.cphase(0, 1)
+    print g
+    
+
+
+
