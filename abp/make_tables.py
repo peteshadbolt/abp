@@ -16,11 +16,22 @@ from clifford import decompositions
 
 def find_clifford(needle, haystack):
     """ Find the index of a given u within a list of unitaries, up to a global phase  """
+    needle = normalize_global_phase(needle)
     for i, t in enumerate(haystack):
         for phase in range(8):
             if np.allclose(t, np.exp(1j * phase * np.pi / 4.) * needle):
                 return i
     raise IndexError
+
+
+def normalize_global_phase(m):
+    """ Normalize the global phase of a matrix """
+    f = m.flatten()
+    v = f[np.flatnonzero(f)[0]]
+    print v
+    phase = np.arctan2(v.imag, v.real) % np.pi
+    rot = np.exp(-1j*phase) 
+    return rot * m if rot * v > 0 else -rot*m
 
 
 def find_cz(bond, c1, c2, commuters, state_table):
@@ -47,7 +58,8 @@ def find_cz(bond, c1, c2, commuters, state_table):
 def compose_u(decomposition):
     """ Get the unitary representation of a particular decomposition """
     matrices = ({"x": qi.sqx, "z": qi.msqz}[c] for c in decomposition)
-    return reduce(np.dot, matrices, np.matrix(np.eye(2, dtype=complex)))
+    output = reduce(np.dot, matrices, np.matrix(np.eye(2, dtype=complex)))
+    return normalize_global_phase(output)
 
 
 def get_unitaries():
@@ -79,7 +91,7 @@ def get_state_table(unitaries):
     for bond, i, j in tqdm(params, desc="Building state table"):
         state = qi.bond if bond else qi.nobond
         kp = np.kron(unitaries[i], unitaries[j])
-        state_table[bond, i, j, :] = np.dot(kp, state).T
+        state_table[bond, i, j, :] = normalize_global_phase(np.dot(kp, state).T)
     return state_table
 
 
