@@ -10,6 +10,7 @@ from functools import reduce
 import itertools as it
 import qi
 import numpy as np
+import tempfile
 from tqdm import tqdm
 from clifford import decompositions
 
@@ -25,7 +26,7 @@ def find_clifford(needle, haystack):
 
 def normalize_global_phase(m):
     """ Normalize the global phase of a matrix """
-    v = [x for x in m.flatten() if np.abs(x)>0.001][0]
+    v = (x for x in m.flatten() if np.abs(x)>0.001).next()
     phase = np.arctan2(v.imag, v.real) % np.pi
     rot = np.exp(-1j*phase) 
     return rot * m if rot * v > 0 else -rot*m
@@ -34,7 +35,6 @@ def normalize_global_phase(m):
 def find_cz(bond, c1, c2, commuters, state_table):
     """ Find the output of a CZ operation """
     # Figure out the target state
-    state = qi.bond if bond else qi.nobond
     target = qi.cz.dot(state_table[bond, c1, c2])
     target = normalize_global_phase(target)
 
@@ -44,8 +44,7 @@ def find_cz(bond, c1, c2, commuters, state_table):
 
     # Find a match
     for bond, c1p, c2p in it.product([0, 1], s1, s2):
-        trial = state_table[bond, c1p, c2p]
-        if np.allclose(target, trial):
+        if np.allclose(target, state_table[bond, c1p, c2p]):
             return bond, c1p, c2p
 
     # Didn't find anything - this should never happen
@@ -100,9 +99,11 @@ def get_cz_table(unitaries):
 
     # TODO: it's symmetric. this can be much faster
     cz_table = np.zeros((2, 24, 24, 3))
-    rows = list(it.product([0, 1], range(24), range(24)))
-    for bond, c1, c2 in tqdm(rows, desc="Building CZ table"):
-        cz_table[bond, c1, c2] = find_cz(bond, c1, c2, commuters, state_table)
+    rows = list(it.product([0, 1], it.combinations(range(24), 2)))
+    for bond, (c1, c2) in tqdm(rows, desc="Building CZ table"):
+        newbond, c1p, c2p = find_cz(bond, c1, c2, commuters, state_table)
+        cz_table[bond, c1, c2] = [newbond, c1p, c2p]
+        cz_table[bond, c2, c1] = [newbond, c2p, c1p]
     return cz_table
 
 
@@ -115,15 +116,11 @@ if __name__ == "__main__":
     cz_table = get_cz_table(unitaries)
 
     # Write it all to disk
-    #print __file__
-    #directory = os.path.dirname(os.path.realpath(__file__))
-    #print directory
-    #where = os.path.join(directory, "tables/")
-    #os.chdir(where)
-    #np.save("unitaries.npy", unitaries)
-    #np.save("conjugation_table.npy", conjugation_table)
-    #np.save("times_table.npy", times_table)
-    # np.save("cz_table.npy", cz_table)
+    where = tempfile.gettempdir()
+    np.save("unitaries.npy", unitaries)
+    np.save("conjugation_table.npy", conjugation_table)
+    np.save("times_table.npy", times_table)
+    np.save("cz_table.npy", cz_table)
 
-    #with open("by_name.json", "wb") as f:
-        #json.dump(by_name, f)
+    with open("by_name.json", "wb") as f:
+        json.dump(by_name, f)
