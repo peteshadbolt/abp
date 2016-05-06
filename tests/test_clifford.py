@@ -4,6 +4,7 @@ from tqdm import tqdm
 import itertools as it
 from abp import clifford
 from abp import qi
+from nose.tools import raises
 
 
 def identify_pauli(m):
@@ -14,11 +15,17 @@ def identify_pauli(m):
                 return sign, pauli_label
 
 
-def _test_find():
+def test_find_clifford():
     """ Test that slightly suspicious function """
-    assert lc.find(id, lc.unitaries) == 0
-    assert lc.find(px, lc.unitaries) == 1
-    assert lc.find(exp(1j*pi/4.)*ha, lc.unitaries) == 4
+    assert clifford.find_clifford(qi.id, clifford.unitaries) == 0
+    assert clifford.find_clifford(qi.px, clifford.unitaries) == 1
+
+
+@raises(IndexError)
+def test_find_non_clifford():
+    """ Test that looking for a non-Clifford gate fails """
+    clifford.find_clifford(qi.t, clifford.unitaries)
+
 
 def get_action(u):
     """ What does this unitary operator do to the Paulis? """
@@ -41,19 +48,20 @@ def test_we_have_all_useful_gates():
         clifford.find_clifford(u, clifford.unitaries)
 
 
-def _test_group():
+def test_group():
     """ Test we are really in a group """
     matches = set()
     for a, b in tqdm(it.combinations(clifford.unitaries, 2), "Testing this is a group"):
-        i, phase = clifford.find_clifford(a.dot(b), clifford.unitaries)
+        i = clifford.find_clifford(a.dot(b), clifford.unitaries)
         matches.add(i)
-    assert len(matches)==24
+    assert len(matches) == 24
 
 
 def test_conjugation_table():
     """ Check that the table of Hermitian conjugates is okay """
-    assert len(set(clifford.conjugation_table))==24
+    assert len(set(clifford.conjugation_table)) == 24
+
 
 def test_times_table():
     """ Check the times table """
-    assert clifford.times_table[0][4]==4
+    assert clifford.times_table[0][4] == 4
