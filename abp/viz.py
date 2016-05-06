@@ -1,6 +1,6 @@
 import networkx as nx
 from matplotlib import pyplot as plt
-import tables
+import clifford
 import numpy as np
 from graph import GraphState
 

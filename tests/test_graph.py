@@ -1,5 +1,5 @@
 from abp.graph import GraphState
-import abp.tables as tables
+from abp import clifford
 import time
 
 
