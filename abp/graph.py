@@ -4,7 +4,7 @@ Provides an extremely basic graph structure, based on neighbour lists
 
 from collections import defaultdict
 import itertools as it
-import tables as clifford
+import clifford
 
 
 class GraphState(object):

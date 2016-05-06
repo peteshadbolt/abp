@@ -8,6 +8,10 @@ Exposes a few basic QI operators
 import numpy as np
 from scipy.linalg import sqrtm
 
+def hermitian_conjugate(u):
+    """ Shortcut to the Hermitian conjugate """
+    return np.conjugate(np.transpose(u))
+
 # Operators
 id = np.array(np.eye(2, dtype=complex))
 px = np.array([[0, 1], [1, 0]], dtype=complex)
