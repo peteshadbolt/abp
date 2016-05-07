@@ -8,8 +8,11 @@ import threading
 import time
 import os
 
+
 class VizHandler(SimpleHTTPRequestHandler):
+
     """ Handles requests to the server """
+
     def __init__(self, *args, **kwargs):
         SimpleHTTPRequestHandler.__init__(self, *args, **kwargs)
 
@@ -19,8 +22,8 @@ class VizHandler(SimpleHTTPRequestHandler):
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
         state = self.server.state
-        self.wfile.write(json.dumps({"state":"{}".format(state)}))
-    
+        self.wfile.write(json.dumps({"state": "{}".format(state)}))
+
     def do_GET(self, *args, **kwargs):
         """ Someone belled the server """
         parsed_path = urlparse.urlparse(self.path)
@@ -29,14 +32,17 @@ class VizHandler(SimpleHTTPRequestHandler):
         else:
             return SimpleHTTPRequestHandler.do_GET(self, *args, **kwargs)
 
+
 class Server(SocketServer.TCPServer):
+
     """ Serves the good stuff """
     allow_reuse_address = True
 
-    def __init__(self, port = 8000):
+    def __init__(self, port=8000):
         self.port = port
         self.state = None
-        SocketServer.TCPServer.__init__(self, ("127.0.0.1", self.port), VizHandler)
+        SocketServer.TCPServer.__init__(
+            self, ("127.0.0.1", self.port), VizHandler)
 
     def update(self, state):
         """ Update the in-memory state """
@@ -62,11 +68,10 @@ if __name__ == '__main__':
     server = Server()
     server.start()
 
-    i=0
+    i = 0
     while True:
         server.update(i)
         i += 1
         time.sleep(1)
 
     server.shutdown()
-

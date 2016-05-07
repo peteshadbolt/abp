@@ -5,6 +5,7 @@ Provides an extremely basic graph structure, based on neighbour lists
 from collections import defaultdict
 import itertools as it
 import clifford
+import json
 
 
 class GraphState(object):
@@ -92,6 +93,11 @@ class GraphState(object):
         """ Represent as a string for quick debugging """
         return "graph:\n vops: {}\n ngbh: {}\n"\
                 .format(str(dict(self.vops)), str(dict(self.ngbh)))
+
+    def to_json(self):
+        """ Convert the graph to JSON form """
+        ngbh = {key: tuple(value) for key, value in self.ngbh.items()}
+        return json.dumps({"vops": self.vops, "ngbh": ngbh})
 
 
 class DiffedGraphState(GraphState):

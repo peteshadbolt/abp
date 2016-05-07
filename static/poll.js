@@ -4,7 +4,7 @@ var state;
 function poll() {
     var xhr = new XMLHttpRequest();
 
-    xhr.onload=function() {
+    xhr.onload = function() {
         state = JSON.parse(xhr.response);
         soft_console.innerHTML = "\n" + xhr.responseText;
     };
@@ -16,8 +16,4 @@ function poll() {
     xhr.open("GET", "/state", true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
     xhr.send();
-}
-
-window.onload = function () {
-    setInterval(poll, 1000);
 }

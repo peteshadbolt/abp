@@ -67,6 +67,7 @@ def test_stress():
         g.add_edge(i, i + 1)
     assert time.clock() - t < .5
 
+
 def test_cz():
     """ Test CZ gate """
     g = GraphState()
@@ -75,9 +76,9 @@ def test_cz():
     g.act_local_rotation(0, clifford.by_name["hadamard"])
     g.act_local_rotation(1, clifford.by_name["hadamard"])
     g.act_local_rotation(1, clifford.by_name["py"])
-    print g
+    assert not g.has_edge(0, 1)
     g.act_cz(0, 1)
-    print g
+    assert g.has_edge(0, 1)
 
 
 def test_diff():
@@ -88,10 +89,5 @@ def test_diff():
     g.act_local_rotation(0, clifford.by_name["hadamard"])
     g.act_local_rotation(1, clifford.by_name["hadamard"])
     g.act_local_rotation(1, clifford.by_name["py"])
-    print g
     g.act_cz(0, 1)
-    print g.diff
-    
-
-
-
+    assert len(g.diff) == 3

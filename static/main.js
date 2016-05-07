@@ -16,6 +16,7 @@ var curveProperties = {
     curvature: 10
 };
 var camera;
+var qubits;
 
 // Run on startup
 window.onload = init;
@@ -38,6 +39,15 @@ function makeEdge(e) {
     return line;
 }
 
+function makeQubits() {
+    qubitGeometry = new THREE.Geometry();
+    qubitGeometry.labels = [];
+    var vertex = new THREE.Vector3(0, 0, 0);
+    qubitGeometry.vertices.push(vertex);
+    particles = new THREE.Points(qubitGeometry, materials.qubit);
+    return particles;
+}
+
 // Clear the whole scene
 function makeScene() {
     // Scene, controls, camera and so on
@@ -50,27 +60,38 @@ function makeScene() {
         linewidth: 1
     };
     materials.edge = new THREE.LineBasicMaterial(lineStyle);
+
     var pointStyle = {
-        size: 0.2,
+        color: "0xcccccc",
+        size: 0.1,
         map: materials.sprite,
         alphaTest: 0.5,
         transparent: true,
-        vertexColors: THREE.VertexColors
     };
     materials.point = new THREE.PointsMaterial(pointStyle);
+
+    var qubitStyle = {
+        size: 0.6,
+        map: materials.sprite,
+        alphaTest: 0.5,
+        transparent: true,
+        color: "red"
+    };
+    materials.qubit = new THREE.PointsMaterial(qubitStyle);
 
     // Build all the edges
     //var edgeGroup = new THREE.Object3D();
 
+    qubits = makeQubits();
+    myScene.add(qubits);
+
     // Build all the nodes
     nodeGeometry = new THREE.Geometry();
     nodeGeometry.labels = [];
-    nodeGeometry.colors = [];
     for (var i = 0; i < 10; ++i) {
         for (var j = 0; j < 10; ++j) {
             var vertex = new THREE.Vector3(i - 5, j - 5, 0);
             nodeGeometry.vertices.push(vertex);
-            nodeGeometry.colors.push(new THREE.Color(0.5, 0.5, 0.5));
             nodeGeometry.labels.push("Click to add a qubit at (" + i + ",  " + j + ")");
         }
     }
@@ -145,6 +166,14 @@ function onMouseMove(event) {
     checkIntersections();
 }
 
+function onClick(event){
+    if (!selection){return;}
+    console.log(nodeGeometry.vertices[selection]);
+    qubits.geometry.dynamic = true;
+    qubits.geometry.vertices.push(nodeGeometry.vertices[selection].clone());
+    qubits.geometry.verticesNeedUpdate = true;
+}
+
 // Render the current frame to the screen
 function render() {
     renderer.render(scene, camera);
@@ -160,7 +189,8 @@ function loopForever() {
 // This just organises kickoff
 function startMainLoop() {
     scene = makeScene();
-    document.addEventListener("mousemove", onMouseMove, false);
+    renderer.domElement.addEventListener("mousemove", onMouseMove, false);
+    renderer.domElement.addEventListener("click", onClick, false);
     controls.addEventListener("change", render);
     loopForever();
 }
@@ -193,6 +223,9 @@ function init() {
     controls.center.set(0, 0, 0);
     controls.rotateSpeed = 0.2;
     camera.position.set(0, 0, 20);
+
+    // Start polling
+    setInterval(poll, 1000);
 
     // Run
     startMainLoop();
