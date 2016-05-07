@@ -52,7 +52,7 @@ function makeScene(){
             var vertex = new THREE.Vector3(i-5, j-5, 0);
             nodeGeometry.vertices.push(vertex);
             nodeGeometry.colors.push(new THREE.Color(0.5, 0.5, 0.5));
-            nodeGeometry.labels.push(i + "  " + j + " ");
+            nodeGeometry.labels.push("Click to add a qubit at (" + i + ",  " + j + ")");
         }
     }
 

@@ -1,6 +1,7 @@
 html, body { margin: 0; padding: 0; overflow: hidden; font-size:  10pt; font-family:  "courier new"; }
 #infoholder { 
-    background: black; color:white; padding: 5px; margin:0px; position: absolute; top:5px; left:5px; font-family:"courier new"; text-align: center; font-size:10pt; width:200px; height:15px;
+    background: black; color:white; padding: 5px; margin:0px; position: absolute; top:5px; left:5px; font-family:"courier new"; text-align: center; font-size:10pt; 
+    height:15px;
     border-radius:3px;
 }
 
