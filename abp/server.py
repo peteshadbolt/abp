@@ -6,6 +6,7 @@ import sys
 import json
 import threading
 import time
+import os
 
 class VizHandler(SimpleHTTPRequestHandler):
     """ Handles requests to the server """
@@ -53,9 +54,11 @@ class Server(SocketServer.TCPServer):
         thread = threading.Thread(None, self.run)
         thread.daemon = True
         thread.start()
-        print "Go to 127.0.0.0:{}".format(self.port)
+        print "Server running at http://localhost:{}/".format(self.port)
 
 if __name__ == '__main__':
+    os.chdir(os.path.join(os.path.dirname(__file__), "../static"))
+    print os.curdir
     server = Server()
     server.start()
 

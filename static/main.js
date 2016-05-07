@@ -1,14 +1,24 @@
 // IE9
-if(typeof console === "undefined") { var console = { log: function (logMsg) { } }; }
+if (typeof console === "undefined") {
+    var console = {
+        log: function(logMsg) {}
+    };
+}
 
 var controls, renderer, raycaster, scene, info, nodeGeometry, selection;
-var mouse = {"x":0, "y":0};
-var materials={};
-var curveProperties = {splineDensity: 30, curvature: 10};
+var mouse = {
+    "x": 0,
+    "y": 0
+};
+var materials = {};
+var curveProperties = {
+    splineDensity: 30,
+    curvature: 10
+};
 var camera;
 
 // Run on startup
-window.onload=init;
+window.onload = init;
 
 // Add a curved edge between two points
 function makeEdge(e) {
@@ -16,7 +26,7 @@ function makeEdge(e) {
     var a = new THREE.Vector3(e.start[0], e.start[1], e.start[2]);
     var b = new THREE.Vector3(e.end[0], e.end[1], e.end[2]);
     var length = new THREE.Vector3().subVectors(a, b).length();
-    var bend = new THREE.Vector3(length/curveProperties.curvature, length/curveProperties.curvature, 0);
+    var bend = new THREE.Vector3(length / curveProperties.curvature, length / curveProperties.curvature, 0);
     var mid = new THREE.Vector3().add(a).add(b).multiplyScalar(0.5).add(bend);
     var spline = new THREE.CatmullRomCurve3([a, mid, b]);
     var geometry = new THREE.Geometry();
@@ -29,15 +39,24 @@ function makeEdge(e) {
 }
 
 // Clear the whole scene
-function makeScene(){
+function makeScene() {
     // Scene, controls, camera and so on
     var myScene = new THREE.Scene();
 
     // Materials
-    var lineStyle = {color: "gray", transparent: false, linewidth:1};
+    var lineStyle = {
+        color: "gray",
+        transparent: false,
+        linewidth: 1
+    };
     materials.edge = new THREE.LineBasicMaterial(lineStyle);
-    var pointStyle = { size: 0.2, map: materials.sprite, alphaTest: 0.5, 
-        transparent: true, vertexColors:THREE.VertexColors};
+    var pointStyle = {
+        size: 0.2,
+        map: materials.sprite,
+        alphaTest: 0.5,
+        transparent: true,
+        vertexColors: THREE.VertexColors
+    };
     materials.point = new THREE.PointsMaterial(pointStyle);
 
     // Build all the edges
@@ -47,9 +66,9 @@ function makeScene(){
     nodeGeometry = new THREE.Geometry();
     nodeGeometry.labels = [];
     nodeGeometry.colors = [];
-    for (var i=0; i < 10; ++i) {
-        for (var j=0; j < 10; ++j) {
-            var vertex = new THREE.Vector3(i-5, j-5, 0);
+    for (var i = 0; i < 10; ++i) {
+        for (var j = 0; j < 10; ++j) {
+            var vertex = new THREE.Vector3(i - 5, j - 5, 0);
             nodeGeometry.vertices.push(vertex);
             nodeGeometry.colors.push(new THREE.Color(0.5, 0.5, 0.5));
             nodeGeometry.labels.push("Click to add a qubit at (" + i + ",  " + j + ")");
@@ -70,16 +89,18 @@ function makeScene(){
 // Gets a reference to the node nearest to the mouse cursor
 function nearestNode() {
     raycaster.setFromCamera(mouse, camera);
-    for (var i=0; i < nodeGeometry.vertices.length; ++i) {
-        if (raycaster.ray.distanceSqToPoint(nodeGeometry.vertices[i]) < 0.01){ return i;}
+    for (var i = 0; i < nodeGeometry.vertices.length; ++i) {
+        if (raycaster.ray.distanceSqToPoint(nodeGeometry.vertices[i]) < 0.01) {
+            return i;
+        }
     }
-    return undefined; 
+    return undefined;
 }
 
 // Find out: what is the mouse pointing at?
 function checkIntersections() {
     var new_selection = nearestNode();
-    if (new_selection != selection){
+    if (new_selection != selection) {
         selection = new_selection;
         info.className = selection ? "visible" : "hidden";
         info.innerHTML = selection ? nodeGeometry.labels[new_selection] : info.innerHTML;
@@ -88,17 +109,22 @@ function checkIntersections() {
 }
 
 // Make a grid
-function makeGrid(side, n, color){
+function makeGrid(side, n, color) {
     var markers = new THREE.Object3D();
-    var gridStyle = { color: color, transparent: true, linewidth: 1, opacity:0.5};
+    var gridStyle = {
+        color: color,
+        transparent: true,
+        linewidth: 1,
+        opacity: 0.5
+    };
     var material = new THREE.LineBasicMaterial(gridStyle);
-    for (var i=-n/2; i < n/2; ++i) {
+    for (var i = -n / 2; i < n / 2; ++i) {
         var geometry = new THREE.Geometry();
-        geometry.vertices.push(new THREE.Vector3(side*i/n, -side/2, 0));
-        geometry.vertices.push(new THREE.Vector3(side*i/n, side/2, 0));
+        geometry.vertices.push(new THREE.Vector3(side * i / n, -side / 2, 0));
+        geometry.vertices.push(new THREE.Vector3(side * i / n, side / 2, 0));
         var line = new THREE.Line(geometry, material);
         var line90 = line.clone();
-        line90.rotation.z=Math.PI/2;
+        line90.rotation.z = Math.PI / 2;
         markers.add(line);
         markers.add(line90);
     }
@@ -110,18 +136,18 @@ function onMouseMove(event) {
     mouse.wasClick = false;
     mouse.absx = event.clientX;
     mouse.absy = event.clientY;
-    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     w = 200;
     h = 15;
-    info.style.top = mouse.absy-h-40+"px";
-    info.style.left = mouse.absx-w/2+"px";
+    info.style.top = mouse.absy - h - 40 + "px";
+    info.style.left = mouse.absx - w / 2 + "px";
     checkIntersections();
 }
 
 // Render the current frame to the screen
-function render() { 
-    renderer.render(scene, camera); 
+function render() {
+    renderer.render(scene, camera);
 }
 
 // This is the main control loop
@@ -134,7 +160,7 @@ function loopForever() {
 // This just organises kickoff
 function startMainLoop() {
     scene = makeScene();
-    document.addEventListener("mousemove", onMouseMove, false );
+    document.addEventListener("mousemove", onMouseMove, false);
     controls.addEventListener("change", render);
     loopForever();
 }
@@ -151,13 +177,15 @@ function init() {
     materials.sprite.needsUpdate = true;
 
     // Renderer
-    renderer = new THREE.WebGLRenderer( { antialias: true });
+    renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
     renderer.setSize(width, height);
     renderer.setClearColor(0xffffff, 1);
     document.querySelector("body").appendChild(renderer.domElement);
 
     // Camera, controls, raycaster
-    camera = new THREE.PerspectiveCamera(45, width/height, 0.3, 100);
+    camera = new THREE.PerspectiveCamera(45, width / height, 0.3, 100);
     controls = new THREE.OrbitControls(camera);
     raycaster = new THREE.Raycaster();
 
@@ -169,4 +197,3 @@ function init() {
     // Run
     startMainLoop();
 }
-
