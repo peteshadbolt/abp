@@ -7,6 +7,7 @@ import json
 import threading
 import time
 import os
+from graph import GraphState
 
 
 class VizHandler(SimpleHTTPRequestHandler):
@@ -22,7 +23,7 @@ class VizHandler(SimpleHTTPRequestHandler):
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
         state = self.server.state
-        self.wfile.write(json.dumps({"state": "{}".format(state)}))
+        self.wfile.write(state.to_json())
 
     def do_GET(self, *args, **kwargs):
         """ Someone belled the server """
@@ -62,16 +63,29 @@ class Server(SocketServer.TCPServer):
         thread.start()
         print "Server running at http://localhost:{}/".format(self.port)
 
+
+
+def demograph():
+    """ A graph for testing with """
+    g = GraphState()
+    g.add_edge(0, 1)
+    g.add_edge(1, 2)
+    g.add_edge(2, 0)
+    g.add_edge(0, 3)
+    g.add_edge(100, 200)
+    return g
+
+
 if __name__ == '__main__':
-    os.chdir(os.path.join(os.path.dirname(__file__), "../static"))
-    print os.curdir
+    os.chdir("/home/pete/physics/abp/static")
     server = Server()
     server.start()
 
-    i = 0
+    g = demograph()
+
+
     while True:
-        server.update(i)
-        i += 1
+        server.update(g)
         time.sleep(1)
 
     server.shutdown()
