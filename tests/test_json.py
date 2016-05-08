@@ -19,7 +19,7 @@ def test_json_basic():
     """ Test that we can export to JSON """
     g = demograph()
     js = g.to_json()
-    assert "ngbh" in js
+    assert "edge" in js
     assert "vops" in js
     json.loads(js)
 

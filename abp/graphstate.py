@@ -108,6 +108,10 @@ class GraphState(object):
         #TODO
         pass
 
+    def order(self):
+        """ Get the number of qubits """
+        return len(self.vops)
+
     def __str__(self):
         """ Represent as a string for quick debugging """
         return "graph:\n vops: {}\n ngbh: {}\n"\
@@ -138,5 +142,21 @@ class GraphState(object):
         ax, ay, az = average(0), average(1), average(2)
         for key, (x, y, z) in pos.items():
             self.meta[key]["pos"] = {"x": round(x-ax, 0), "y": round(y-ay, 0), "z": round(z-az, 0)}
+
+    def to_stabilizer(self):
+        """ Get the stabilizer of this graph """
+        # TODO: VOPs are not implemented yet
+        output = ""
+        for a in self.ngbh:
+            for b in self.ngbh:
+                if a == b:
+                    output += " X "
+                elif a in self.ngbh[b]:
+                    output += " Z "
+                else:
+                    output += " I "
+            output += "\n"
+        return output
+            
 
         

@@ -80,4 +80,8 @@ def test_cz():
     g.act_cz(0, 1)
     assert g.has_edge(0, 1)
 
+def test_stabilizer():
+    """ Test that we can generate stabilizers okay """
+    g = demograph()
+    print g.to_stabilizer()
 
