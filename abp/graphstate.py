@@ -165,7 +165,7 @@ class GraphState(object):
                 else:
                     output += " I "
             output += "\n"
-        return output.strip()
+        return output
             
     def adj_list(self):
         """ For comparison with Anders and Briegel's C++ implementation """
@@ -175,7 +175,7 @@ class GraphState(object):
             vop = clifford.ab_names.get(vop, vop)
             s = "Vertex {}: VOp {}, neighbors {}".format(key, vop, ngbh)
             rows.append(s)
-        return "\n".join(rows)
+        return " \n".join(rows)+ " \n"
 
 
         
