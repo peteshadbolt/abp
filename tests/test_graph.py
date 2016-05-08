@@ -83,5 +83,6 @@ def test_cz():
 def test_stabilizer():
     """ Test that we can generate stabilizers okay """
     g = demograph()
-    print g.to_stabilizer()
+    stab = g.to_stabilizer()
+    assert len(stab.split("\n")) == g.order()
 

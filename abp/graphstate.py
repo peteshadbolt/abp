@@ -80,6 +80,15 @@ class GraphState(object):
         """ Act a local rotation """
         self.vops[a] = clifford.times_table[op,self.vops[a]]
 
+    def act_local_rotation_by_name(self, qubit, name):
+        """ Shorthand """
+        rotation = clifford.by_name[name]
+        self.act_local_rotation(qubit, rotation)
+
+    def act_hadamard(self, qubit):
+        """ Shorthand """
+        self.act_local_rotation(qubit, 10)
+
     def act_cz(self, a, b):
         """ Act a controlled-phase gate on two qubits """
         if self.ngbh[a] - {b}:
@@ -156,7 +165,17 @@ class GraphState(object):
                 else:
                     output += " I "
             output += "\n"
-        return output
+        return output.strip()
             
+    def adj_list(self):
+        """ For comparison with Anders and Briegel's C++ implementation """
+        rows = []
+        for key, vop in self.vops.items():
+            ngbh = " ".join(map(str, sorted(self.ngbh[key])))
+            vop = clifford.ab_names.get(vop, vop)
+            s = "Vertex {}: VOp {}, neighbors {}".format(key, vop, ngbh)
+            rows.append(s)
+        return "\n".join(rows)
+
 
         

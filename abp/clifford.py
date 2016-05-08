@@ -17,6 +17,8 @@ decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
                   "xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
                   "zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
 
+ab_names = {0: "IA"}
+
 
 def find_clifford(needle, haystack):
     """ Find the index of a given u within a list of unitaries, up to a global phase  """
@@ -74,13 +76,13 @@ def get_by_name(unitaries):
 
 def get_conjugation_table(unitaries):
     """ Construct the conjugation table """
-    return np.array([find_clifford(qi.hermitian_conjugate(u), unitaries) for u in unitaries])
+    return np.array([find_clifford(qi.hermitian_conjugate(u), unitaries) for u in unitaries], dtype=int)
 
 
 def get_times_table(unitaries):
     """ Construct the times-table """
     return np.array([[find_clifford(u.dot(v), unitaries) for v in unitaries]
-                     for u in tqdm(unitaries, desc="Building times-table")])
+                     for u in tqdm(unitaries, desc="Building times-table")], dtype=int)
 
 
 def get_state_table(unitaries):
@@ -105,7 +107,7 @@ def get_cz_table(unitaries):
     state_table = get_state_table(unitaries)
 
     # And now build the CZ table
-    cz_table = np.zeros((2, 24, 24, 3))
+    cz_table = np.zeros((2, 24, 24, 3), dtype=int)
     rows = list(it.product([0, 1], it.combinations_with_replacement(range(24), 2)))
                 # CZ is symmetric so we only need combinations
     for bond, (c1, c2) in tqdm(rows, desc="Building CZ table"):
