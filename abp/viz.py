@@ -2,7 +2,7 @@ import networkx as nx
 from matplotlib import pyplot as plt
 import clifford
 import numpy as np
-from graph import GraphState
+from graphstate import GraphState
 
 VOP_COLORS = ["red", "green", "blue", "orange", "yellow", "purple", "black", "white"]
 

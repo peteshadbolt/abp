@@ -1,4 +1,4 @@
-from abp.graph import GraphState, DiffedGraphState
+from abp.graphstate import GraphState, DiffedGraphState
 from abp import clifford
 import time
 

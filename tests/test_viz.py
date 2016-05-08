@@ -1,4 +1,4 @@
-from abp.graph import GraphState
+from abp.graphstate import GraphState
 from abp import viz
 
 

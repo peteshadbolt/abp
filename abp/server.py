@@ -7,7 +7,7 @@ import json
 import threading
 import time
 import os
-from graph import GraphState
+from graphstate import GraphState
 
 
 class VizHandler(SimpleHTTPRequestHandler):
@@ -18,7 +18,7 @@ class VizHandler(SimpleHTTPRequestHandler):
         SimpleHTTPRequestHandler.__init__(self, *args, **kwargs)
 
     def get_state(self):
-        """ Get the current graph state """
+        """ Get the current graphstate state """
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
@@ -77,12 +77,12 @@ def demograph():
 
 
 if __name__ == '__main__':
-    os.chdir("/home/pete/physics/abp/static")
+    where = os.path.join(sys.path[0], "../static")
+    os.chdir(where)
     server = Server()
     server.start()
 
     g = demograph()
-
 
     while True:
         server.update(g)
