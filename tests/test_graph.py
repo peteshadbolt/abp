@@ -1,4 +1,4 @@
-from abp.graphstate import GraphState, DiffedGraphState
+from abp.graphstate import GraphState
 from abp import clifford
 import time
 
@@ -81,13 +81,3 @@ def test_cz():
     assert g.has_edge(0, 1)
 
 
-def test_diff():
-    """ Test diffing """
-    g = DiffedGraphState()
-    g.add_vertex(0)
-    g.add_vertex(1)
-    g.act_local_rotation(0, clifford.by_name["hadamard"])
-    g.act_local_rotation(1, clifford.by_name["hadamard"])
-    g.act_local_rotation(1, clifford.by_name["py"])
-    g.act_cz(0, 1)
-    assert len(g.diff) == 3
