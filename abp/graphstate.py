@@ -172,7 +172,7 @@ class GraphState(object):
         rows = []
         for key, vop in self.vops.items():
             ngbh = " ".join(map(str, sorted(self.ngbh[key])))
-            vop = clifford.ab_names.get(vop, vop)
+            vop = clifford.get_name(vop)
             s = "Vertex {}: VOp {}, neighbors {}".format(key, vop, ngbh)
             rows.append(s)
         return " \n".join(rows)+ " \n"
