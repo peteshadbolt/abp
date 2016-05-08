@@ -100,9 +100,10 @@ class GraphState(object):
 
     def to_json(self):
         """ Convert the graph to JSON form """
-        ngbh = {key: tuple(value) for key, value in self.ngbh.items()}
+        #ngbh = {key: tuple(value) for key, value in self.ngbh.items()}
         meta = {key: value for key, value in self.meta.items()}
-        return json.dumps({"vops": self.vops, "ngbh": ngbh, "meta": meta})
+        edge = self.edgelist()
+        return json.dumps({"vops": self.vops, "edge": edge, "meta": meta})
 
     def to_networkx(self):
         """ Convert the graph to a networkx graph """
@@ -118,7 +119,9 @@ class GraphState(object):
         """ Automatically lay out the graph """
         g = self.to_networkx()
         pos = nx.spring_layout(g, dim=3, scale=10)
+        average = lambda axis: sum(p[axis] for p in pos.values())/float(len(pos))
+        ax, ay, az = average(0), average(1), average(2)
         for key, (x, y, z) in pos.items():
-            self.meta[key]["pos"] = {"x": round(x, 0), "y": round(y, 0), "z": round(z, 0)}
+            self.meta[key]["pos"] = {"x": round(x-ax, 0), "y": round(y-ay, 0), "z": round(z-az, 0)}
 
         

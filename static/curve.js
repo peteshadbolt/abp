@@ -1,14 +1,14 @@
 // Curve settings
 var curveProperties = {
-    splineDensity: 30,
-    curvature: 10
+    splineDensity: 10,
+    curvature: 100
 };
 
 // Add a curved edge between two points
-function makeEdge(e) {
+function makeEdge(start, end) {
     // Make the geometry of the curve
-    var a = new THREE.Vector3(e.start[0], e.start[1], e.start[2]);
-    var b = new THREE.Vector3(e.end[0], e.end[1], e.end[2]);
+    var a = new THREE.Vector3(start.x, start.y, start.z);
+    var b = new THREE.Vector3(end.x, end.y, end.z);
     var length = new THREE.Vector3().subVectors(a, b).length();
     var bend = new THREE.Vector3(length / curveProperties.curvature, length / curveProperties.curvature, 0);
     var mid = new THREE.Vector3().add(a).add(b).multiplyScalar(0.5).add(bend);

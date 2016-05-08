@@ -23,7 +23,7 @@ function loadMaterials(argument) {
     materials.point = new THREE.PointsMaterial(pointStyle);
 
     var qubitStyle = {
-        size: 0.6,
+        size: 0.8,
         map: textures.sprite,
         alphaTest: 0.5,
         transparent: true,

@@ -13,7 +13,18 @@ window.onload = init;
 // Clear the whole scene
 function makeScene() {
     var myScene = new THREE.Scene();
-    myScene.add(makeGrid(10, 10, "lightgray"));
+    var grid1 = makeGrid(10, 10, "lightgray");
+    grid1.position.z = -5;
+    myScene.add(grid1);
+
+    var grid2 = makeGrid(10, 10, "lightgray");
+    grid2.rotation.x = Math.PI/2;
+    grid2.position.y = -5;
+    myScene.add(grid2);
+    var grid3 = makeGrid(10, 10, "lightgray");
+    grid3.rotation.y = Math.PI/2;
+    grid3.position.x = -5;
+    myScene.add(grid3);
     return myScene;
 }
 
@@ -34,6 +45,7 @@ function loopForever() {
 function startMainLoop() {
     scene = makeScene();
     controls.addEventListener("change", render);
+    poll();
     loopForever();
 }
 
@@ -45,7 +57,7 @@ function init() {
     var height = window.innerHeight;
 
     // Renderer
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer({"antialias":true});
     renderer.setSize(width, height);
     renderer.setClearColor(0xffffff, 1);
     document.querySelector("body").appendChild(renderer.domElement);

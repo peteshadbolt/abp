@@ -1,4 +1,4 @@
-
+//TODO Move to THREE.gridhelper
 // Make a grid
 function makeGrid(side, n, color) {
     var markers = new THREE.Object3D();
@@ -19,5 +19,6 @@ function makeGrid(side, n, color) {
         markers.add(line);
         markers.add(line90);
     }
+    markers.name = "grid";
     return markers;
 }

@@ -83,6 +83,7 @@ if __name__ == '__main__':
     server.start()
 
     g = demograph()
+    g.layout()
 
     while True:
         server.update(g)
