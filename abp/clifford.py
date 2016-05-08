@@ -17,6 +17,19 @@ decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
                   "xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
                   "zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
 
+     #{"UUUU", "UU", "VVUU", "VV", 
+      #"VUU", "V", "VVV", "UUV",
+      #"UVU", "UVUUU", "UVVVU", "UUUVU",
+      #"UVV", "VVU", "UUU", "U",
+      #"VVVU", "UUVU", "VU", "VUUU", 
+      #"UUUV", "UVVV", "UV", "UVUU"};
+
+#string LocCliffOp::get_name (void) const
+#{
+   #static const char* paulinames[] = {"I", "X", "Y", "Z"};
+   #return string (paulinames[op & 0x03]) + (char) ('A' + op / 4);
+#}
+
 ab_names = {0: "IA"}
 
 
