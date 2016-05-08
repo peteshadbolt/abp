@@ -93,6 +93,21 @@ class GraphState(object):
         if new_edge != edge:
             self.toggle_edge(a, b)
 
+    def measure_x(self, i):
+        """ Measure the graph in the X-basis """
+        #TODO
+        pass
+
+    def measure_y(self, i):
+        """ Measure the graph in the Y-basis """
+        #TODO
+        pass
+
+    def measure_Z(self, i):
+        """ Measure the graph in the Z-basis """
+        #TODO
+        pass
+
     def __str__(self):
         """ Represent as a string for quick debugging """
         return "graph:\n vops: {}\n ngbh: {}\n"\
