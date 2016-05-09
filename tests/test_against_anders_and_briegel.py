@@ -28,21 +28,8 @@ def test_hadamard():
     b.act_hadamard(0)
     compare(a, b)
 
-def test_local_1():
-    """ Test local rotations """
-    a = graphsim.GraphRegister(1)
-    b = GraphState()
-    b.add_vertex(0)
 
-    compare(a, b)
-    a.local_op(0, graphsim.LocCliffOp(10))
-    b.act_local_rotation(0, 10)
-    compare(a, b)
-    a.local_op(0, graphsim.LocCliffOp(10))
-    b.act_local_rotation(0, 10)
-    compare(a, b)
-
-def test_local_2():
+def test_local_rotations():
     """ Test local rotations """
     a = graphsim.GraphRegister(1)
     b = GraphState()
@@ -56,7 +43,27 @@ def test_local_2():
         compare(a, b)
 
 
-def test_1():
+def test_cz_table():
+    """ Test the CZ table """
+    for j in range(24):
+        a = graphsim.GraphRegister(2)
+        b = GraphState()
+        b.add_vertex(0)
+        b.add_vertex(1)
+        compare(a, b)
+        #a.local_op(0, graphsim.LocCliffOp(j))
+        #b.act_local_rotation(0, j)
+
+        a.local_op(1, graphsim.LocCliffOp(j))
+        b.act_local_rotation(1, j)
+        a.cphase(0, 1)
+        b.act_cz(0, 1)
+        compare(a, b)
+
+
+
+def _test_1():
+    """ TODO: this one always succeeds """
     N=10
 
     a = graphsim.GraphRegister(N)
@@ -75,6 +82,7 @@ def test_1():
 
 
 def _test_2():
+    """ TODO: This one fails at the moment """
     N=10
 
     a = graphsim.GraphRegister(N)
