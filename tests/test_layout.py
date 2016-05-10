@@ -1,15 +1,4 @@
-from abp.graphstate import GraphState
-
-def demograph():
-    """ A graph for testing with """
-    g = GraphState()
-    g.add_edge(0, 1)
-    g.add_edge(1, 2)
-    g.add_edge(2, 0)
-    g.add_edge(0, 3)
-    g.add_edge(100, 200)
-    return g
-
+from demograph import demograph
 
 def test_nx_convert():
     g = demograph()

@@ -1,17 +1,7 @@
 from abp.graphstate import GraphState
 from abp import clifford
+from demograph import demograph
 import time
-
-
-def demograph():
-    """ A graph for testing with """
-    g = GraphState()
-    g.add_edge(0, 1)
-    g.add_edge(1, 2)
-    g.add_edge(2, 0)
-    g.add_edge(0, 3)
-    g.add_edge(100, 200)
-    return g
 
 
 def test_graph_basic():
@@ -59,18 +49,18 @@ def test_edgelist():
     assert (100, 200) in el
 
 
-def test_stress():
+def test_stress(n = int(1e5)):
     """ Testing that making a graph of ten thousand qubits takes less than half a second"""
-    g = GraphState()
+    g = GraphState(range(n+1))
     t = time.clock()
-    for i in xrange(100000):
+    for i in xrange(n):
         g.add_edge(i, i + 1)
     assert time.clock() - t < .5
 
 
 def test_cz():
     """ Test CZ gate """
-    g = GraphState()
+    g = GraphState([0, 1])
     g.add_node(0)
     g.add_node(1)
     g.act_local_rotation(0, clifford.by_name["hadamard"])

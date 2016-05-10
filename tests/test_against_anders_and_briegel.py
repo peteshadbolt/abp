@@ -5,7 +5,7 @@ import difflib
 import re
 
 def compare(a, b):
-    """ Sketchy as you like. Remove this abomination """
+    """ TODO: Sketchy as you like. Remove this abomination """
     aa = a.get_adj_list()
     bb = b.adj_list()
     try:

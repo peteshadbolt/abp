@@ -2,7 +2,6 @@
 Provides an extremely basic graph structure, based on neighbour lists
 """
 
-from collections import defaultdict
 import itertools as it
 import clifford
 import json
@@ -15,25 +14,33 @@ except ImportError:
 
 class GraphState(object):
 
-    def __init__(self):
-        self.ngbh = defaultdict(set)
-        self.vops = defaultdict(int)
-        self.meta = defaultdict(dict)
+    def __init__(self, nodes = []):
+        self.ngbh = {}
+        self.vops = {}
+        self.meta = {}
+        self.add_nodes(nodes)
 
     def add_node(self, v):
         """ Add a node if it doesn't already exist """
         if not v in self.ngbh:
             self.ngbh[v] = set()
             self.vops[v] = clifford.by_name["hadamard"]
+            self.meta[v] = dict()
+
+    def add_nodes(self, nodes):
+        """ Add a buncha nodes """
+        for n in nodes:
+            self.add_node(n)
 
     def add_edge(self, v1, v2):
         """ Add an edge between two vertices in the self """
-        if not v1 in self.ngbh:
-            self.vops[v1] = clifford.by_name["hadamard"]
-        if not v2 in self.ngbh:
-            self.vops[v2] = clifford.by_name["hadamard"]
         self.ngbh[v1].add(v2)
         self.ngbh[v2].add(v1)
+
+    def add_edges(self, edges):
+        """ Add a buncha edges """
+        for (v1, v2) in edges:
+            self.add_edge(v1, v2)
 
     def del_edge(self, v1, v2):
         """ Delete an edge between two vertices in the self """
@@ -70,7 +77,8 @@ class GraphState(object):
         for i, j in it.combinations(self.ngbh[v], 2):
             self.toggle_edge(i, j)
 
-        # Update VOPs: TODO check ordering and replace by self.act_local_rotation
+        # Update VOPs: TODO check ordering and replace by
+        # self.act_local_rotation
         self.vops[v] = clifford.times_table[
             self.vops[v]][clifford.by_name["sqx"]]
         for i in self.ngbh[v]:
@@ -79,7 +87,7 @@ class GraphState(object):
 
     def act_local_rotation(self, a, op):
         """ Act a local rotation """
-        self.vops[a] = clifford.times_table[op,self.vops[a]]
+        self.vops[a] = clifford.times_table[op, self.vops[a]]
 
     def act_local_rotation_by_name(self, qubit, name):
         """ Shorthand """
@@ -99,14 +107,14 @@ class GraphState(object):
         if self.ngbh[a] - {b}:
             self.remove_vop(a, b)
         edge = self.has_edge(a, b)
-        new_edge, self.vops[a], self.vops[b] = clifford.cz_table[edge, self.vops[a], self.vops[b]]
+        new_edge, self.vops[a], self.vops[
+            b] = clifford.cz_table[edge, self.vops[a], self.vops[b]]
         if new_edge != edge:
             self.toggle_edge(a, b)
 
-
-    def measure_z(self, node, force = None):
+    def measure_z(self, node, force=None):
         """ Measure the graph in the Z-basis """
-        res = force if force else np.random.choice([0,1])
+        res = force if force else np.random.choice([0, 1])
 
         # Disconnect
         for neighbour in self.ngbh[node]:
@@ -123,15 +131,14 @@ class GraphState(object):
 
         return res
 
-
     def measure_x(self, i):
         """ Measure the graph in the X-basis """
-        #TODO
+        # TODO
         pass
 
     def measure_y(self, i):
         """ Measure the graph in the Y-basis """
-        #TODO
+        # TODO
         pass
 
     def order(self):
@@ -140,22 +147,22 @@ class GraphState(object):
 
     def __str__(self):
         """ Represent as a string for quick debugging """
-        vopstr = {key: clifford.get_name(value) for key,value in self.vops.items()}
-        nbstr = str(dict(self.ngbh))
+        vopstr = {key: clifford.get_name(value)
+                  for key, value in self.vops.items()}
+        nbstr = str(self.ngbh)
         return "graph:\n vops: {}\n ngbh: {}\n".format(vopstr, nbstr)
 
     def to_json(self):
         """ Convert the graph to JSON form """
-        #ngbh = {key: tuple(value) for key, value in self.ngbh.items()}
         meta = {key: value for key, value in self.meta.items()}
         edge = self.edgelist()
-        return json.dumps({"vops": self.vops, "edge": edge, "meta": meta})
+        return json.dumps({"nodes": self.vops, "edges": edge, "meta": meta})
 
     def to_networkx(self):
         """ Convert the graph to a networkx graph """
         g = nx.Graph()
-        g.edge = {node: {neighbour: {} for neighbour in neighbours} 
-                for node, neighbours in self.ngbh.items()}
+        g.edge = {node: {neighbour: {} for neighbour in neighbours}
+                  for node, neighbours in self.ngbh.items()}
         g.node = {node: {"vop": vop} for node, vop in self.vops.items()}
         for node, metadata in self.meta.items():
             g.node[node].update(metadata)
@@ -163,28 +170,29 @@ class GraphState(object):
 
     def to_state_vector(self):
         """ Get the full state vector """
-        if not len(self.vops)<10:
+        if len(self.vops) > 15:
             raise ValueError("Cannot build state vector: too many qubits")
-        output = qi.CircuitModel(len(self.vops))
-        #print output
+        state = qi.CircuitModel(len(self.vops))
         for i in range(len(self.vops)):
-            output.act_hadamard(i)
-        #print output
+            state.act_hadamard(i)
         for i, j in self.edgelist():
-            output.act_cz(i, j)
-        #print output
+            state.act_cz(i, j)
         for i, u in self.vops.items():
-            output.act_local_rotation(i, clifford.unitaries[u])
-        return output
+            state.act_local_rotation(i, clifford.unitaries[u])
+        return state
 
     def layout(self):
         """ Automatically lay out the graph """
         g = self.to_networkx()
         pos = nx.spring_layout(g, dim=3, scale=10)
-        average = lambda axis: sum(p[axis] for p in pos.values())/float(len(pos))
+        average = lambda axis: sum(p[axis]
+                                   for p in pos.values()) / float(len(pos))
         ax, ay, az = average(0), average(1), average(2)
         for key, (x, y, z) in pos.items():
-            self.meta[key]["pos"] = {"x": round(x-ax, 0), "y": round(y-ay, 0), "z": round(z-az, 0)}
+            self.meta[key]["pos"] = {
+                "x": round(x - ax, 0), 
+                "y": round(y - ay, 0), 
+                "z": round(z - az, 0)}
 
     def to_stabilizer(self):
         """ Get the stabilizer of this graph """
@@ -200,7 +208,7 @@ class GraphState(object):
                     output += " I "
             output += "\n"
         return output
-            
+
     def adj_list(self):
         """ For comparison with Anders and Briegel's C++ implementation """
         rows = []
@@ -209,7 +217,5 @@ class GraphState(object):
             vop = clifford.get_name(vop)
             s = "Vertex {}: VOp {}, neighbors {}".format(key, vop, ngbh)
             rows.append(s)
-        return " \n".join(rows)+ " \n"
+        return " \n".join(rows) + " \n"
 
-
-        
