@@ -19,7 +19,7 @@ def test_hadamard():
     """ Test hadamards """
     a = graphsim.GraphRegister(1)
     b = GraphState()
-    b.add_vertex(0)
+    b.add_node(0)
 
     compare(a, b)
     a.hadamard(0)
@@ -34,7 +34,7 @@ def test_local_rotations():
     """ Test local rotations """
     a = graphsim.GraphRegister(1)
     b = GraphState()
-    b.add_vertex(0)
+    b.add_node(0)
     compare(a, b)
 
     for i in range(1000):
@@ -49,8 +49,8 @@ def test_cz_table():
     for j in range(24):
         a = graphsim.GraphRegister(2)
         b = GraphState()
-        b.add_vertex(0)
-        b.add_vertex(1)
+        b.add_node(0)
+        b.add_node(1)
         compare(a, b)
 
         a.local_op(0, graphsim.LocCliffOp(j))
@@ -65,7 +65,7 @@ def test_cz_table():
 
 
 
-def _test_1():
+def test_1():
     """ TODO: this one always succeeds """
     N=10
 
@@ -74,7 +74,7 @@ def _test_1():
 
     for i in range(N):
         a.hadamard(i)
-        b.add_vertex(i)
+        b.add_node(i)
         b.act_hadamard(i)
 
     for i in range(N-1):
@@ -92,7 +92,7 @@ def _test_2():
     b = GraphState()
 
     for i in range(N):
-        b.add_vertex(i)
+        b.add_node(i)
 
     for i in range(100):
         if random.random()>0.5:

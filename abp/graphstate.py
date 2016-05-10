@@ -19,8 +19,8 @@ class GraphState(object):
         self.vops = defaultdict(int)
         self.meta = defaultdict(dict)
 
-    def add_vertex(self, v):
-        """ Add a vertex if it doesn't already exist """
+    def add_node(self, v):
+        """ Add a node if it doesn't already exist """
         if not v in self.ngbh:
             self.ngbh[v] = set()
             self.vops[v] = clifford.by_name["hadamard"]
@@ -102,6 +102,23 @@ class GraphState(object):
         if new_edge != edge:
             self.toggle_edge(a, b)
 
+
+    def measure_z(self, node, force = None):
+        """ Measure the graph in the Z-basis """
+        res = force if force else np.random.choice([0,1])
+        for neighbour in self.ngbh[node]:
+            self.del_edge(node, neighbour)
+            if res:
+                self.act_local_rotation_by_name(neighbour, "pz")
+
+        if res:
+            self.act_local_rotation_by_name(node, "px")
+            self.act_local_rotation_by_name(node, "hadamard")
+        else:
+            self.act_local_rotation_by_name(node, "hadamard")
+
+
+
     def measure_x(self, i):
         """ Measure the graph in the X-basis """
         #TODO
@@ -109,11 +126,6 @@ class GraphState(object):
 
     def measure_y(self, i):
         """ Measure the graph in the Y-basis """
-        #TODO
-        pass
-
-    def measure_Z(self, i):
-        """ Measure the graph in the Z-basis """
         #TODO
         pass
 
@@ -142,6 +154,10 @@ class GraphState(object):
         for node, metadata in self.meta.items():
             g.node[node].update(metadata)
         return g
+
+    def to_state_vector(self):
+        """ Get the freaking state vector """
+        return None
 
     def layout(self):
         """ Automatically lay out the graph """

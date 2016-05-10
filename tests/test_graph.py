@@ -71,8 +71,8 @@ def test_stress():
 def test_cz():
     """ Test CZ gate """
     g = GraphState()
-    g.add_vertex(0)
-    g.add_vertex(1)
+    g.add_node(0)
+    g.add_node(1)
     g.act_local_rotation(0, clifford.by_name["hadamard"])
     g.act_local_rotation(1, clifford.by_name["hadamard"])
     g.act_local_rotation(1, clifford.by_name["py"])
