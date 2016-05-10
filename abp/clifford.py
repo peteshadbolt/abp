@@ -52,22 +52,12 @@ def find_cz(bond, c1, c2, commuters, state_table, ab_cz_table):
     s2 = commuters if c2 in commuters else xrange(24)
 
     # Find a match
-    options = set()  # TODO: remove and put in a test
     for bondp, c1p, c2p in it.product([0, 1], s1, s2):
         if np.allclose(target, state_table[bondp, c1p, c2p]):
-            # return bondp, c1p, c2p
-            options.add((bondp, c1p, c2p))
-
-    # TODO fix this bull shit
-    # assert tuple(ab_cz_table[bond, c1, c2]) in options
-    options = sorted(options, key=lambda (a, b, c): a*10000 + b*100 + c*1)
-    if not np.all(ab_cz_table[bond, c1, c2] == options[0]):
-        print ab_cz_table[bond, c1, c2], options[0]
-
-    return ab_cz_table[bond, c1, c2]
+            return bondp, c1p, c2p
 
     # Didn't find anything - this should never happen
-    # raise IndexError
+    raise IndexError
 
 
 def compose_u(decomposition):
@@ -129,7 +119,7 @@ def get_cz_table(unitaries):
     rows = list(
         it.product([0, 1], it.combinations_with_replacement(range(24), 2)))
                 # CZ is symmetric so we only need combinations
-    for bond, (c1, c2) in tqdm(rows, desc="Building CZ table", disable=True):
+    for bond, (c1, c2) in tqdm(rows, desc="Building CZ table"):
         newbond, c1p, c2p = find_cz(
             bond, c1, c2, commuters, state_table, ab_cz_table)
         cz_table[bond, c1, c2] = [newbond, c1p, c2p]
