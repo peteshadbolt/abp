@@ -6,6 +6,7 @@ from collections import defaultdict
 import itertools as it
 import clifford
 import json
+import qi
 try:
     import networkx as nx
 except ImportError:
@@ -139,8 +140,9 @@ class GraphState(object):
 
     def __str__(self):
         """ Represent as a string for quick debugging """
-        return "graph:\n vops: {}\n ngbh: {}\n"\
-                .format(str(dict(self.vops)), str(dict(self.ngbh)))
+        vopstr = {key: clifford.get_name(value) for key,value in self.vops.items()}
+        nbstr = str(dict(self.ngbh))
+        return "graph:\n vops: {}\n ngbh: {}\n".format(vopstr, nbstr)
 
     def to_json(self):
         """ Convert the graph to JSON form """
@@ -160,8 +162,20 @@ class GraphState(object):
         return g
 
     def to_state_vector(self):
-        """ Get the freaking state vector """
-        return None
+        """ Get the full state vector """
+        if not len(self.vops)<10:
+            raise ValueError("Cannot build state vector: too many qubits")
+        output = qi.CircuitModel(len(self.vops))
+        #print output
+        for i in range(len(self.vops)):
+            output.act_hadamard(i)
+        #print output
+        for i, j in self.edgelist():
+            output.act_cz(i, j)
+        #print output
+        for i, u in self.vops.items():
+            output.act_local_rotation(i, clifford.unitaries[u])
+        return output
 
     def layout(self):
         """ Automatically lay out the graph """

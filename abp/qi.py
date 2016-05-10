@@ -68,12 +68,9 @@ class CircuitModel(object):
         where = 1 << qubit
         output = np.zeros((self.d, 1), dtype=complex)
         for i, v in enumerate(self.state):
-            if (i & where) == 0:
-                output[i] += v*ir2
-                output[i ^ where] += v*ir2
-            if (i & where) == 1:
-                output[i ^ where] += v*ir2
-                output[i] -= v*ir2
+            q = i & where > 0
+            output[i] += v*ha[q, q]
+            output[i ^ where] += v*ha[not q, q]
         self.state = output
 
 
@@ -82,12 +79,9 @@ class CircuitModel(object):
         where = 1 << qubit
         output = np.zeros((self.d, 1), dtype=complex)
         for i, v in enumerate(self.state):
-            if (i & where) == 0:
-                output[i] += v*u[0, 0]
-                output[i ^ where] += v*u[0, 1]
-            if (i & where) == 1:
-                output[i ^ where] += v*u[1, 0]
-                output[i] += v*u[1, 1]
+            q = i & where > 0
+            output[i] += v*u[q, q]
+            output[i ^ where] += v*u[not q, q]
         self.state = output
 
 
