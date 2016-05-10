@@ -58,7 +58,7 @@ class CircuitModel(object):
     def act_cz(self, control, target):
         """ Act a CU somewhere """
         control = 1 << control
-        target = 1 << control
+        target = 1 << target
         for i in xrange(self.d):
             if (i & control) and (i & target):
                 self.state[i, 0] *= -1

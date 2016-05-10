@@ -6,7 +6,7 @@ import random
 
 def multi_qubit_test():
     """ A multi qubit test """
-    n = 3
+    n = 6
     g = GraphState(range(n))
     c = CircuitModel(n)
 
@@ -16,10 +16,11 @@ def multi_qubit_test():
 
     assert np.allclose(g.to_state_vector().state, c.state)
 
-    g.act_cz(0, 1)
-    c.act_cz(0, 1)
-    g.act_cz(1, 2)
-    c.act_cz(1, 2)
+    for i in range(100):
+        a, b = np.random.randint(0, n-1, 2)
+        if a != b:
+            g.act_cz(a, b)
+            c.act_cz(a, b)
 
     s1 = clifford.normalize_global_phase(g.to_state_vector().state)
     s2 = clifford.normalize_global_phase(c.state)
