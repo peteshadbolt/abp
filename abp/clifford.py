@@ -57,14 +57,7 @@ def find_cz(bond, c1, c2, commuters, state_table, ab_cz_table):
         if np.allclose(target, state_table[bondp, c1p, c2p]):
             options.add((bondp, c1p, c2p))
 
-    #assert tuple(ab_cz_table[bond, c1, c2]) in options
-    if not tuple(ab_cz_table[bond, c1, c2]) in options:
-        assert len(s1)==5 or len(s2)==5
-        #print len(s1), len(s2)
-        #print bond, c1, c2
-        #print ab_cz_table[bond, c2, c2]
-        #print " ".join(map(str, options))
-        #raise AssertionError
+    assert tuple(ab_cz_table[bond, c1, c2]) in options
     return options.pop()
 
     # Didn't find anything - this should never happen
@@ -114,7 +107,7 @@ def get_state_table(unitaries):
 
 def get_commuters(unitaries):
     """ Get the indeces of gates which commute with CZ """
-    commuters = (qi.id, qi.px, qi.pz, qi.ph, qi.hermitian_conjugate(qi.ph))
+    commuters = (qi.id, qi.pz, qi.ph, qi.hermitian_conjugate(qi.ph))
     return [find_clifford(u, unitaries) for u in commuters]
 
 
