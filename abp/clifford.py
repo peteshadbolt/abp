@@ -41,7 +41,7 @@ def normalize_global_phase(m):
     return rot * m if rot * v > 0 else -rot * m
 
 
-def find_cz(bond, c1, c2, commuters, state_table):
+def find_cz(bond, c1, c2, commuters, state_table, ab_cz_table):
     """ Find the output of a CZ operation """
     # Figure out the target state
     target = qi.cz.dot(state_table[bond, c1, c2])
@@ -52,12 +52,23 @@ def find_cz(bond, c1, c2, commuters, state_table):
     s2 = commuters if c2 in commuters else xrange(24)
 
     # Find a match
-    for bond, c1p, c2p in it.product([0, 1], s1, s2):
-        if np.allclose(target, state_table[bond, c1p, c2p]):
-            return bond, c1p, c2p
+    options = set()
+    for bondp, c1p, c2p in it.product([0, 1], s1, s2):
+        if np.allclose(target, state_table[bondp, c1p, c2p]):
+            options.add((bondp, c1p, c2p))
+
+    #assert tuple(ab_cz_table[bond, c1, c2]) in options
+    if not tuple(ab_cz_table[bond, c1, c2]) in options:
+        assert len(s1)==5 or len(s2)==5
+        #print len(s1), len(s2)
+        #print bond, c1, c2
+        #print ab_cz_table[bond, c2, c2]
+        #print " ".join(map(str, options))
+        #raise AssertionError
+    return options.pop()
 
     # Didn't find anything - this should never happen
-    raise IndexError
+    #raise IndexError
 
 
 def compose_u(decomposition):
@@ -100,26 +111,32 @@ def get_state_table(unitaries):
             np.dot(kp, state).T)
     return state_table
 
+
 def get_commuters(unitaries):
     """ Get the indeces of gates which commute with CZ """
     commuters = (qi.id, qi.px, qi.pz, qi.ph, qi.hermitian_conjugate(qi.ph))
     return [find_clifford(u, unitaries) for u in commuters]
+
 
 def get_cz_table(unitaries):
     """ Compute the lookup table for the CZ (A&B eq. 9) """
     # Get a cached state table and a list of gates which commute with CZ
     commuters = get_commuters(unitaries)
     state_table = get_state_table(unitaries)
+    ab_cz_table = get_ab_cz_table()
 
     # And now build the CZ table
     cz_table = np.zeros((2, 24, 24, 3), dtype=int)
-    rows = list(it.product([0, 1], it.combinations_with_replacement(range(24), 2)))
+    rows = list(
+        it.product([0, 1], it.combinations_with_replacement(range(24), 2)))
                 # CZ is symmetric so we only need combinations
     for bond, (c1, c2) in tqdm(rows, desc="Building CZ table"):
-        newbond, c1p, c2p = find_cz(bond, c1, c2, commuters, state_table)
+        newbond, c1p, c2p = find_cz(
+            bond, c1, c2, commuters, state_table, ab_cz_table)
         cz_table[bond, c1, c2] = [newbond, c1p, c2p]
         cz_table[bond, c2, c1] = [newbond, c2p, c1p]
     return cz_table
+
 
 def get_ab_cz_table():
     """ Load anders and briegel's CZ table """
@@ -137,7 +154,7 @@ try:
     unitaries = np.load("unitaries.npy")
     conjugation_table = np.load("conjugation_table.npy")
     times_table = np.load("times_table.npy")
-    #cz_table = np.load("cz_table.npy")
+    # cz_table = np.load("cz_table.npy")
     cz_table = get_ab_cz_table()
 
     with open("by_name.json") as f:
@@ -151,7 +168,7 @@ except IOError:
     conjugation_table = get_conjugation_table(unitaries)
     times_table = get_times_table(unitaries)
     cz_table = get_cz_table(unitaries)
-    
+
     # Write it all to disk
     np.save("unitaries.npy", unitaries)
     np.save("conjugation_table.npy", conjugation_table)
