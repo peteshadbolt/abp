@@ -106,17 +106,21 @@ class GraphState(object):
     def measure_z(self, node, force = None):
         """ Measure the graph in the Z-basis """
         res = force if force else np.random.choice([0,1])
+
+        # Disconnect
         for neighbour in self.ngbh[node]:
             self.del_edge(node, neighbour)
             if res:
                 self.act_local_rotation_by_name(neighbour, "pz")
 
+        # Set final state as appropriate
         if res:
             self.act_local_rotation_by_name(node, "px")
             self.act_local_rotation_by_name(node, "hadamard")
         else:
             self.act_local_rotation_by_name(node, "hadamard")
 
+        return res
 
 
     def measure_x(self, i):

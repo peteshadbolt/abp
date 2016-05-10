@@ -7,17 +7,20 @@ Exposes a few basic QI operators
 
 import numpy as np
 from scipy.linalg import sqrtm
+import itertools as it
 
 def hermitian_conjugate(u):
     """ Shortcut to the Hermitian conjugate """
     return np.conjugate(np.transpose(u))
 
+# Constants 
+ir2 = 1/np.sqrt(2)
 # Operators
 id = np.array(np.eye(2, dtype=complex))
 px = np.array([[0, 1], [1, 0]], dtype=complex)
 py = np.array([[0, -1j], [1j, 0]], dtype=complex)
 pz = np.array([[1, 0], [0, -1]], dtype=complex)
-ha = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)
+ha = np.array([[1, 1], [1, -1]], dtype=complex) * ir2
 ph = np.array([[1, 0], [0, 1j]], dtype=complex)
 t = np.array([[1, 0], [0, np.exp(1j*np.pi/4)]], dtype=complex)
 
@@ -44,3 +47,46 @@ names = "identity", "px", "py", "pz", "hadamard", "phase", "sqz", "msqz", "sqy",
 by_name = dict(zip(names, common_us))
 
 paulis = px, py, pz
+
+class CircuitModel(object):
+    def __init__(self, nqubits):
+        self.nqubits = nqubits
+        self.d = 2**nqubits
+        self.state = np.zeros((self.d, 1), dtype=complex)
+        self.state[0, 0]=1
+
+    def act_cz(self, control, target):
+        """ Act a CU somewhere """
+        control = 1 << control
+        target = 1 << control
+        print control, target
+        for i in xrange(self.d):
+            if (i & control) and (i & target):
+                self.state[i, 0] *= -1
+
+    def act_hadamard(self, qubit):
+        """ Act a hadamard somewhere """
+        where = 1 << qubit
+        output = np.zeros((self.d, 1), dtype=complex)
+        for i, v in enumerate(self.state):
+            if (i & where) == 0:
+                output[i] += v*ir2
+                output[i ^ where] += v*ir2
+            if (i & where) == 1:
+                output[i] += v*ir2
+                output[i ^ where] -= v*ir2
+        self.state = output
+
+
+    def local_rotation(self, qubit, u):
+        """ Act a local unitary somwhere """
+        pass
+
+    def __str__(self):
+        s = ""
+        for i in range(self.d):
+            label = bin(i)[2:].rjust(self.nqubits, "0")
+            if abs(self.state[i, 0])>0.00001:
+                s += "|{}>: {}\n".format(label, self.state[i, 0])
+        return s
+
