@@ -45,7 +45,7 @@ function loopForever() {
 function startMainLoop() {
     scene = makeScene();
     controls.addEventListener("change", render);
-    poll();
+    //poll();
     loopForever();
 }
 
@@ -75,7 +75,7 @@ function init() {
     camera.position.set(0, 0, 20);
 
     // Start polling
-    setInterval(poll, 1000);
+    //setInterval(poll, 1000);
 
     // Run
     startMainLoop();

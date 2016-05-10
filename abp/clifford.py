@@ -12,20 +12,12 @@ import qi
 import numpy as np
 import tempfile
 from tqdm import tqdm
+import os, sys, json, string
 
 decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
                   "xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
                   "zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
 
-     #{"UUUU", "UU", "VVUU", "VV", #"VUU", "V", "VVV", "UUV",
-      #"UVU", "UVUUU", "UVVVU", "UUUVU", #"UVV", "VVU", "UUU", "U",
-      #"VVVU", "UUVU", "VU", "VUUU", #"UUUV", "UVVV", "UV", "UVUU"};
-
-#string LocCliffOp::get_name (void) const
-#{
-   #static const char* paulinames[] = {"I", "X", "Y", "Z"};
-   #return string (paulinames[op & 0x03]) + (char) ('A' + op / 4);
-#}
 
 def get_name(i):
     """ Get the human-readable name of this clifford """
@@ -108,14 +100,15 @@ def get_state_table(unitaries):
             np.dot(kp, state).T)
     return state_table
 
+def get_commuters(unitaries):
+    """ Get the indeces of gates which commute with CZ """
+    commuters = (qi.id, qi.px, qi.pz, qi.ph, qi.hermitian_conjugate(qi.ph))
+    return [find_clifford(u, unitaries) for u in commuters]
 
 def get_cz_table(unitaries):
     """ Compute the lookup table for the CZ (A&B eq. 9) """
-    # This is the set of Cliffords which commute with CZ
-    commuters = (qi.id, qi.px, qi.pz, qi.ph, qi.hermitian_conjugate(qi.ph))
-    commuters = [find_clifford(u, unitaries) for u in commuters]
-
-    # Get a cached state table
+    # Get a cached state table and a list of gates which commute with CZ
+    commuters = get_commuters(unitaries)
     state_table = get_state_table(unitaries)
 
     # And now build the CZ table
@@ -128,6 +121,14 @@ def get_cz_table(unitaries):
         cz_table[bond, c2, c1] = [newbond, c2p, c1p]
     return cz_table
 
+def get_ab_cz_table():
+    """ Load anders and briegel's CZ table """
+    filename = "anders_briegel/cphase.tbl"
+    filename = os.path.join(os.path.dirname(sys.path[0]), filename)
+    with open(filename) as f:
+        s = f.read().translate(string.maketrans("{}", "[]"))
+        return np.array(json.loads(s))
+
 
 # First try to load tables from cache. If that fails, build them from
 # scratch and store
@@ -136,7 +137,8 @@ try:
     unitaries = np.load("unitaries.npy")
     conjugation_table = np.load("conjugation_table.npy")
     times_table = np.load("times_table.npy")
-    cz_table = np.load("cz_table.npy")
+    #cz_table = np.load("cz_table.npy")
+    cz_table = get_ab_cz_table()
 
     with open("by_name.json") as f:
         by_name = json.load(f)

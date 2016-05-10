@@ -13,6 +13,7 @@ def compare(a, b):
     except AssertionError:
         print aa
         print bb
+        raise
 
 def test_hadamard():
     """ Test hadamards """
@@ -51,11 +52,13 @@ def test_cz_table():
         b.add_vertex(0)
         b.add_vertex(1)
         compare(a, b)
-        #a.local_op(0, graphsim.LocCliffOp(j))
-        #b.act_local_rotation(0, j)
+
+        a.local_op(0, graphsim.LocCliffOp(j))
+        b.act_local_rotation(0, j)
 
         a.local_op(1, graphsim.LocCliffOp(j))
         b.act_local_rotation(1, j)
+
         a.cphase(0, 1)
         b.act_cz(0, 1)
         compare(a, b)

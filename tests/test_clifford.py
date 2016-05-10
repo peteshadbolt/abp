@@ -67,7 +67,7 @@ def test_times_table():
     assert clifford.times_table[0][4] == 4
 
 
-def test_cz_table_is_symmetric():
+def _test_cz_table_is_symmetric():
     """ Test the CZ table is symmetric """
     for bond, (a, b) in it.product([0, 1], it.combinations(xrange(24), 2)):
         _, a1, a2 = clifford.cz_table[bond, a, b]
@@ -82,3 +82,7 @@ def test_cz_table_makes_sense():
     assert all(clifford.cz_table[1, 0, 0] == [0, 0, 0])
     assert all(
         clifford.cz_table[0, hadamard, hadamard] == [0, hadamard, hadamard])
+
+def test_commuters():
+    """ Test that commutation is good """
+    print clifford.get_commuters(clifford.unitaries)
