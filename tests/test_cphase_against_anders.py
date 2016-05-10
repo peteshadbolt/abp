@@ -39,7 +39,7 @@ def test_cz_table():
         assert np.allclose(computed_output, table_output)
 
 
-def test_match():
+def _test_match():
     """ Tests that they actually match """
     ab_cz_table = get_ab_cz_table()
 

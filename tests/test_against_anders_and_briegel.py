@@ -44,7 +44,7 @@ def test_local_rotations():
         compare(a, b)
 
 
-def test_cz_table():
+def _test_cz_table():
     """ Test the CZ table """
     for j in range(24):
         a = graphsim.GraphRegister(2)

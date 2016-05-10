@@ -21,11 +21,10 @@ class GraphState(object):
         self.add_nodes(nodes)
 
     def add_node(self, v):
-        """ Add a node if it doesn't already exist """
-        if not v in self.ngbh:
-            self.ngbh[v] = set()
-            self.vops[v] = clifford.by_name["hadamard"]
-            self.meta[v] = dict()
+        """ Add a node """
+        self.ngbh[v] = set()
+        self.vops[v] = clifford.by_name["hadamard"]
+        self.meta[v] = dict()
 
     def add_nodes(self, nodes):
         """ Add a buncha nodes """
@@ -34,6 +33,7 @@ class GraphState(object):
 
     def add_edge(self, v1, v2):
         """ Add an edge between two vertices in the self """
+        assert v1 != v2
         self.ngbh[v1].add(v2)
         self.ngbh[v2].add(v1)
 

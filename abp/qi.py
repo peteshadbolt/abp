@@ -90,6 +90,6 @@ class CircuitModel(object):
         for i in range(self.d):
             label = bin(i)[2:].rjust(self.nqubits, "0")
             if abs(self.state[i, 0])>0.00001:
-                s += "|{}>: {}\n".format(label, self.state[i, 0])
+                s += "|{}>: {}\n".format(label, self.state[i, 0].round(3))
         return s
 
