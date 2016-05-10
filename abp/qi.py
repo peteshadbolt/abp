@@ -59,7 +59,6 @@ class CircuitModel(object):
         """ Act a CU somewhere """
         control = 1 << control
         target = 1 << control
-        print control, target
         for i in xrange(self.d):
             if (i & control) and (i & target):
                 self.state[i, 0] *= -1
@@ -73,14 +72,24 @@ class CircuitModel(object):
                 output[i] += v*ir2
                 output[i ^ where] += v*ir2
             if (i & where) == 1:
-                output[i] += v*ir2
-                output[i ^ where] -= v*ir2
+                output[i ^ where] += v*ir2
+                output[i] -= v*ir2
         self.state = output
 
 
-    def local_rotation(self, qubit, u):
+    def act_local_rotation(self, qubit, u):
         """ Act a local unitary somwhere """
-        pass
+        where = 1 << qubit
+        output = np.zeros((self.d, 1), dtype=complex)
+        for i, v in enumerate(self.state):
+            if (i & where) == 0:
+                output[i] += v*u[0, 0]
+                output[i ^ where] += v*u[0, 1]
+            if (i & where) == 1:
+                output[i ^ where] += v*u[1, 0]
+                output[i] += v*u[1, 1]
+        self.state = output
+
 
     def __str__(self):
         s = ""
