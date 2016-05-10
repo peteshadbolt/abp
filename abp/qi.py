@@ -80,7 +80,7 @@ class CircuitModel(object):
         output = np.zeros((self.d, 1), dtype=complex)
         for i, v in enumerate(self.state):
             q = i & where > 0
-            output[i] += v*u[q, q]
+            output[i] += v*u[q, q] # TODO this is probably wrong
             output[i ^ where] += v*u[not q, q]
         self.state = output
 
