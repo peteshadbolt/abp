@@ -1,8 +1,13 @@
 from flask import Flask, request, render_template, jsonify
+from werkzeug.contrib.cache import SimpleCache
 import json
 import abp
 
-graphstate = abp.GraphState()
+#TODO: only send deltas
+
+#graphstate = abp.GraphState()
+cache=SimpleCache()
+cache.set("state", abp.GraphState())
 app = Flask(__name__)
 
 @app.route("/")
@@ -12,38 +17,44 @@ def index():
 @app.route("/state", methods = ["GET", "POST"])
 def state():
     if request.method == "GET":
-        return jsonify(graphstate.to_json())
+        return jsonify(cache.get("state").to_json())
     elif request.method == "POST":
+        graphstate = abp.GraphState()
         graphstate.from_json(json.loads(request.data))
-        return jsonify(graphstate.to_json())
+        cache.set("state", graphstate)
+        return jsonify({"update": "ok"})
 
-@app.route("/add/<int:node>")
-def add(node):
+@app.route("/add_node/<int:node>")
+def add_node(node):
     """ Add a node to the graph """
+    graphstate = cache.get("state")
     graphstate.add_node(node)
-    return jsonify(graphstate.to_json())
+    cache.set("state", graphstate)
+    return jsonify({"add_node": "okay"})
 
-@app.route("/rotate/<int:node>/<int:operation>")
-def rotate(node):
+@app.route("/act_local_rotation/<int:node>/<int:operation>")
+def act_local_rotation(node):
     """ Add a node to the graph """
+    # TODO: try to lookup the operation first
     graphstate.act_local_rotation(node, operation)
-    return jsonify(graphstate.to_json())
+    return jsonify({"act_local_rotation": "okay"})
 
-@app.route("/cz/<int:a>/<int:b>")
-def cz(a, b):
+@app.route("/act_cz/<int:a>/<int:b>")
+def act_cz(a, b):
     """ Add a node to the graph """
     graphstate.act_cz(a, b)
-    return jsonify(graphstate.to_json())
+    return jsonify({"act_cz": "okay"})
 
 @app.route("/clear")
 def clear():
     """ Clear the current state """
     graphstate = abp.GraphState()
-    return jsonify({"clear": "ok"})
+    cache.set("state", graphstate)
+    return jsonify({"clear": "okay"})
     
 
 if __name__ == "__main__":
-    app.debug = True
+    app.debug = False
     app.run(host="0.0.0.0")
 
 

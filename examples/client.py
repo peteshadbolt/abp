@@ -1,15 +1,10 @@
 import requests
 import abp, json
+import time
 
-s = requests.Session()
-output = s.get("http://localhost:5000/state").content
-s.post("http://localhost:5000/state", output).content
+client = abp.Client()
 
-s.get("http://localhost:5000/add/99")
-s.get("http://localhost:5000/add/100")
+client.add_node(0)
+client.add_node(1)
 
-print s.get("http://localhost:5000/state").content
-
-s.get("http://localhost:5000/clear")
-s.close()
-
+print client.get_state()

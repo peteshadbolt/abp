@@ -164,9 +164,9 @@ class GraphState(object):
     def from_json(self, data):
         """ Reconstruct from JSON """
         self.__init__([])
-        self.vops = data["nodes"]
-        self.meta = data["meta"]
-        self.ngbh = {key: set() for key in self.vops}
+        self.vops = {int(key): value for key, value in data["nodes"].items()}
+        self.meta = {int(key): value for key, value in data["meta"].items()}        
+        self.ngbh = {int(key): set() for key in self.vops}
         self.add_edges(data["edges"])
 
     def to_networkx(self):
