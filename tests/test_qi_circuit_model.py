@@ -13,7 +13,21 @@ def test_single_qubit_stuff():
     assert np.allclose(psi.state[1], 1)
     psi.act_local_rotation(0, qi.px)
     assert np.allclose(psi.state[0], 1)
+    psi.act_local_rotation(0, qi.px)
     psi.act_local_rotation(0, qi.pz)
+    psi.act_local_rotation(0, qi.px)
+    assert np.allclose(psi.state[0], -1)
+
+def test_further_single_qubit_stuff():
+    """ Try some sensible single-qubit things """
+    psi = qi.CircuitModel(2)
+    psi.act_local_rotation(0, qi.py)
+    psi.act_local_rotation(1, qi.py)
+    psi.act_local_rotation(0, qi.pz)
+    psi.act_local_rotation(1, qi.py)
+    psi.act_local_rotation(0, qi.hadamard)
+    psi.act_local_rotation(0, qi.pz)
+    psi.act_local_rotation(0, qi.px)
 
 
 def test_more_single_qubit_stuff():
