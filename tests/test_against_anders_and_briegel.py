@@ -84,8 +84,8 @@ def test_1():
     compare(a, b)
 
 
-def _test_2():
-    """ TODO: This one fails at the moment """
+def test_2():
+    """ TODO: This one fails at the moment - EVEN THOUGH I USE THEIR TABLE!! """
     N=10
 
     a = graphsim.GraphRegister(N)
@@ -107,4 +107,5 @@ def _test_2():
     aa = a.get_adj_list()
     bb = b.adj_list()
     compare(a, b)
+
 
