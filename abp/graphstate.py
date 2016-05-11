@@ -18,7 +18,11 @@ class GraphState(object):
         self.ngbh = {}
         self.vops = {}
         self.meta = {}
-        self.add_nodes(nodes)
+        try:
+            self.add_nodes(nodes)
+        except TypeError:
+            self.add_nodes(xrange(nodes))
+
 
     def add_node(self, v):
         """ Add a node """
@@ -121,6 +125,7 @@ class GraphState(object):
                 self.act_local_rotation_by_name(neighbour, "pz")
 
         # Set final state as appropriate
+        # TODO: cache these lookups. sux
         if res:
             self.act_local_rotation_by_name(node, "px")
             self.act_local_rotation_by_name(node, "hadamard")
@@ -188,9 +193,9 @@ class GraphState(object):
         ax, ay, az = average(0), average(1), average(2)
         for key, (x, y, z) in pos.items():
             self.meta[key]["pos"] = {
-                "x": round(x - ax, 0), 
-                "y": round(y - ay, 0), 
-                "z": round(z - az, 0)}
+                "x": x - ax, 
+                "y": y - ay, 
+                "z": z - az}
 
     def to_stabilizer(self):
         """ Get the stabilizer of this graph """
