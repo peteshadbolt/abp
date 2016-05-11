@@ -39,12 +39,3 @@ def test_cz_table():
         assert np.allclose(computed_output, table_output)
 
 
-def _test_match():
-    """ Tests that they actually match """
-    ab_cz_table = get_ab_cz_table()
-
-    rows = it.product([0, 1], it.combinations_with_replacement(range(24), 2))
-    for bond, (c1, c2) in rows:
-        assert np.all(ab_cz_table == clifford.cz_table)
-
-

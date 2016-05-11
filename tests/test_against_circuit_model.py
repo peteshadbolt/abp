@@ -3,12 +3,13 @@ from abp.qi import CircuitModel
 from abp import clifford
 import numpy as np
 import random
+from tqdm import tqdm
 
-REPEATS = 10
+REPEATS = 100
 
 def test_single_qubit(n=1):
     """ A multi qubit test with Hadamards only"""
-    for repeat in range(REPEATS):
+    for repeat in tqdm(range(REPEATS), desc="Testing against circuit model") :
         g = GraphState([0])
         c = CircuitModel(1)
 
@@ -22,7 +23,7 @@ def test_single_qubit(n=1):
 
 def test_hadamard_only_multiqubit(n=6):
     """ A multi qubit test with Hadamards only"""
-    for qqq in range(REPEATS):
+    for repeat in tqdm(range(REPEATS), desc="Testing against circuit model") :
         g = GraphState(range(n))
         c = CircuitModel(n)
 
@@ -53,7 +54,7 @@ def test_all_multiqubit(n=4):
 
     assert g.to_state_vector() == c
 
-    for i in range(100):
+    for repeat in tqdm(range(REPEATS), desc="Testing against circuit model") :
         a, b = np.random.randint(0, n-1, 2)
         if a != b:
             g.act_cz(a, b)

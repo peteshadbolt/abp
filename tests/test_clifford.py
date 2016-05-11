@@ -67,14 +67,6 @@ def test_times_table():
     assert clifford.times_table[0][4] == 4
 
 
-def _test_cz_table_is_symmetric():
-    """ Test the CZ table is symmetric """
-    for bond, (a, b) in it.product([0, 1], it.combinations(xrange(24), 2)):
-        _, a1, a2 = clifford.cz_table[bond, a, b]
-        _, b1, b2 = clifford.cz_table[bond, b, a]
-        assert (a1, a2) == (b2, b1)
-
-
 def test_cz_table_makes_sense():
     """ Test the CZ table is symmetric """
     hadamard = clifford.by_name["hadamard"]
