@@ -77,13 +77,11 @@ class GraphState(object):
         for i, j in it.combinations(self.ngbh[v], 2):
             self.toggle_edge(i, j)
 
-        # Update VOPs: TODO check ordering and replace by
-        # self.act_local_rotation
-        self.vops[v] = clifford.times_table[
-            self.vops[v]][clifford.by_name["sqx"]]
+        msqx_h = clifford.conjugation_table[clifford.by_name["msqx"]]
+        sqz_h = clifford.conjugation_table[clifford.by_name["sqz"]]
+        self.vops[v] = clifford.times_table[self.vops[v], msqx_h]
         for i in self.ngbh[v]:
-            self.vops[i] = clifford.times_table[
-                self.vops[i]][clifford.by_name["msqz"]]
+            self.vops[i] = clifford.times_table[self.vops[i], sqz_h]
 
     def act_local_rotation(self, a, op):
         """ Act a local rotation """

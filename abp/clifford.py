@@ -53,7 +53,7 @@ def find_cz(bond, c1, c2, commuters, state_table, ab_cz_table):
 
 def compose_u(decomposition):
     """ Get the unitary representation of a particular decomposition """
-    matrices = ({"x": qi.sqx, "z": qi.msqz}[c] for c in decomposition)
+    matrices = ({"x": qi.msqx, "z": qi.sqz}[c] for c in decomposition)
     output = reduce(np.dot, matrices, np.eye(2, dtype=complex))
     return qi.normalize_global_phase(output)
 
@@ -65,8 +65,11 @@ def get_unitaries():
 
 def get_by_name(unitaries):
     """ Get a lookup table of cliffords by name """
-    return {name: find_clifford(u, unitaries)
+    a = {name: find_clifford(u, unitaries)
             for name, u in qi.by_name.items()}
+    b = {get_name(i): i for i in range(24)}
+    a.update(b)
+    return a
 
 
 def get_conjugation_table(unitaries):

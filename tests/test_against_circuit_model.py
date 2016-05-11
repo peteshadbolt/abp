@@ -6,7 +6,21 @@ import random
 
 REPEATS = 10
 
-def test_hadamard_only_multiqubit(n=6):
+def test_single_qubit(n=1):
+    """ A multi qubit test with Hadamards only"""
+    for repeat in range(REPEATS):
+        g = GraphState([0])
+        c = CircuitModel(1)
+
+        for i in range(100):
+            op = random.randint(0, 23)
+            g.act_local_rotation(0, op)
+            c.act_local_rotation(0, clifford.unitaries[op])
+
+        assert g.to_state_vector() == c
+
+
+def _test_hadamard_only_multiqubit(n=6):
     """ A multi qubit test with Hadamards only"""
     for qqq in range(REPEATS):
         g = GraphState(range(n))
@@ -27,7 +41,7 @@ def test_hadamard_only_multiqubit(n=6):
         assert g.to_state_vector() == c
 
 
-def test_all_multiqubit(n=4):
+def _test_all_multiqubit(n=4):
     """ A multi qubit test with arbitrary local rotations """
     g = GraphState(range(n))
     c = CircuitModel(n)

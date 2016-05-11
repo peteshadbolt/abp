@@ -44,7 +44,7 @@ def test_local_rotations():
         compare(a, b)
 
 
-def _test_cz_table():
+def test_cz_table():
     """ Test the CZ table """
     for j in range(24):
         a = graphsim.GraphRegister(2)
@@ -65,8 +65,8 @@ def _test_cz_table():
 
 
 
-def test_1():
-    """ TODO: this one always succeeds """
+def test_with_cphase_gates_hadamard_only():
+    """ Hadamrds and CPHASEs, deterministic """
     N=10
 
     a = graphsim.GraphRegister(N)
@@ -84,8 +84,8 @@ def test_1():
     compare(a, b)
 
 
-def test_2():
-    """ TODO: This one fails at the moment - EVEN THOUGH I USE THEIR TABLE!! """
+def test_all():
+    """ Test all gates at random """
     N=10
 
     a = graphsim.GraphRegister(N)
