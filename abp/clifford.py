@@ -150,7 +150,7 @@ except IOError:
     conjugation_table = get_conjugation_table(unitaries)
     times_table = get_times_table(unitaries)
     cz_table = get_cz_table(unitaries)
-    cz_table = get_ab_cz_table()
+    #cz_table = get_ab_cz_table()
 
     # Write it all to disk
     np.save("unitaries.npy", unitaries)
