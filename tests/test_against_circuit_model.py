@@ -20,7 +20,7 @@ def test_single_qubit(n=1):
         assert g.to_state_vector() == c
 
 
-def _test_hadamard_only_multiqubit(n=6):
+def test_hadamard_only_multiqubit(n=6):
     """ A multi qubit test with Hadamards only"""
     for qqq in range(REPEATS):
         g = GraphState(range(n))
@@ -41,7 +41,7 @@ def _test_hadamard_only_multiqubit(n=6):
         assert g.to_state_vector() == c
 
 
-def _test_all_multiqubit(n=4):
+def test_all_multiqubit(n=4):
     """ A multi qubit test with arbitrary local rotations """
     g = GraphState(range(n))
     c = CircuitModel(n)
