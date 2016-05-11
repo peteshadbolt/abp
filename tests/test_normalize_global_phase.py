@@ -7,5 +7,5 @@ def test_normalize_global_phase():
         u = qi.pz
         phase = np.random.uniform(0, 2*np.pi)
         m = np.exp(1j*phase) * u
-        normalized = clifford.normalize_global_phase(m)
+        normalized = qi.normalize_global_phase(m)
         assert np.allclose(normalized, u)

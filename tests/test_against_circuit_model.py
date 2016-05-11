@@ -14,7 +14,7 @@ def test_hadamard_only_multiqubit():
         g.act_hadamard(i)
         c.act_hadamard(i)
 
-    assert np.allclose(g.to_state_vector().state, c.state)
+    assert g.to_state_vector() == c
 
     for i in range(100):
         a, b = np.random.randint(0, n-1, 2)
@@ -22,9 +22,7 @@ def test_hadamard_only_multiqubit():
             g.act_cz(a, b)
             c.act_cz(a, b)
 
-    s1 = clifford.normalize_global_phase(g.to_state_vector().state)
-    s2 = clifford.normalize_global_phase(c.state)
-    assert np.allclose(s1, s2)
+    assert g.to_state_vector() == c
 
 
 def test_all_multiqubit():
@@ -34,13 +32,13 @@ def test_all_multiqubit():
     c = CircuitModel(n)
 
     for i in range(10):
-        i = np.random.randint(0, n-1)
-        j = np.random.randint(0, 24)
-        print i, j
-        g.act_local_rotation(i, j)
-        c.act_local_rotation(i, clifford.unitaries[j])
+        qubit = np.random.randint(0, n-1)
+        rotation = np.random.randint(0, 24-1)
+        g.act_local_rotation(qubit, rotation)
+        c.act_local_rotation(qubit, clifford.unitaries[rotation])
 
-    assert np.allclose(g.to_state_vector().state, c.state)
+
+    assert g.to_state_vector() == c
 
     #for i in range(100):
         #a, b = np.random.randint(0, n-1, 2)
@@ -48,7 +46,5 @@ def test_all_multiqubit():
             #g.act_cz(a, b)
             #c.act_cz(a, b)
 
-    #s1 = clifford.normalize_global_phase(g.to_state_vector().state)
-    #s2 = clifford.normalize_global_phase(c.state)
-    #assert np.allclose(s1, s2)
+    assert g.to_state_vector() == c
 

@@ -3,6 +3,7 @@
 
 """
 Exposes a few basic QI operators
+And a circuit-model simulator
 """
 
 import numpy as np
@@ -20,7 +21,7 @@ id = np.array(np.eye(2, dtype=complex))
 px = np.array([[0, 1], [1, 0]], dtype=complex)
 py = np.array([[0, -1j], [1j, 0]], dtype=complex)
 pz = np.array([[1, 0], [0, -1]], dtype=complex)
-ha = np.array([[1, 1], [1, -1]], dtype=complex) * ir2
+ha = hadamard = np.array([[1, 1], [1, -1]], dtype=complex) * ir2
 ph = np.array([[1, 0], [0, 1j]], dtype=complex)
 t = np.array([[1, 0], [0, np.exp(1j*np.pi/4)]], dtype=complex)
 
@@ -47,6 +48,15 @@ names = "identity", "px", "py", "pz", "hadamard", "phase", "sqz", "msqz", "sqy",
 by_name = dict(zip(names, common_us))
 
 paulis = px, py, pz
+
+
+def normalize_global_phase(m):
+    """ Normalize the global phase of a matrix """
+    v = (x for x in m.flatten() if np.abs(x) > 0.001).next()
+    phase = np.arctan2(v.imag, v.real) % np.pi
+    rot = np.exp(-1j * phase)
+    return rot * m if rot * v > 0 else -rot * m
+
 
 class CircuitModel(object):
     def __init__(self, nqubits):
@@ -83,6 +93,13 @@ class CircuitModel(object):
             output[i] += v*u[q, q] # TODO this is probably wrong
             output[i ^ where] += v*u[not q, q]
         self.state = output
+
+    def __eq__(self, other):
+        """ Check whether two quantum states are the same or not
+            UP TO A GLOBAL PHASE """
+        a = normalize_global_phase(self.state)
+        b = normalize_global_phase(other.state)
+        return np.allclose(a, b)
 
 
     def __str__(self):

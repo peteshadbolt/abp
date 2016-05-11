@@ -15,7 +15,7 @@ def test_cz_table():
 
         # Go and compute the output
         computed_output = np.dot(qi.cz, input_state)
-        computed_output = clifford.normalize_global_phase(computed_output)
+        computed_output = qi.normalize_global_phase(computed_output)
 
         # Now look up the answer in the table
         bondp, c1p, c2p = clifford.cz_table[bond, c1, c2]
