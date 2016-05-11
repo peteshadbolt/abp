@@ -1,4 +1,4 @@
-from abp.graphstate import GraphState
+from abp import GraphState
 from anders_briegel import graphsim
 from abp import clifford
 import random

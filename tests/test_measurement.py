@@ -1,4 +1,4 @@
-from abp.graphstate import GraphState
+from abp import GraphState
 
 def test_z_measurement():
     #TODO

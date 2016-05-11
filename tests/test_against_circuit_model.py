@@ -1,5 +1,5 @@
-from abp.graphstate import GraphState
-from abp.qi import CircuitModel
+from abp import GraphState
+from abp import CircuitModel
 from abp import clifford
 import numpy as np
 import random

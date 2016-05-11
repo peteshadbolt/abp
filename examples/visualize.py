@@ -1,4 +1,5 @@
-from abp.server import Server
+from abp import GraphState
+from abp import Server
 import time
 
 server = Server()
@@ -10,4 +11,4 @@ while True:
     i += 1
     time.sleep(1)
 
-server.shutdown()
+server.shutdown

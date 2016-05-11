@@ -1,4 +1,4 @@
-from abp.graphstate import GraphState
+from abp import GraphState
 from abp import clifford
 from demograph import demograph
 import time

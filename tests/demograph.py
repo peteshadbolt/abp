@@ -1,4 +1,4 @@
-from abp.graphstate import GraphState
+from abp import GraphState
 
 def demograph():
     """ A graph for testing with """
