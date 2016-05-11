@@ -1,18 +1,17 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """
-This program generates lookup tables
+This program generates lookup tables and handles the Clifford group
 """
 
-import os, json
+import os, json, tempfile, os, sys, json, string
 from functools import reduce
 import itertools as it
-import qi
 import numpy as np
-import tempfile
 from tqdm import tqdm
-import os, sys, json, string
+import argparse
+
+import qi
 
 decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
                   "xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
@@ -32,7 +31,8 @@ def find_clifford(needle, haystack):
             return i
     raise IndexError
 
-def find_cz(bond, c1, c2, commuters, state_table, ab_cz_table):
+
+def find_cz(bond, c1, c2, commuters, state_table):
     """ Find the output of a CZ operation """
     # Figure out the target state
     target = qi.cz.dot(state_table[bond, c1, c2])
@@ -66,7 +66,7 @@ def get_unitaries():
 def get_by_name(unitaries):
     """ Get a lookup table of cliffords by name """
     a = {name: find_clifford(u, unitaries)
-            for name, u in qi.by_name.items()}
+         for name, u in qi.by_name.items()}
     b = {get_name(i): i for i in range(24)}
     a.update(b)
     return a
@@ -106,7 +106,6 @@ def get_cz_table(unitaries):
     # Get a cached state table and a list of gates which commute with CZ
     commuters = get_commuters(unitaries)
     state_table = get_state_table(unitaries)
-    ab_cz_table = get_ab_cz_table()
 
     # And now build the CZ table
     cz_table = np.zeros((2, 24, 24, 3), dtype=int)
@@ -115,35 +114,37 @@ def get_cz_table(unitaries):
                 # CZ is symmetric so we only need combinations
     for bond, (c1, c2) in tqdm(rows, desc="Building CZ table"):
         newbond, c1p, c2p = find_cz(
-            bond, c1, c2, commuters, state_table, ab_cz_table)
+            bond, c1, c2, commuters, state_table)
         cz_table[bond, c1, c2] = [newbond, c1p, c2p]
         cz_table[bond, c2, c1] = [newbond, c2p, c1p]
     return cz_table
 
 
-def get_ab_cz_table():
-    """ Load anders and briegel's CZ table """
-    filename = "anders_briegel/cphase.tbl"
-    filename = os.path.join(os.path.dirname(sys.path[0]), filename)
-    with open(filename) as f:
-        s = f.read().translate(string.maketrans("{}", "[]"))
-        return np.array(json.loads(s))
-
-
 # First try to load tables from cache. If that fails, build them from
-# scratch and store
+# scratch and store in /tmp/
 os.chdir(tempfile.gettempdir())
 try:
     if __name__ == "__main__":
         raise IOError
+
+    # Parse command line args
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-l", "--legacy", help="Use legacy CZ table", action="store_true", default=False)
+    args = parser.parse_args()
+    legacy_cz = args.legacy
+
     unitaries = np.load("unitaries.npy")
     conjugation_table = np.load("conjugation_table.npy")
     times_table = np.load("times_table.npy")
-    cz_table = np.load("cz_table.npy")
-    # cz_table = get_ab_cz_table()
+    if legacy_cz:
+        import anders_cz
+        cz_table = anders_cz.cz_table
+    else:
+        cz_table = np.load("cz_table.npy")
 
     with open("by_name.json") as f:
         by_name = json.load(f)
+
 
     print "Loaded tables from cache"
 except IOError:
@@ -153,7 +154,6 @@ except IOError:
     conjugation_table = get_conjugation_table(unitaries)
     times_table = get_times_table(unitaries)
     cz_table = get_cz_table(unitaries)
-    #cz_table = get_ab_cz_table()
 
     # Write it all to disk
     np.save("unitaries.npy", unitaries)

@@ -9,7 +9,7 @@ REPEATS = 100
 
 def test_single_qubit(n=1):
     """ A multi qubit test with Hadamards only"""
-    for repeat in tqdm(range(REPEATS), desc="Testing against circuit model") :
+    for repeat in tqdm(range(REPEATS), desc="Testing against circuit model"):
         g = GraphState([0])
         c = CircuitModel(1)
 
@@ -23,7 +23,7 @@ def test_single_qubit(n=1):
 
 def test_hadamard_only_multiqubit(n=6):
     """ A multi qubit test with Hadamards only"""
-    for repeat in tqdm(range(REPEATS), desc="Testing against circuit model") :
+    for repeat in tqdm(range(REPEATS), desc="Testing against circuit model"):
         g = GraphState(range(n))
         c = CircuitModel(n)
 
@@ -54,21 +54,15 @@ def test_all_multiqubit(n=4):
 
     assert g.to_state_vector() == c
 
-    for repeat in tqdm(range(REPEATS), desc="Testing against circuit model") :
-        a, b = np.random.randint(0, n-1, 2)
+    for repeat in tqdm(range(REPEATS), desc="Testing against circuit model"):
+        a, b = np.random.randint(0, n - 1, 2)
         if a != b:
             g.act_cz(a, b)
             c.act_cz(a, b)
-            assert np.allclose(np.sum(np.abs(c.state)**2), 1)
-            assert np.allclose(np.sum(np.abs(g.to_state_vector().state)**2), 1)
+            assert np.allclose(np.sum(np.abs(c.state) ** 2), 1)
+            assert np.allclose(
+                np.sum(np.abs(g.to_state_vector().state) ** 2), 1)
 
-            if not g.to_state_vector() == c:
-                print g
-                print a, b
-                print "Circuit:"
-                print g.to_state_vector()
-                print "Graph:"
-                print c
-                raise ValueError
+            assert g.to_state_vector() == c
 
     assert g.to_state_vector() == c

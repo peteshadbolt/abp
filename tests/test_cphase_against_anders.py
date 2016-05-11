@@ -1,26 +1,15 @@
 import json
 import numpy as np
-from abp import clifford, qi
 import sys
 import os
 import itertools as it
 from string import maketrans
-
-
-def get_ab_cz_table():
-    """ Load anders and briegel's CZ table """
-    filename = "anders_briegel/cphase.tbl"
-    filename = os.path.join(os.path.dirname(sys.path[0]), filename)
-    with open(filename) as f:
-        s = f.read().translate(maketrans("{}", "[]"))
-        return np.array(json.loads(s))
-
-
+from abp import clifford, qi, anders_cz
 
 def test_cz_table():
     """ Does our clifford code work with anders & briegel's table? """
     state_table = clifford.get_state_table(clifford.unitaries)
-    ab_cz_table = get_ab_cz_table()
+    ab_cz_table = anders_cz.cz_table
 
     rows = it.product([0, 1], it.combinations_with_replacement(range(24), 2))
     for bond, (c1, c2) in rows:

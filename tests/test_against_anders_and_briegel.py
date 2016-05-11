@@ -1,5 +1,6 @@
 from abp.graphstate import GraphState
 from anders_briegel import graphsim
+from abp import clifford
 import random
 import difflib
 import re
@@ -44,8 +45,13 @@ def test_local_rotations():
         compare(a, b)
 
 
-def test_cz_table():
+def test_cz_table(N=10):
     """ Test the CZ table """
+
+    # Don't test if we are using Pete's CZ table - doesn't make sense
+    if not clifford.legacy_cz:
+        return
+
     for j in range(24):
         a = graphsim.GraphRegister(2)
         b = GraphState()
@@ -65,9 +71,8 @@ def test_cz_table():
 
 
 
-def test_with_cphase_gates_hadamard_only():
+def test_with_cphase_gates_hadamard_only(N=10):
     """ Hadamrds and CPHASEs, deterministic """
-    N=10
 
     a = graphsim.GraphRegister(N)
     b = GraphState()
@@ -84,9 +89,12 @@ def test_with_cphase_gates_hadamard_only():
     compare(a, b)
 
 
-def test_all():
+def test_all(N=10):
     """ Test all gates at random """
-    N=10
+
+    # Don't test if we are using Pete's CZ table - doesn't make sense
+    if not clifford.legacy_cz:
+        return
 
     a = graphsim.GraphRegister(N)
     b = GraphState()
