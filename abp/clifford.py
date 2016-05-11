@@ -9,7 +9,7 @@ from functools import reduce
 import itertools as it
 import numpy as np
 from tqdm import tqdm
-import argparse
+#import argparse
 
 import qi
 
@@ -122,27 +122,28 @@ def get_cz_table(unitaries):
 
 # First try to load tables from cache. If that fails, build them from
 # scratch and store in /tmp/
-os.chdir(tempfile.gettempdir())
+tempdir = tempfile.gettempdir()
+temp = lambda filename: os.path.join(tempdir, filename)
 try:
     if __name__ == "__main__":
         raise IOError
 
     # Parse command line args
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-l", "--legacy", help="Use legacy CZ table", action="store_true", default=False)
-    args = parser.parse_args()
-    legacy_cz = args.legacy
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument("-l", "--legacy", help="Use legacy CZ table", action="store_true", default=False)
+    #args = parser.parse_args()
+    legacy_cz = False
 
-    unitaries = np.load("unitaries.npy")
-    conjugation_table = np.load("conjugation_table.npy")
-    times_table = np.load("times_table.npy")
+    unitaries = np.load(temp("unitaries.npy"))
+    conjugation_table = np.load(temp("conjugation_table.npy"))
+    times_table = np.load(temp("times_table.npy"))
     if legacy_cz:
         import anders_cz
         cz_table = anders_cz.cz_table
     else:
-        cz_table = np.load("cz_table.npy")
+        cz_table = np.load(temp("cz_table.npy"))
 
-    with open("by_name.json") as f:
+    with open(temp("by_name.json")) as f:
         by_name = json.load(f)
 
 
@@ -156,10 +157,11 @@ except IOError:
     cz_table = get_cz_table(unitaries)
 
     # Write it all to disk
-    np.save("unitaries.npy", unitaries)
-    np.save("conjugation_table.npy", conjugation_table)
-    np.save("times_table.npy", times_table)
-    np.save("cz_table.npy", cz_table)
+    np.save(temp("unitaries.npy"), unitaries)
+    np.save(temp("conjugation_table.npy"), conjugation_table)
+    np.save(temp("times_table.npy"), times_table)
+    np.save(temp("cz_table.npy"), cz_table)
 
-    with open("by_name.json", "wb") as f:
+    with open(temp("by_name.json"), "wb") as f:
         json.dump(by_name, f)
+

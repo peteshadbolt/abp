@@ -159,7 +159,15 @@ class GraphState(object):
         """ Convert the graph to JSON form """
         meta = {key: value for key, value in self.meta.items()}
         edge = self.edgelist()
-        return json.dumps({"nodes": self.vops, "edges": edge, "meta": meta})
+        return {"nodes": self.vops, "edges": edge, "meta": meta}
+
+    def from_json(self, data):
+        """ Reconstruct from JSON """
+        self.__init__([])
+        self.vops = data["nodes"]
+        self.meta = data["meta"]
+        self.ngbh = {key: set() for key in self.vops}
+        self.add_edges(data["edges"])
 
     def to_networkx(self):
         """ Convert the graph to a networkx graph """
@@ -222,3 +230,6 @@ class GraphState(object):
             rows.append(s)
         return " \n".join(rows) + " \n"
 
+    def __eq__(self, other):
+        """ Check equality between graphs """
+        return self.ngbh == other.ngbh and self.vops == other.vops

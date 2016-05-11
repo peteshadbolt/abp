@@ -10,6 +10,9 @@ def test_json_basic():
     js = g.to_json()
     assert "edges" in js
     assert "nodes" in js
-    json.loads(js)
+    e = GraphState()
+    assert e != g
+    e.from_json(js)
+    assert e == g
 
 
