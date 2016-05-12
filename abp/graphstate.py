@@ -194,6 +194,8 @@ class GraphState(object):
 
     def layout(self):
         """ Automatically lay out the graph """
+        if self.order()==0:
+            return
         g = self.to_networkx()
         pos = nx.spring_layout(g, dim=3, scale=10)
         average = lambda axis: sum(p[axis]
