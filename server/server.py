@@ -11,6 +11,27 @@ cache = SimpleCache(default_timeout = 10000)
 cache.set("state", abp.GraphState())
 app = Flask(__name__)
 
+class InvalidUsage(Exception):
+    status_code = 400
+
+    def __init__(self, message, status_code=None, payload=None):
+        Exception.__init__(self)
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+        self.payload = payload
+
+    def to_dict(self):
+        rv = dict(self.payload or ())
+        rv['message'] = self.message
+        return rv
+
+@app.errorhandler(InvalidUsage)
+def handle_invalid_usage(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
+
 @app.before_request
 def before_request():
     g.state = cache.get("state")
@@ -40,6 +61,9 @@ def state():
 @app.route("/add_node/<int:node>")
 def add_node(node):
     """ Add a node to the graph """
+    if node in g.state.vops:
+        raise InvalidUsage("Node {} is already in the graph".format(node))
+
     g.state.add_node(node)
     g.state.layout()
     cache.set("needs_update", True)
@@ -49,6 +73,11 @@ def add_node(node):
 def act_local_rotation(node, operation):
     """ Add a node to the graph """
     # TODO: try to lookup the operation first
+    if not node in g.state.vops:
+        raise InvalidUsage("Node {} does not exist".format(node))
+    if not operation in range(24):
+        raise InvalidUsage("Invalid local rotation {}".format(operation))
+
     g.state.act_local_rotation(node, operation)
     cache.set("needs_update", True)
     return jsonify({"act_local_rotation": "okay"})
@@ -56,6 +85,9 @@ def act_local_rotation(node, operation):
 @app.route("/act_cz/<int:a>/<int:b>")
 def act_cz(a, b):
     """ Add a node to the graph """
+    for node in (a, b):
+        if not node in g.state.vops:
+            raise InvalidUsage("Node {} does not exist".format(node))
     g.state.act_cz(a, b)
     g.state.layout()
     cache.set("needs_update", True)

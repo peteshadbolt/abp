@@ -13,40 +13,24 @@ window.onload = init;
 // Clear the whole scene
 function makeScene() {
     var myScene = new THREE.Scene();
-    var grid1 = makeGrid(10, 10, "lightgray");
-    grid1.position.z = -5;
-    myScene.add(grid1);
-
-    var grid2 = makeGrid(10, 10, "lightgray");
-    grid2.rotation.x = Math.PI/2;
-    grid2.position.y = -5;
-    myScene.add(grid2);
-    var grid3 = makeGrid(10, 10, "lightgray");
-    grid3.rotation.y = Math.PI/2;
-    grid3.position.x = -5;
-    myScene.add(grid3);
+    var grid = makeGrid(10, 10, "lightgray");
+    myScene.add(grid);
     return myScene;
 }
 
 
 // Render the current frame to the screen
 function render() {
-    renderer.render(scene, camera);
+    requestAnimationFrame(function () {
+        renderer.render(scene, camera);
+    });
 }
-
-// This is the main control loop
-function loopForever() {
-    controls.update();
-    requestAnimationFrame(loopForever);
-}
-
 
 // This just organises kickoff
 function startMainLoop() {
     scene = makeScene();
     controls.addEventListener("change", render);
     poll();
-    loopForever();
 }
 
 // Someone resized the window
