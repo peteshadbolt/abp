@@ -6,6 +6,7 @@ import itertools as it
 import clifford
 import json
 import qi
+import shelve
 try:
     import networkx as nx
 except ImportError:

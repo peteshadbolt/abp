@@ -49,6 +49,14 @@ function startMainLoop() {
     loopForever();
 }
 
+// Someone resized the window
+function onWindowResize(evt){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    render();
+}
+
 
 // Called on startup
 function init() {
@@ -61,6 +69,7 @@ function init() {
     renderer.setSize(width, height);
     renderer.setClearColor(0xffffff, 1);
     document.querySelector("body").appendChild(renderer.domElement);
+    window.addEventListener("resize", onWindowResize, false);
 
     // Time to load the materials
     loadMaterials();
@@ -75,7 +84,7 @@ function init() {
     camera.position.set(0, 0, 20);
 
     // Start polling
-    setInterval(poll, 500);
+    setInterval(poll, 1000);
 
     // Run
     startMainLoop();

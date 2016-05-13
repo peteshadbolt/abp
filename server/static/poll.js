@@ -17,7 +17,7 @@ function poll() {
 }
 
 function updateScene(state) {
-    //if (state.update_required === false){return;}
+    if (state.needs_update === false){return;}
     var oldState = scene.getObjectByName("graphstate");
     scene.remove(oldState);
     oldState = null;

@@ -5,7 +5,7 @@ import numpy as np
 import random
 from tqdm import tqdm
 
-REPEATS = 100
+REPEATS = 1
 
 def test_single_qubit(n=1):
     """ A multi qubit test with Hadamards only"""
