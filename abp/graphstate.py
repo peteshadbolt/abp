@@ -88,14 +88,10 @@ class GraphState(object):
         for i in self.ngbh[v]:
             self.vops[i] = clifford.times_table[self.vops[i], sqz_h]
 
-    def act_local_rotation(self, a, op):
+    def act_local_rotation(self, v, op):
         """ Act a local rotation """
-        self.vops[a] = clifford.times_table[op, self.vops[a]]
-
-    def act_local_rotation_by_name(self, qubit, name):
-        """ Shorthand """
-        rotation = clifford.by_name[name]
-        self.act_local_rotation(qubit, rotation)
+        rotation = clifford.by_name[str(op)]
+        self.vops[v] = clifford.times_table[rotation, self.vops[v]]
 
     def act_hadamard(self, qubit):
         """ Shorthand """
@@ -123,15 +119,14 @@ class GraphState(object):
         for neighbour in self.ngbh[node]:
             self.del_edge(node, neighbour)
             if res:
-                self.act_local_rotation_by_name(neighbour, "pz")
+                self.act_local_rotation(neighbour, "pz")
 
-        # Set final state as appropriate
-        # TODO: cache these lookups. sux
+        # Rotate
         if res:
-            self.act_local_rotation_by_name(node, "px")
-            self.act_local_rotation_by_name(node, "hadamard")
+            self.act_local_rotation(node, "px")
+            self.act_local_rotation(node, "hadamard")
         else:
-            self.act_local_rotation_by_name(node, "hadamard")
+            self.act_local_rotation(node, "hadamard")
 
         return res
 

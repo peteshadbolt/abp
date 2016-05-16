@@ -67,8 +67,8 @@ def get_by_name(unitaries):
     """ Get a lookup table of cliffords by name """
     a = {name: find_clifford(u, unitaries)
          for name, u in qi.by_name.items()}
-    b = {get_name(i): i for i in range(24)}
-    a.update(b)
+    a.update({get_name(i): i for i in range(24)})
+    a.update({i: i for i in range(24)})
     return a
 
 
