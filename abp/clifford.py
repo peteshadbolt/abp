@@ -146,8 +146,6 @@ try:
     with open(temp("by_name.json")) as f:
         by_name = json.load(f)
 
-
-    print "Loaded tables from cache"
 except IOError:
     # Spend time building the tables
     unitaries = get_unitaries()

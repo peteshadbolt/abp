@@ -31,6 +31,7 @@ function startMainLoop() {
     scene = makeScene();
     controls.addEventListener("change", render);
     poll();
+    render();
 }
 
 // Someone resized the window
@@ -63,12 +64,12 @@ function init() {
     controls = new THREE.OrbitControls(camera);
 
     // Center the camera
+    // TODO: frustrum
     controls.center.set(0, 0, 0);
     controls.rotateSpeed = 0.2;
-    camera.position.set(0, 0, 20);
+    camera.position.set(0, 0, 40);
 
     // Start polling
-    setInterval(poll, 1000);
 
     // Run
     startMainLoop();

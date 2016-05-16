@@ -1,19 +1,25 @@
 
 function poll() {
-    var xhr = new XMLHttpRequest();
-
-    xhr.onload = function() {
-        var state = JSON.parse(xhr.responseText);
-        updateScene(state);
+    var ws = new WebSocket("ws://localhost:5000/echo");
+    ws.onopen = function()
+    {
+       // Web Socket is connected, send data using send()
+       ws.send("Hello from the browser! I connected okay");
+       console.log("Sent a message to the server");
     };
-
-    xhr.onerror = function(e){
-        //soft_console.innerHTML = "\n" + "Lost connection to server";
+     
+    ws.onmessage = function (evt) 
+    { 
+       var received_msg = evt.data;
+       console.log("I got a message from the server:");
+       console.log(evt.data);
     };
-
-    xhr.open("GET", "/state", true);
-    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    xhr.send();
+     
+    ws.onclose = function()
+    { 
+       ws.send("Bye by from the browser");
+       console.log("Connection is closed..."); 
+    };
 }
 
 function updateScene(state) {
