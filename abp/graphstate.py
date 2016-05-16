@@ -13,7 +13,7 @@ except ImportError:
     print "Could not import networkx: layout will not work"
 
 
-class GraphState(object):
+class BaseGraphState(object):
 
     def __init__(self, nodes = []):
         self.ngbh = {}
@@ -231,3 +231,11 @@ class GraphState(object):
     def __eq__(self, other):
         """ Check equality between graphs """
         return self.ngbh == other.ngbh and self.vops == other.vops
+
+class DiffedGraphState(BaseGraphState):
+    pass
+
+class GraphState(BaseGraphState):
+    pass
+
+
