@@ -6,27 +6,24 @@ import itertools as it
 import clifford
 import json
 import qi
-import networkx as nx
-from websocket import create_connection
-import atexit
+
+try:
+    import networkx as nx
+except ImportError:
+    print "Could not import networkx."
 
 
-class GraphState(object):
+class GraphState():
 
     def __init__(self, nodes=[]):
-        self.ngbh = {}
-        self.vops = {}
-        self.meta = {}
-        try:
-            self.add_nodes(nodes)
-        except TypeError:
-            self.add_nodes(xrange(nodes))
+        self.ngbh, self.vops, self.meta = {}, {}, {}
+        self.add_nodes(nodes)
 
-    def add_node(self, v):
+    def add_node(self, v, meta={}):
         """ Add a node """
         self.ngbh[v] = set()
         self.vops[v] = clifford.by_name["hadamard"]
-        self.meta[v] = dict()
+        self.meta[v] = meta
 
     def add_nodes(self, nodes):
         """ Add a buncha nodes """
@@ -62,10 +59,10 @@ class GraphState(object):
 
     def edgelist(self):
         """ Describe a graph as an edgelist """
-        edges = frozenset(tuple(sorted((i, n)))
+        edges = set(tuple(sorted((i, n)))
                           for i, v in self.ngbh.items()
                           for n in v)
-        return [tuple(e) for e in edges]
+        return tuple(edges)
 
     def remove_vop(self, a, avoid):
         """ Reduces VOP[a] to the identity """
@@ -230,30 +227,4 @@ class GraphState(object):
         return self.ngbh == other.ngbh and self.vops == other.vops
 
 
-class VisibleGraphState(GraphState):
 
-    def __init__(self, *args, **kwargs):
-        GraphState.__init__(self, *args, **kwargs)
-        self.ws = create_connection("ws://localhost:5001")
-        atexit.register(self.ws.close)
-        self.send("clear")
-
-    def send(self, method, *args, **kwargs):
-        kwargs.update({"method": method})
-        self.ws.send(json.dumps(kwargs))
-
-    def add_node(self, node):
-        GraphState.add_node(self, node)
-        self.send("add_node", node=node)
-
-    def add_edge(self, start, end):
-        GraphState.add_edge(self, start, end)
-        self.send("add_edge", start=start, end=end)
-
-    def del_edge(self, start, end):
-        GraphState.del_edge(self, start, end)
-        self.send("del_edge", start=start, end=end)
-
-    def act_local_rotation(self, node, operation):
-        GraphState.del_edge(self, start, end)
-        self.send("update_vop", node=node, vop=self.vops[node])

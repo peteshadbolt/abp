@@ -2,9 +2,10 @@ from websocket_server import WebsocketServer
 import threading
 
 clients = []
-state = "awd"
+#state = "awd"
 
 def new_message(client, server, message):
+    print "Sending message ..."
     server.send_message_to_all(message)
 
 def new_client(client, server):
