@@ -1,25 +1,20 @@
-
 function poll() {
-    var ws = new WebSocket("ws://localhost:5000/diff");
-    ws.onopen = function()
-    {
-       // Web Socket is connected, send data using send()
-       ws.send("Hello from the browser! I connected okay");
-       console.log("Sent a message to the server");
+    var xhr = new XMLHttpRequest();
+    xhr.timeout = 60000;
+
+    xhr.onload = function() {
+        var state = JSON.parse(xhr.responseText);
+        updateScene(state);
+        poll();
     };
-     
-    ws.onmessage = function (evt) 
-    { 
-       var received_msg = evt.data;
-       console.log("I got a message from the server:");
-       console.log(evt.data);
+
+    xhr.onerror = function(e){
+        poll();
     };
-     
-    ws.onclose = function()
-    { 
-       ws.send("Bye by from the browser");
-       console.log("Connection is closed..."); 
-    };
+
+    xhr.open("GET", "/state", true);
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    xhr.send();
 }
 
 function updateScene(state) {

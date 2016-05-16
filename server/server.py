@@ -1,31 +1,24 @@
-from flask import Flask, request, render_template, jsonify
-from flask_sockets import Sockets
-from werkzeug.contrib.cache import SimpleCache
-import werkzeug.serving
-import json
-import abp
+from websocket_server import WebsocketServer
+import threading
 
-cache = SimpleCache(default_timeout = 10000)
-cache.set("state", abp.GraphState())
-app = Flask(__name__)
-sockets = Sockets(app)
+clients = []
+state = "awd"
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+def new_message(client, server, message):
+    server.send_message_to_all(message)
 
-@sockets.route('/diff')
-def diff_socket(ws):
-    while not ws.closed:
-        message = ws.receive()
-        print message
-        ws.send("Hi from the server, you said '{}'".format(message))
+def new_client(client, server):
+    print "Client {} connected.".format(client["id"])
+    clients.append(client)
 
-@werkzeug.serving.run_with_reloader
-def runServer():
-    from gevent import pywsgi
-    from geventwebsocket.handler import WebSocketHandler
-    app.debug = True
-    ws = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
-    ws.serve_forever()
+def client_left(client, server):
+    print "Client {} disconnected.".format(client["id"])
+    clients.remove(client)
+
+if __name__ == '__main__':
+    server = WebsocketServer(5001)
+    server.set_fn_new_client(new_client)
+    server.set_fn_message_received(new_message)
+    server.set_fn_client_left(client_left)
+    server.run_forever()
 

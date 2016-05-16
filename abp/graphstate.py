@@ -6,16 +6,14 @@ import itertools as it
 import clifford
 import json
 import qi
-import shelve
-try:
-    import networkx as nx
-except ImportError:
-    print "Could not import networkx: layout will not work"
+import networkx as nx
+from websocket import create_connection
+import atexit
 
 
-class BaseGraphState(object):
+class GraphState(object):
 
-    def __init__(self, nodes = []):
+    def __init__(self, nodes=[]):
         self.ngbh = {}
         self.vops = {}
         self.meta = {}
@@ -23,7 +21,6 @@ class BaseGraphState(object):
             self.add_nodes(nodes)
         except TypeError:
             self.add_nodes(xrange(nodes))
-
 
     def add_node(self, v):
         """ Add a node """
@@ -161,7 +158,7 @@ class BaseGraphState(object):
         """ Reconstruct from JSON """
         self.__init__([])
         self.vops = {int(key): value for key, value in data["nodes"].items()}
-        self.meta = {int(key): value for key, value in data["meta"].items()}        
+        self.meta = {int(key): value for key, value in data["meta"].items()}
         self.ngbh = {int(key): set() for key in self.vops}
         self.add_edges(data["edges"])
 
@@ -190,7 +187,7 @@ class BaseGraphState(object):
 
     def layout(self):
         """ Automatically lay out the graph """
-        if self.order()==0:
+        if self.order() == 0:
             return
         g = self.to_networkx()
         pos = nx.spring_layout(g, dim=3, scale=10)
@@ -199,8 +196,8 @@ class BaseGraphState(object):
         ax, ay, az = average(0), average(1), average(2)
         for key, (x, y, z) in pos.items():
             self.meta[key]["pos"] = {
-                "x": x - ax, 
-                "y": y - ay, 
+                "x": x - ax,
+                "y": y - ay,
                 "z": z - az}
 
     def to_stabilizer(self):
@@ -232,10 +229,31 @@ class BaseGraphState(object):
         """ Check equality between graphs """
         return self.ngbh == other.ngbh and self.vops == other.vops
 
-class DiffedGraphState(BaseGraphState):
-    pass
 
-class GraphState(BaseGraphState):
-    pass
+class VisibleGraphState(GraphState):
 
+    def __init__(self, *args, **kwargs):
+        GraphState.__init__(self, *args, **kwargs)
+        self.ws = create_connection("ws://localhost:5001")
+        atexit.register(self.ws.close)
+        self.send("clear")
 
+    def send(self, method, *args, **kwargs):
+        kwargs.update({"method": method})
+        self.ws.send(json.dumps(kwargs))
+
+    def add_node(self, node):
+        GraphState.add_node(self, node)
+        self.send("add_node", node=node)
+
+    def add_edge(self, start, end):
+        GraphState.add_edge(self, start, end)
+        self.send("add_edge", start=start, end=end)
+
+    def del_edge(self, start, end):
+        GraphState.del_edge(self, start, end)
+        self.send("del_edge", start=start, end=end)
+
+    def act_local_rotation(self, node, operation):
+        GraphState.del_edge(self, start, end)
+        self.send("update_vop", node=node, vop=self.vops[node])

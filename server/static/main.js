@@ -26,14 +26,6 @@ function render() {
     });
 }
 
-// This just organises kickoff
-function startMainLoop() {
-    scene = makeScene();
-    controls.addEventListener("change", render);
-    poll();
-    render();
-}
-
 // Someone resized the window
 function onWindowResize(evt){
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -69,8 +61,9 @@ function init() {
     controls.rotateSpeed = 0.2;
     camera.position.set(0, 0, 40);
 
-    // Start polling
-
     // Run
-    startMainLoop();
+    scene = makeScene();
+    controls.addEventListener("change", render);
+    poll();
+    render();
 }

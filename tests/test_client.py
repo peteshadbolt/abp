@@ -3,7 +3,7 @@ import abp, json
 import time
 
 
-def _test_client():
+def test_client():
     client = abp.Client(clear=True)
 
     client.clear()
