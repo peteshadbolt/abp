@@ -1,6 +1,6 @@
 
 function poll() {
-    var ws = new WebSocket("ws://localhost:5000/echo");
+    var ws = new WebSocket("ws://localhost:5000/diff");
     ws.onopen = function()
     {
        // Web Socket is connected, send data using send()
