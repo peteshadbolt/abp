@@ -1,5 +1,12 @@
-function poll() {
-    var ws = new WebSocket("ws://localhost:5001");
+var ws;
+
+function add_node(node){
+    data = {"method": "add_node", "node": node};
+    ws.send(JSON.stringify(data));
+}
+
+function connect_to_server() {
+    ws = new WebSocket("ws://localhost:5001");
     ws.onopen = function()
     {
        console.log("Connected to server.");
@@ -17,5 +24,4 @@ function poll() {
     };
 }
 
-window.onload = poll;
 

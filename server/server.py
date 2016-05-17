@@ -1,12 +1,24 @@
 from websocket_server import WebsocketServer
 import threading
+import abp
+import json
 
 clients = []
-#state = "awd"
+state = abp.VisibleGraphState()
+
+def compute_diff(decoded_message):
+
 
 def new_message(client, server, message):
-    print "Sending message ..."
-    server.send_message_to_all(message)
+    decoded_message = json.loads(message)
+    if "diff" in decoded_message:
+        server.send_message_to_all(message)
+    elif "method" in decoded_message:
+        message = compute_diff(decoded_message)
+        server.send_message_to_all(message)
+    else:
+        print "Could not interpret message"
+
 
 def new_client(client, server):
     print "Client {} connected.".format(client["id"])

@@ -13,7 +13,9 @@ window.onload = init;
 // Clear the whole scene
 function makeScene() {
     var myScene = new THREE.Scene();
-    var grid = makeGrid(10, 10, "lightgray");
+    var grid = new THREE.GridHelper(20, 2);
+    grid.rotation.x = Math.PI/2;
+    grid.setColors(0xdddddd, 0xeeeeee);
     myScene.add(grid);
     return myScene;
 }
@@ -48,6 +50,10 @@ function init() {
     document.querySelector("body").appendChild(renderer.domElement);
     window.addEventListener("resize", onWindowResize, false);
 
+    renderer.domElement.addEventListener("click", function (evt) {
+        add_node(0);
+    });
+
     // Time to load the materials
     loadMaterials();
 
@@ -64,6 +70,6 @@ function init() {
     // Run
     scene = makeScene();
     controls.addEventListener("change", render);
-    poll();
+    connect_to_server();
     render();
 }
