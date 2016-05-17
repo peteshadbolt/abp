@@ -7,8 +7,10 @@ function poll() {
      
     ws.onmessage = function (evt) 
     { 
-       var received_msg = evt.data;
-       console.log("Message received: " + evt.data);
+       var new_state = JSON.parse(evt.data);
+       vops = new_state.vops;
+       ngbh = new_state.ngbh;
+       updateScene();
     };
      
     ws.onclose = function()
@@ -16,6 +18,4 @@ function poll() {
        console.log("Connection was closed.");
     };
 }
-
-window.onload = poll;
 

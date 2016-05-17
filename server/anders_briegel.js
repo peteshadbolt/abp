@@ -99,6 +99,19 @@ function act_cz(a, b){
     }
 }
 
+function edgelist() {
+    var seen = {};
+    var output = [];
+    for (var i in ngbh) {
+        for (var j in ngbh[i]) {
+            if (!Object.prototype.hasOwnProperty.call(seen, j)){
+                output.push([i, j]);
+            }
+        }
+        seen[i] = true;
+    }
+    return output;
+}
 
 function log_graph_state() {
     console.log(JSON.stringify(vops));

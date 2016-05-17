@@ -1,26 +1,28 @@
-function updateScene(state) {
+var colors = ["red", "green", "yellow", "blue", "pink", "orange", "purple"];
+
+function updateScene() {
     var oldState = scene.getObjectByName("graphstate");
     scene.remove(oldState);
     oldState = null;
    
     var geometry = new THREE.Geometry();
-    //nodeGeometry.labels = [];
-    //nodeGeometry.colors = [];
-    for (var i in state.nodes) {
-        var node = state.nodes[i];
-        var pos = state.meta[i].pos;
-        var vertex = new THREE.Vector3(pos.x, pos.y, pos.z);
+    for (var i in vops) {
+        var vop = vops[i];
+        var pos = meta[i].position;
+        var vertex = new THREE.Vector3(pos[0], pos[1], pos[2]);
         geometry.vertices.push(vertex);
-        //geometry.colors[i] = new THREE.Color(n.color);
-        //geometry.labels[i] = n.label;
+        geometry.colors[i] = new THREE.Color(colors[vops[i] % colors.length]);
     }
 
     var edges = new THREE.Object3D();
-    for (i=0; i < state.edges.length; ++i) {
-        var edge = state.edges[i];
-        var start = state.meta[edge[0]].pos;
-        var end = state.meta[edge[1]].pos;
-        var newEdge = makeEdge(start, end);
+    var my_edges = edgelist();
+    for (i=0; i < my_edges.length; ++i) {
+        var edge = my_edges[i];
+        var start = meta[edge[0]].position;
+        var startpos = new THREE.Vector3(start[0], start[1], start[2]);
+        var end = meta[edge[1]].position;
+        var endpos = new THREE.Vector3(end[0], end[1], end[2]);
+        var newEdge = makeEdge(startpos, endpos);
         edges.add(newEdge);
     }
 

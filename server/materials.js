@@ -14,11 +14,11 @@ function loadMaterials(argument) {
     materials.edge = new THREE.LineBasicMaterial(lineStyle);
 
     var pointStyle = {
-        color: 0xcccccc,
         size: 0.1,
         map: textures.sprite,
         alphaTest: 0.5,
         transparent: true,
+        vertexColors:THREE.VertexColors
     };
     materials.point = new THREE.PointsMaterial(pointStyle);
 
@@ -27,7 +27,7 @@ function loadMaterials(argument) {
         map: textures.sprite,
         alphaTest: 0.5,
         transparent: true,
-        color: "red"
+        vertexColors:THREE.VertexColors
     };
 
     materials.qubit = new THREE.PointsMaterial(qubitStyle);

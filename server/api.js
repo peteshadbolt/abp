@@ -9,8 +9,11 @@ function connect_to_server() {
      
     ws.onmessage = function (evt) 
     { 
-       var received_msg = evt.data;
-       console.log("Message received: " + evt.data);
+       var new_state = JSON.parse(evt.data);
+       vops = new_state.vops;
+       ngbh = new_state.ngbh;
+       meta = new_state.meta;
+       updateScene();
     };
      
     ws.onclose = function()
