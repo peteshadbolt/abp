@@ -1,7 +1,8 @@
-import json
 from websocket_server import WebsocketServer
-import abp
-
+from SimpleHTTPServer import SimpleHTTPRequestHandler
+from BaseHTTPServer import HTTPServer
+import os, sys, threading, time
+import webbrowser
 
 clients = []
 
@@ -18,10 +19,23 @@ def client_left(client, server):
     clients.remove(client)
 
 if __name__ == '__main__':
+    # Change to the right working dir
+    where = os.path.join(sys.path[0], "../static")
+    os.chdir(where)
+
+    # Start the HTTP server
+    httpserver = HTTPServer(('', 5001), SimpleHTTPRequestHandler)
+    thread = threading.Thread(target = httpserver.serve_forever)
+    thread.daemon = True
+    thread.start()
+    time.sleep(2)
+    webbrowser.open("http://localhost:5001/")
+
+    # Start the websocket server
     server = WebsocketServer(5000)
     server.set_fn_new_client(new_client)
     server.set_fn_message_received(new_message)
     server.set_fn_client_left(client_left)
     server.run_forever()
-
+    httpserver.shutdown()
 
