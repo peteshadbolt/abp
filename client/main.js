@@ -5,6 +5,7 @@ var mouseprevpos = {};
 // Run on startup
 window.onload = init;
 
+
 // Clear the whole scene
 function makeScene() {
     var myScene = new THREE.Scene();
@@ -55,7 +56,7 @@ function bind_events() {
 
         intersection.x = Math.round(intersection.x);
         intersection.y = Math.round(intersection.y);
-        add_node(Object.keys(vops).length, intersection);
+        add_node(Object.keys(vops).length, {"position":intersection});
         updateScene();
     });
     controls.addEventListener("change", render);

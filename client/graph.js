@@ -9,7 +9,7 @@ function updateScene() {
     for (var i in vops) {
         var vop = vops[i];
         var pos = meta[i].position;
-        var vertex = new THREE.Vector3(pos[0], pos[1], pos[2]);
+        var vertex = new THREE.Vector3(pos.x, pos.y, pos.z);
         geometry.vertices.push(vertex);
         geometry.colors[i] = new THREE.Color(colors[vops[i] % colors.length]);
     }

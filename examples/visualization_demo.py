@@ -1,5 +1,6 @@
 from abp.viz import VisibleGraphState
 import numpy as np
+import time
 
 s = VisibleGraphState()
 for i in range(200):
@@ -9,4 +10,6 @@ for i in range(200):
     s.act_local_rotation(i, "hadamard")
 for i in range(200-1):
     s.act_cz(i, i+1)
+    time.sleep(.3)
+    s.update()
 
