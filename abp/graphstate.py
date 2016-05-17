@@ -99,7 +99,7 @@ class GraphState():
             self.remove_vop(b, a)
         if self.ngbh[a] - {b}:
             self.remove_vop(a, b)
-        edge = self.has_edge(a, b)
+        edge = int(self.has_edge(a, b))
         new_edge, self.vops[a], self.vops[
             b] = clifford.cz_table[edge, self.vops[a], self.vops[b]]
         if new_edge != edge:
