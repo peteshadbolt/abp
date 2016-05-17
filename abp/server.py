@@ -1,7 +1,7 @@
-from websocket_server import WebsocketServer
-import threading
-import abp
 import json
+from websocket_server import WebsocketServer
+import abp
+
 
 clients = []
 

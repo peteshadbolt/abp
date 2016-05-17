@@ -2,13 +2,9 @@
 Allows us to visualize the state in a browser
 """
 
-import atexit
-import threading
-import time
-from websocket import create_connection
+import atexit, json
 from graphstate import GraphState
-import json
-
+from websocket import create_connection
 
 class VisibleGraphState(GraphState):
 
@@ -35,3 +31,4 @@ class VisibleGraphState(GraphState):
         """ Call this function when you are ready to send data to the browser """
         data = json.dumps(self.to_json())
         self.ws.send(data)
+
