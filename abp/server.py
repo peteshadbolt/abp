@@ -4,10 +4,6 @@ import abp
 import json
 
 clients = []
-state = abp.VisibleGraphState()
-
-def compute_diff(decoded_message):
-
 
 def new_message(client, server, message):
     decoded_message = json.loads(message)
@@ -29,7 +25,7 @@ def client_left(client, server):
     clients.remove(client)
 
 if __name__ == '__main__':
-    server = WebsocketServer(5001)
+    server = WebsocketServer(5000)
     server.set_fn_new_client(new_client)
     server.set_fn_message_received(new_message)
     server.set_fn_client_left(client_left)
