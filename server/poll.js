@@ -1,7 +1,5 @@
-var ws;
-
-function connect_to_server() {
-    ws = new WebSocket("ws://localhost:5001");
+function poll() {
+    var ws = new WebSocket("ws://localhost:5001");
     ws.onopen = function()
     {
        console.log("Connected to server.");
@@ -19,4 +17,5 @@ function connect_to_server() {
     };
 }
 
+window.onload = poll;
 

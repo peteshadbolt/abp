@@ -14,6 +14,8 @@ window.onload = init;
 function makeScene() {
     var myScene = new THREE.Scene();
     var grid = new THREE.GridHelper(20, 2);
+    graph = new graph_model();
+    myScene.add(graph.object);
     grid.rotation.x = Math.PI/2;
     grid.setColors(0xdddddd, 0xeeeeee);
     myScene.add(grid);

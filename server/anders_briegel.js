@@ -105,9 +105,3 @@ function log_graph_state() {
     console.log(ngbh);
 }
 
-add_node(0);
-add_node(1);
-act_local_rotation(0, 10);
-act_local_rotation(1, 10);
-act_cz(0, 1);
-log_graph_state();
