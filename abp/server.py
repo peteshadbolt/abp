@@ -6,15 +6,8 @@ import abp
 clients = []
 
 def new_message(client, server, message):
-    decoded_message = json.loads(message)
-    if "diff" in decoded_message:
-        server.send_message_to_all(message)
-    elif "method" in decoded_message:
-        message = compute_diff(decoded_message)
-        server.send_message_to_all(message)
-    else:
-        print "Could not interpret message"
-
+    print "Receieved update from client {}.".format(client["id"])
+    server.send_message_to_all(message)
 
 def new_client(client, server):
     print "Client {} connected.".format(client["id"])
@@ -30,4 +23,5 @@ if __name__ == '__main__':
     server.set_fn_message_received(new_message)
     server.set_fn_client_left(client_left)
     server.run_forever()
+
 

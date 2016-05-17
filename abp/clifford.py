@@ -9,7 +9,7 @@ from functools import reduce
 import itertools as it
 import numpy as np
 from tqdm import tqdm
-#import argparse
+# import argparse
 
 import qi
 
@@ -120,6 +120,23 @@ def get_cz_table(unitaries):
     return cz_table
 
 
+def write_javascript_tables():
+    """ Write the tables to javascript files for consumption in the browser """
+    path = os.path.dirname(sys.argv[0])
+    path = os.path.split(path)[0]
+    with open(os.path.join(path, "client/tables.js"), "w") as f:
+        f.write("var decompositions = {};\n"\
+                .format(json.dumps(decompositions)))
+        f.write("var conjugation_table = {};\n"\
+                .format(json.dumps(conjugation_table.tolist())))
+        f.write("var times_table = {};\n"\
+                .format(json.dumps(times_table.tolist())))
+        f.write("var cz_table = {};\n"\
+                .format(json.dumps(cz_table.tolist())))
+        f.write("var clifford = {};\n"\
+                .format(json.dumps(by_name)))
+
+
 # First try to load tables from cache. If that fails, build them from
 # scratch and store in /tmp/
 tempdir = tempfile.gettempdir()
@@ -129,9 +146,9 @@ try:
         raise IOError
 
     # Parse command line args
-    #parser = argparse.ArgumentParser()
-    #parser.add_argument("-l", "--legacy", help="Use legacy CZ table", action="store_true", default=False)
-    #args = parser.parse_args()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("-l", "--legacy", help="Use legacy CZ table", action="store_true", default=False)
+    # args = parser.parse_args()
     legacy_cz = False
 
     unitaries = np.load(temp("unitaries.npy"))
@@ -159,7 +176,7 @@ except IOError:
     np.save(temp("conjugation_table.npy"), conjugation_table)
     np.save(temp("times_table.npy"), times_table)
     np.save(temp("cz_table.npy"), cz_table)
+    write_javascript_tables()
 
     with open(temp("by_name.json"), "wb") as f:
         json.dump(by_name, f)
-

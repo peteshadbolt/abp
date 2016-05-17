@@ -16,6 +16,7 @@ function connect_to_server() {
      
     ws.onmessage = function (evt) 
     { 
+        console.log("Received update");
        var new_state = JSON.parse(evt.data);
        vops = new_state.vops;
        ngbh = new_state.ngbh;
