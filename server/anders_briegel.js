@@ -101,7 +101,7 @@ function act_cz(a, b){
 
 
 function log_graph_state() {
-    console.log(vops);
-    console.log(ngbh);
+    console.log(JSON.stringify(vops));
+    console.log(JSON.stringify(ngbh));
 }
 
