@@ -1,7 +1,10 @@
-var ngbh = {};
-var vops = {};
-var meta = {};
 var abj = {};
+abj.ngbh = {};
+abj.vops = {};
+abj.meta = {};
+ngbh = abj.ngbh;
+vops = abj.vops;
+meta = abj.meta;
 abj.add_node = function(node, m) {
     ngbh[node] = {};
     vops[node] = clifford.hadamard;
