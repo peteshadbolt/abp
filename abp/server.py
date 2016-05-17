@@ -1,7 +1,7 @@
 from websocket_server import WebsocketServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from BaseHTTPServer import HTTPServer
-import os, sys, threading, time
+import os, sys, threading
 import webbrowser
 
 clients = []
@@ -28,7 +28,6 @@ if __name__ == '__main__':
     thread = threading.Thread(target = httpserver.serve_forever)
     thread.daemon = True
     thread.start()
-    time.sleep(2)
     webbrowser.open("http://localhost:5001/")
 
     # Start the websocket server
