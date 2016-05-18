@@ -19,7 +19,7 @@ websocket.connect = function(update){
      
     ws.onclose = function(evt)
     { 
-        gui.serverMessage("Connection to server lost. <a href='#' onclick='javascript:connect_to_server()'>Reconnect</a>.");
+        gui.serverMessage("Connection to server lost. <a href='#' onclick='javascript:websocket.connect()'>Reconnect</a>.");
     };
 };
 

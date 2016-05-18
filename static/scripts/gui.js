@@ -1,6 +1,8 @@
 var gui = {};
 gui.construct = function() {
-    gui.renderer = new THREE.WebGLRenderer();
+    gui.renderer = new THREE.WebGLRenderer({
+        "antialias": true
+    });
     gui.renderer.setSize(window.innerWidth, window.innerHeight);
     gui.renderer.setClearColor(0xffffff, 1);
     document.querySelector("body").appendChild(gui.renderer.domElement);
@@ -10,10 +12,10 @@ gui.construct = function() {
 
     gui.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.3, 1000);
     gui.controls = new THREE.OrbitControls(gui.camera);
+    gui.controls.addEventListener("change", gui.render);
     gui.controls.center.set(0, 0, 0);
     gui.controls.rotateSpeed = 0.2;
     gui.camera.position.set(0, 0, 20);
-    gui.controls.addEventListener("change", gui.render);
 };
 
 // Someone resized the window
@@ -27,8 +29,9 @@ gui.onWindowResize = function(evt) {
 
 // Render the current frame to the screen
 gui.render = function() {
-    console.log("render");
-    gui.renderer.render(gui.scene, gui.camera);
+    requestAnimationFrame(function() {
+        gui.renderer.render(gui.scene, gui.camera);
+    });
 };
 
 // Make the extra bits of gui
@@ -41,8 +44,25 @@ gui.makeScene = function() {
 };
 
 // Put an HTML message to the screen
-gui.serverMessage = function(msgtext){
+gui.serverMessage = function(msgtext) {
     message.innerHTML = msgtext;
     message.className = "visible";
 };
+
+gui.loop = function() {
+    gui.controls.update();
+    requestAnimationFrame(gui.loop);
+}
+
+// Try to add a qubit at the current mouse position
+gui.addQubitAtMouse = function(event) {
+    this.raycaster.setFromCamera(mouse, camera);
+    var intersection = this.raycaster.ray.intersectPlane(this.plane);
+    intersection.x = Math.round(intersection.x);
+    intersection.y = Math.round(intersection.y);
+    abj.add_node(Object.keys(vops).length, {
+        "position": intersection
+    });
+    graph.updateScene();
+}
 

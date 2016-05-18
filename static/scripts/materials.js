@@ -1,38 +1,32 @@
 var materials = {};
-materials.textures = {
-    sprite: new THREE.Texture()
+
+var curveProperties = {
+    splineDensity: 8,
+    curvature: 20
 };
 
 materials.load = function() {
-    materials.textures.sprite = new THREE.Texture(document.getElementById("ball"));
-    materials.textures.sprite.needsUpdate = true;
-};
-
-materials.curveProperties = {
-    splineDensity: 10,
-    curvature: 100
-};
-
-materials.materials = {
-    edge: new THREE.LineBasicMaterial({
+    var sprite = new THREE.Texture(document.getElementById("ball"));
+    sprite.needsUpdate = true;
+    materials.edge = new THREE.LineBasicMaterial({
         color: "gray",
         transparent: false,
         linewidth: 1
-    }),
-    point: new THREE.PointsMaterial({
+    });
+    materials.point = new THREE.PointsMaterial({
         size: 0.1,
-        map: materials.textures.sprite,
+        map: sprite,
         alphaTest: 0.5,
         transparent: true,
         vertexColors: THREE.VertexColors
-    }),
-    qubit: qubit = new THREE.PointsMaterial({
-        size: 0.8,
-        map: materials.textures.sprite,
+    });
+    materials.qubit = new THREE.PointsMaterial({
+        size: 0.3,
+        map: sprite,
         alphaTest: 0.5,
         transparent: true,
         vertexColors: THREE.VertexColors
-    })
+    });
 };
 
 materials.makeCurve = function(a, b) {
@@ -43,6 +37,6 @@ materials.makeCurve = function(a, b) {
     var geometry = new THREE.Geometry();
     var splinePoints = spline.getPoints(curveProperties.splineDensity);
     Array.prototype.push.apply(geometry.vertices, splinePoints);
-    return new THREE.Line(geometry, materials.materials.edge);
+    return new THREE.Line(geometry, materials.edge);
 };
 

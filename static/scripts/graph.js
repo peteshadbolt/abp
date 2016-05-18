@@ -7,24 +7,25 @@ graph.hook = function() {
 };
 
 graph.update = function(json) {
-    anders_briegel.vops = json.vops;
-    anders_briegel.ngbh = json.ngbh;
-    anders_briegel.meta = json.meta;
+    abj.vops = json.vops;
+    abj.ngbh = json.ngbh;
+    abj.meta = json.meta;
     graph.updateScene();
 };
 
 graph.updateScene = function() {
-    var oldState = scene.getObjectByName("graphstate");
-    scene.remove(oldState);
-    oldState = null;
+    if (graph.object){gui.scene.remove(graph.object);}
+    graph.object = null;
+    console.log("update");
 
     var geometry = new THREE.Geometry();
+    geometry.colors = [];
     for (var i in abj.vops) {
         var vop = abj.vops[i];
         var pos = abj.meta[i].position;
         var vertex = new THREE.Vector3(pos.x, pos.y, pos.z);
         geometry.vertices.push(vertex);
-        geometry.colors[i] = new THREE.Color(colors[abj.vops[i] % colors.length]);
+        geometry.colors.push(new THREE.Color(graph.colors[abj.vops[i] % graph.colors.length]));
     }
 
     var edges = new THREE.Object3D();
@@ -32,18 +33,18 @@ graph.updateScene = function() {
     for (i = 0; i < my_edges.length; ++i) {
         var edge = my_edges[i];
         var start = abj.meta[edge[0]].position;
-        var startpos = new THREE.Vector3(start[0], start[1], start[2]);
+        var startpos = new THREE.Vector3(start.x, start.y, start.z);
         var end = abj.meta[edge[1]].position;
-        var endpos = new THREE.Vector3(end[0], end[1], end[2]);
-        var newEdge = makeCurve(startpos, endpos);
+        var endpos = new THREE.Vector3(end.x, end.y, end.z);
+        var newEdge = materials.makeCurve(startpos, endpos);
         edges.add(newEdge);
     }
 
     var particles = new THREE.Points(geometry, materials.qubit);
-    var newState = new THREE.Object3D();
-    newState.name = "graphstate";
-    newState.add(particles);
-    newState.add(edges);
-    scene.add(newState);
-    render();
+    graph.object = new THREE.Object3D();
+    graph.object.name = "graphstate";
+    graph.object.add(particles);
+    graph.object.add(edges);
+    gui.scene.add(graph.object);
+    gui.render();
 };

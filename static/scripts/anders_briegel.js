@@ -1,15 +1,9 @@
 var abj = {};
-abj.ngbh = {};
-abj.vops = {};
-abj.meta = {};
-ngbh = abj.ngbh;
-vops = abj.vops;
-meta = abj.meta;
 
 abj.add_node = function(node, m) {
-    ngbh[node] = {};
-    vops[node] = tables.clifford.hadamard;
-    meta[node] = m ? m : {};
+    abj.ngbh[node] = {};
+    abj.vops[node] = tables.clifford.hadamard;
+    abj.meta[node] = m ? m : {};
 };
 
 abj.add_nodes = function(nodes) {
@@ -17,8 +11,8 @@ abj.add_nodes = function(nodes) {
 };
 
 abj.add_edge = function(a, b) {
-    ngbh[a][b] = true;
-    ngbh[b][a] = true;
+    abj.ngbh[a][b] = true;
+    abj.ngbh[b][a] = true;
 };
 
 abj.add_edges = function(edges) {
@@ -28,12 +22,12 @@ abj.add_edges = function(edges) {
 };
 
 abj.del_edge = function(a, b) {
-    delete ngbh[a][b];
-    delete ngbh[b][a];
+    delete abj.ngbh[a][b];
+    delete abj.ngbh[b][a];
 };
 
 abj.has_edge = function(a, b) {
-    return Object.prototype.hasOwnProperty.call(ngbh[a], b);
+    return Object.prototype.hasOwnProperty.call(abj.ngbh[a], b);
 };
 
 abj.toggle_edge = function(a, b) {
@@ -45,7 +39,7 @@ abj.toggle_edge = function(a, b) {
 };
 
 abj.get_swap = function(node, avoid) {
-    for (var i in ngbh[node]) {
+    for (var i in abj.ngbh[node]) {
         if (i != avoid) {
             return i;
         }
@@ -55,7 +49,7 @@ abj.get_swap = function(node, avoid) {
 
 abj.remove_vop = function(node, avoid) {
     var swap_qubit = get_swap(node, avoid);
-    var decomposition = decompositions[vops[node]];
+    var decomposition = decompositions[abj.vops[node]];
     for (var i = decomposition.length - 1; i >= 0; --i) {
         var v = decomposition[i];
         local_complementation(v == "x" ? a : swap_qubit);
@@ -63,19 +57,19 @@ abj.remove_vop = function(node, avoid) {
 };
 
 abj.local_complementation = function(node) {
-    var keys = Object.keys(ngbh[node]);
+    var keys = Object.keys(abj.ngbh[node]);
     for (var i = 0; i < keys.length; ++i) {
         for (var j = i + 1; j < keys.length; ++j) {
             toggle_edge(keys[i], keys[j]);
         }
-        vops[i] = tables.times_table[vops[keys[i]]][sqz_h];
+        abj.vops[i] = tables.times_table[abj.vops[keys[i]]][sqz_h];
     }
-    vops[node] = tables.times_table[vops[node]][msqx_h];
+    abj.vops[node] = tables.times_table[abj.vops[node]][msqx_h];
 };
 
 abj.act_local_rotation = function(node, operation) {
     var rotation = tables.clifford[operation];
-    vops[node] = tables.times_table[rotation][vops[node]];
+    abj.vops[node] = tables.times_table[rotation][abj.vops[node]];
 };
 
 abj.act_hadamard = function(node) {
@@ -87,19 +81,19 @@ abj.is_sole_member = function(node, group) {
 };
 
 abj.act_cz = function(a, b) {
-    if (is_sole_member(ngbh[a], b)) {
+    if (is_sole_member(abj.ngbh[a], b)) {
         remove_vop(a, b);
     }
-    if (is_sole_member(ngbh[b], a)) {
+    if (is_sole_member(abj.ngbh[b], a)) {
         remove_vop(b, a);
     }
-    if (is_sole_member(ngbh[a], b)) {
+    if (is_sole_member(abj.ngbh[a], b)) {
         remove_vop(a, b);
     }
     var edge = has_edge(a, b);
-    var new_state = tables.cz_table[edge ? 1 : 0][vops[a]][vops[b]];
-    vops[a] = new_state[1];
-    vops[b] = new_state[2];
+    var new_state = tables.cz_table[edge ? 1 : 0][abj.vops[a]][abj.vops[b]];
+    abj.vops[a] = new_state[1];
+    abj.vops[b] = new_state[2];
     if (new_state[0] != edge) {
         toggle_edge(a, b);
     }
@@ -108,8 +102,8 @@ abj.act_cz = function(a, b) {
 abj.edgelist = function() {
     var seen = {};
     var output = [];
-    for (var i in ngbh) {
-        for (var j in ngbh[i]) {
+    for (var i in abj.ngbh) {
+        for (var j in abj.ngbh[i]) {
             if (!Object.prototype.hasOwnProperty.call(seen, j)) {
                 output.push([i, j]);
             }
@@ -120,7 +114,7 @@ abj.edgelist = function() {
 };
 
 abj.log_graph_state = function() {
-    console.log(JSON.stringify(vops));
-    console.log(JSON.stringify(ngbh));
+    console.log(JSON.stringify(abj.vops));
+    console.log(JSON.stringify(abj.ngbh));
 };
 
