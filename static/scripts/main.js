@@ -1,10 +1,6 @@
 // Import modules
-requirejs(["anders_briegel"]);
+requirejs(["anders_briegel", "three", "orbitcontrols", "graph"], init);
 var controls, renderer, raycaster, scene, selection, camera;
-
-// Run on startup
-window.onload = init;
-
 
 // Clear the whole scene
 function makeScene() {
@@ -32,20 +28,13 @@ function onWindowResize(evt) {
     render();
 }
 
-
-// Called on startup
-function init() {
+function constructDisplay(){
     // Renderer
-    renderer = new THREE.WebGLRenderer({
-        "antialias": true
-    });
+    renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0xffffff, 1);
     document.querySelector("body").appendChild(renderer.domElement);
     window.addEventListener("resize", onWindowResize, false);
-
-    // Time to load the materials
-    loadMaterials();
 
     // Camera, controls, raycaster
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.3, 1000);
@@ -54,8 +43,12 @@ function init() {
     controls.rotateSpeed = 0.2;
     camera.position.set(0, 0, 20);
     controls.addEventListener("change", render);
+}
 
-    // Run
+
+// Called on startup
+function init() {
+    constructDisplay();
     scene = makeScene();
     connectToServer();
     render();
