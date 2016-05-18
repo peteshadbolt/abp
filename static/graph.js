@@ -1,4 +1,36 @@
 var colors = ["red", "green", "yellow", "blue", "pink", "orange", "purple"];
+var ws;
+
+function connect_to_server() {
+    ws = new WebSocket("ws://localhost:5000");
+    ws.onopen = function()
+    {
+        message.innerHTML = "Connected to server.";
+        message.className = "visible";
+    };
+
+    ws.onerror = function(err)
+    {
+        message.innerHTML = "Could not connect to server.";
+        message.className = "visible";
+    };
+     
+    ws.onmessage = function (evt) 
+    { 
+        console.log("Received update");
+       var new_state = JSON.parse(evt.data);
+       vops = new_state.vops;
+       ngbh = new_state.ngbh;
+       meta = new_state.meta;
+       updateScene();
+    };
+     
+    ws.onclose = function()
+    { 
+        message.innerHTML = "Connection to server lost. <a href='#' onclick='javascript:connect_to_server()'>Reconnect</a>.";
+        message.className = "visible";
+    };
+}
 
 function updateScene() {
     var oldState = scene.getObjectByName("graphstate");
@@ -22,7 +54,7 @@ function updateScene() {
         var startpos = new THREE.Vector3(start[0], start[1], start[2]);
         var end = abj.meta[edge[1]].position;
         var endpos = new THREE.Vector3(end[0], end[1], end[2]);
-        var newEdge = makeEdge(startpos, endpos);
+        var newEdge = makeCurve(startpos, endpos);
         edges.add(newEdge);
     }
 
