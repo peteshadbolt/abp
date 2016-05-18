@@ -1,6 +1,6 @@
+// Import modules
+requirejs(["anders_briegel"]);
 var controls, renderer, raycaster, scene, selection, camera;
-
-var mouseprevpos = {};
 
 // Run on startup
 window.onload = init;
