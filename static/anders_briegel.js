@@ -5,6 +5,7 @@ abj.meta = {};
 ngbh = abj.ngbh;
 vops = abj.vops;
 meta = abj.meta;
+
 abj.add_node = function(node, m) {
     ngbh[node] = {};
     vops[node] = clifford.hadamard;
@@ -45,7 +46,9 @@ abj.toggle_edge = function(a, b) {
 
 abj.get_swap = function(node, avoid) {
     for (var i in ngbh[node]) {
-        if (i != avoid) {return i;}
+        if (i != avoid) {
+            return i;
+        }
     }
     return avoid;
 };
@@ -53,7 +56,7 @@ abj.get_swap = function(node, avoid) {
 abj.remove_vop = function(node, avoid) {
     var swap_qubit = get_swap(node, avoid);
     var decomposition = decompositions[vops[node]];
-    for (var i=decomposition.length-1; i >=0; --i) {
+    for (var i = decomposition.length - 1; i >= 0; --i) {
         var v = decomposition[i];
         local_complementation(v == "x" ? a : swap_qubit);
     }
@@ -61,8 +64,8 @@ abj.remove_vop = function(node, avoid) {
 
 abj.local_complementation = function(node) {
     var keys = Object.keys(ngbh[node]);
-    for (var i=0; i < keys.length; ++i) {
-        for (var j=i+1; j < keys.length; ++j) {
+    for (var i = 0; i < keys.length; ++i) {
+        for (var j = i + 1; j < keys.length; ++j) {
             toggle_edge(keys[i], keys[j]);
         }
         vops[i] = times_table[vops[keys[i]]][sqz_h];
@@ -75,15 +78,15 @@ abj.act_local_rotation = function(node, operation) {
     vops[node] = times_table[rotation][vops[node]];
 };
 
-abj.act_hadamard = function(node){
+abj.act_hadamard = function(node) {
     act_local_rotation(node, 10);
 };
 
-abj.is_sole_member = function(node, group){
+abj.is_sole_member = function(node, group) {
     return group.length == 1 && group[0] == node;
 };
 
-abj.act_cz = function(a, b){
+abj.act_cz = function(a, b) {
     if (is_sole_member(ngbh[a], b)) {
         remove_vop(a, b);
     }
@@ -97,7 +100,7 @@ abj.act_cz = function(a, b){
     var new_state = cz_table[edge ? 1 : 0][vops[a]][vops[b]];
     vops[a] = new_state[1];
     vops[b] = new_state[2];
-    if (new_state[0] != edge){
+    if (new_state[0] != edge) {
         toggle_edge(a, b);
     }
 };
@@ -107,7 +110,7 @@ abj.edgelist = function() {
     var output = [];
     for (var i in ngbh) {
         for (var j in ngbh[i]) {
-            if (!Object.prototype.hasOwnProperty.call(seen, j)){
+            if (!Object.prototype.hasOwnProperty.call(seen, j)) {
                 output.push([i, j]);
             }
         }
@@ -120,4 +123,3 @@ abj.log_graph_state = function() {
     console.log(JSON.stringify(vops));
     console.log(JSON.stringify(ngbh));
 };
-

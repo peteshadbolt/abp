@@ -1,5 +1,11 @@
 var textures = {};
 var materials = {};
+// Curve settings
+var curveProperties = {
+    splineDensity: 10,
+    curvature: 100
+};
+
 
 // Load the site texture from the data URI
 function loadMaterials(argument) {
@@ -32,12 +38,6 @@ function loadMaterials(argument) {
 
     materials.qubit = new THREE.PointsMaterial(qubitStyle);
 }
-
-// Curve settings
-var curveProperties = {
-    splineDensity: 10,
-    curvature: 100
-};
 
 // Add a curved edge between two points
 function makeCurve(a, b) {

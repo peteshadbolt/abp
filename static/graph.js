@@ -1,7 +1,7 @@
 var colors = ["red", "green", "yellow", "blue", "pink", "orange", "purple"];
 var ws;
 
-function connect_to_server() {
+function connectToServer() {
     ws = new WebSocket("ws://localhost:5000");
     ws.onopen = function()
     {
