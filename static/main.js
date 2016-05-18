@@ -52,8 +52,8 @@ function init() {
     controls = new THREE.OrbitControls(camera);
     controls.center.set(0, 0, 0);
     controls.rotateSpeed = 0.2;
-    controls.addEventListener("change", render);
     camera.position.set(0, 0, 20);
+    controls.addEventListener("change", render);
 
     // Run
     scene = makeScene();
