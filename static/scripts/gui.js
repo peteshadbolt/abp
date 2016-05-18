@@ -1,5 +1,5 @@
 var gui = {};
-gui.construct = function() {
+gui.prepare = function() {
     gui.renderer = new THREE.WebGLRenderer({
         "antialias": true
     });
@@ -15,6 +15,7 @@ gui.construct = function() {
     gui.controls.addEventListener("change", gui.render);
     gui.controls.center.set(0, 0, 0);
     gui.controls.rotateSpeed = 0.2;
+    gui.controls.userPanSpeed = 0.3;
     gui.camera.position.set(0, 0, 20);
 };
 
@@ -49,10 +50,20 @@ gui.serverMessage = function(msgtext) {
     message.className = "visible";
 };
 
+// Set the position of the info popup
+gui.setInfoPosition = function(position){
+    w = node_info.offsetWidth; 
+    h = node_info.offsetHeight;
+    node_info.style.left = position.x -  w/2 + "px"; 
+    node_info.style.top = position.y - h -10 + "px"; 
+    node_info.className = "visible";
+};
+
+// The main loop
 gui.loop = function() {
     gui.controls.update();
     requestAnimationFrame(gui.loop);
-}
+};
 
 // Try to add a qubit at the current mouse position
 gui.addQubitAtMouse = function(event) {
@@ -63,6 +74,6 @@ gui.addQubitAtMouse = function(event) {
     abj.add_node(Object.keys(vops).length, {
         "position": intersection
     });
-    graph.updateScene();
-}
+    graph.update();
+};
 

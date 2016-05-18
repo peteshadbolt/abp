@@ -1,5 +1,5 @@
 html, body { margin: 0; padding: 0; overflow: hidden; font-size:  10pt; font-family:  "courier new"; }
-#infoholder { 
+#node_info { 
     background: black; 
     color:white;
     padding: 5px;

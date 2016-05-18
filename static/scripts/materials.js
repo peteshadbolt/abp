@@ -5,7 +5,7 @@ var curveProperties = {
     curvature: 20
 };
 
-materials.load = function() {
+materials.prepare = function() {
     var sprite = new THREE.Texture(document.getElementById("ball"));
     sprite.needsUpdate = true;
     materials.edge = new THREE.LineBasicMaterial({

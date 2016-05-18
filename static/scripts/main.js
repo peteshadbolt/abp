@@ -1,6 +1,13 @@
+function bootstrap(){
+    graph.add_node(0, 0, 0);
+    graph.update();
+}
+
 window.onload = function() {
-    graph.hook();
-    materials.load();
-    gui.construct();
+    graph.prepare();
+    materials.prepare();
+    gui.prepare();
+    mouse.prepare();
+    bootstrap();
     gui.loop();
 };

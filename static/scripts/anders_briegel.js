@@ -1,4 +1,7 @@
 var abj = {};
+abj.vops = {};
+abj.ngbh = {};
+abj.meta = {};
 
 abj.add_node = function(node, m) {
     abj.ngbh[node] = {};
@@ -116,5 +119,15 @@ abj.edgelist = function() {
 abj.log_graph_state = function() {
     console.log(JSON.stringify(abj.vops));
     console.log(JSON.stringify(abj.ngbh));
+};
+
+abj.update = function(newState) {
+    abj.vops = newState.vops;
+    abj.ngbh = newState.ngbh;
+    abj.meta = newState.meta;
+};
+
+abj.order = function(){
+    return Object.keys(abj.vops).length;
 };
 

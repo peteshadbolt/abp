@@ -1,22 +1,16 @@
 var graph = {};
 graph.colors = ["red", "green", "yellow", "blue", "pink", "orange", "purple"];
 
-graph.hook = function() {
-    materials.load();
+graph.prepare = function() {
+    materials.prepare();
     websocket.connect(graph.update);
 };
 
-graph.update = function(json) {
-    abj.vops = json.vops;
-    abj.ngbh = json.ngbh;
-    abj.meta = json.meta;
-    graph.updateScene();
-};
+graph.update = function(newState) {
+    if (newState){abj.update(newState);}
 
-graph.updateScene = function() {
     if (graph.object){gui.scene.remove(graph.object);}
     graph.object = null;
-    console.log("update");
 
     var geometry = new THREE.Geometry();
     geometry.colors = [];
@@ -47,4 +41,9 @@ graph.updateScene = function() {
     graph.object.add(edges);
     gui.scene.add(graph.object);
     gui.render();
+};
+
+graph.add_node = function(x, y, z) {
+    meta = {"position": new THREE.Vector3(x, y, z)};
+    abj.add_node(abj.order(), meta);
 };
