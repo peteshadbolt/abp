@@ -1,6 +1,6 @@
 html, body { margin: 0; padding: 0; overflow: hidden; font-size:  10pt; font-family:  "courier new"; }
 #node_info { 
-    background: black; 
+    background: rgba(0, 0, 0, .8); 
     color:white;
     padding: 5px;
     margin:0px;
@@ -9,9 +9,10 @@ html, body { margin: 0; padding: 0; overflow: hidden; font-size:  10pt; font-fam
     left:5px;
     font-family:"courier new";
     text-align: center;
-    font-size:10pt;
-    height:15px;
+    font-size:9pt;
+    /*height:15px;*/
     border-radius:3px;
+    pointer-events: none;
 }
 
 #server_info {

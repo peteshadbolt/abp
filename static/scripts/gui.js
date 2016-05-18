@@ -14,9 +14,10 @@ gui.prepare = function() {
     gui.controls = new THREE.OrbitControls(gui.camera);
     gui.controls.addEventListener("change", gui.render);
     gui.controls.center.set(0, 0, 0);
+    gui.controls.target.set(0, 0, 0);
     gui.controls.rotateSpeed = 0.2;
-    gui.controls.userPanSpeed = 0.3;
-    gui.camera.position.set(0, 0, 20);
+    gui.controls.userPanSpeed = 0.1;
+    gui.camera.position.set(4, 4, 10);
 };
 
 // Someone resized the window

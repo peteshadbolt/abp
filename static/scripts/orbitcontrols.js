@@ -18,6 +18,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 	this.enabled = true;
 
 	this.center = new THREE.Vector3();
+	this.target = new THREE.Vector3();
 
 	this.userZoom = true;
 	this.userZoomSpeed = 1.0;
@@ -156,6 +157,9 @@ THREE.OrbitControls = function ( object, domElement ) {
 		var position = this.object.position;
 		var offset = position.clone().sub( this.center );
 
+		var diff = this.center.clone().sub( this.target ).multiplyScalar(0.2);
+        this.center.sub(diff);
+
 		// angle from z-axis around y-axis
 
 		var theta = Math.atan2( offset.x, offset.z );
@@ -192,11 +196,11 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		this.object.lookAt( this.center );
 
-		thetaDelta = 0;
-		phiDelta = 0;
+		thetaDelta /= 1.5;
+		phiDelta /= 1.5;
 		scale = 1;
 
-		if ( lastPosition.distanceTo( this.object.position ) > 0 ) {
+		if ( lastPosition.distanceTo( this.object.position ) > 0.01 ) {
 
 			this.dispatchEvent( changeEvent );
 

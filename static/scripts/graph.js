@@ -1,5 +1,5 @@
 var graph = {};
-graph.colors = ["red", "green", "yellow", "blue", "pink", "orange", "purple"];
+graph.colors = ["lightblue", "green", "yellow", "red", "pink", "orange", "purple"];
 
 graph.prepare = function() {
     materials.prepare();
@@ -44,6 +44,6 @@ graph.update = function(newState) {
 };
 
 graph.add_node = function(x, y, z) {
-    meta = {"position": new THREE.Vector3(x, y, z)};
+    meta = {position: new THREE.Vector3(x, y, z)};
     abj.add_node(abj.order(), meta);
 };
