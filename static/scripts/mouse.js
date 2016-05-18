@@ -1,5 +1,6 @@
 var mouse = {};
 mouse.wasClick = true;
+mouse.pressed = false;
 
 mouse.raycaster = new THREE.Raycaster();
 
@@ -32,10 +33,10 @@ mouse.onDown = function(event) {
 };
 
 mouse.onUp = function(event) {
+    mouse.pressed = false;
     if (!mouse.wasClick) {
         return;
     }
-    mouse.pressed = false;
     if (event.ctrlKey) {
         mouse.onCtrlClick();
     } else if (event.shiftKey) {

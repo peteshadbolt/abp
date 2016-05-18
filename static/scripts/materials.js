@@ -6,23 +6,25 @@ var curveProperties = {
 };
 
 materials.prepare = function() {
-    var sprite = new THREE.Texture(document.getElementById("ball"));
-    sprite.needsUpdate = true;
+    var ballSprite = new THREE.Texture(document.getElementById("ball"));
+    var tipSprite = new THREE.Texture(document.getElementById("tip"));
+    ballSprite.needsUpdate = true;
+    tipSprite.needsUpdate = true;
     materials.edge = new THREE.LineBasicMaterial({
         color: "gray",
         transparent: false,
         linewidth: 1
     });
-    materials.point = new THREE.PointsMaterial({
-        size: 0.1,
-        map: sprite,
+    materials.tip = new THREE.PointsMaterial({
+        size: 0.4,
+        map: tipSprite,
         alphaTest: 0.5,
         transparent: true,
-        vertexColors: THREE.VertexColors
+        color: "red"
     });
     materials.qubit = new THREE.PointsMaterial({
         size: 0.3,
-        map: sprite,
+        map: ballSprite,
         alphaTest: 0.5,
         transparent: true,
         vertexColors: THREE.VertexColors
