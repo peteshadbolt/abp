@@ -1,4 +1,4 @@
-define(["three", "anders_briegel", "websocket"], function(three, websocket) {
+define(["anders_briegel", "websocket"], function(anders_briegel, websocket) {
     return {
 
         colors: ["red", "green", "yellow", "blue", "pink", "orange", "purple"],

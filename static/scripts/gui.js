@@ -1,4 +1,4 @@
-define(["three", "orbitcontrols", "message"], function() {
+define(["message"], function() {
     return {
         construct: function() {
             this.renderer = new THREE.WebGLRenderer();
@@ -38,7 +38,5 @@ define(["three", "orbitcontrols", "message"], function() {
             grid.setColors(0xdddddd, 0xeeeeee);
             this.scene.add(grid);
         }
-
-
     };
 });
