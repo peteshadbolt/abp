@@ -8,6 +8,7 @@ window.onload = function() {
     materials.prepare();
     gui.prepare();
     mouse.prepare();
+    editor.prepare();
     bootstrap();
     gui.loop();
 };

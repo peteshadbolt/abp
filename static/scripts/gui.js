@@ -46,8 +46,22 @@ gui.makeScene = function() {
 
 // Put an HTML message to the screen
 gui.serverMessage = function(msgtext) {
-    message.innerHTML = msgtext;
-    message.className = "visible";
+    if (msgtext) {
+        server_info.innerHTML = msgtext;
+        server_info.className = "visible";
+    } else {
+        server_info.innerHTML = "";
+        server_info.className = "hidden";
+    }
+};
+
+gui.nodeMessage = function(msgtext) {
+    node_info.innerHTML = msgtext;
+    node_info.className = "visible";
+};
+
+gui.hideNodeMessage = function(){
+    node_info.className = "hidden";
 };
 
 // Set the position of the info popup
@@ -56,7 +70,6 @@ gui.setInfoPosition = function(position){
     h = node_info.offsetHeight;
     node_info.style.left = position.x -  w/2 + "px"; 
     node_info.style.top = position.y - h -10 + "px"; 
-    node_info.className = "visible";
 };
 
 // The main loop
