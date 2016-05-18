@@ -1,11 +1,5 @@
-// Import modules
-requirejs(["anders_briegel", "gui", "graph"], init);
-var ab;
-
-// Called on startup
-function init(anders_briegel, gui, graph) {
-    ab = anders_briegel;
-    graph.hookEvents();
+window.onload = function() {
+    graph.hook();
     gui.construct();
     gui.render();
-}
+};

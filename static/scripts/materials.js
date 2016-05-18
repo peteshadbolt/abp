@@ -1,47 +1,41 @@
-var textures = {};
 var materials = {};
-// Curve settings
-var curveProperties = {
+materials.textures = {
+    sprite: new THREE.Texture()
+};
+
+materials.load = function() {
+    materials.textures.sprite = new THREE.Texture(document.getElementById("ball"));
+    materials.textures.sprite.needsUpdate = true;
+};
+
+materials.curveProperties = {
     splineDensity: 10,
     curvature: 100
 };
 
-
-// Load the site texture from the data URI
-function loadMaterials(argument) {
-    textures.sprite = new THREE.Texture(document.getElementById("ball"));
-    textures.sprite.needsUpdate = true;
-
-    var lineStyle = {
+materials.materials = {
+    edge: new THREE.LineBasicMaterial({
         color: "gray",
         transparent: false,
         linewidth: 1
-    };
-    materials.edge = new THREE.LineBasicMaterial(lineStyle);
-
-    var pointStyle = {
+    }),
+    point: new THREE.PointsMaterial({
         size: 0.1,
-        map: textures.sprite,
+        map: materials.textures.sprite,
         alphaTest: 0.5,
         transparent: true,
-        vertexColors:THREE.VertexColors
-    };
-    materials.point = new THREE.PointsMaterial(pointStyle);
-
-    var qubitStyle = {
+        vertexColors: THREE.VertexColors
+    }),
+    qubit: qubit = new THREE.PointsMaterial({
         size: 0.8,
-        map: textures.sprite,
+        map: materials.textures.sprite,
         alphaTest: 0.5,
         transparent: true,
-        vertexColors:THREE.VertexColors
-    };
+        vertexColors: THREE.VertexColors
+    })
+};
 
-    materials.qubit = new THREE.PointsMaterial(qubitStyle);
-}
-
-// Add a curved edge between two points
-function makeCurve(a, b) {
-    // Make the geometry of the curve
+materials.makeCurve = function(a, b) {
     var length = new THREE.Vector3().subVectors(a, b).length();
     var bend = new THREE.Vector3(length / curveProperties.curvature, length / curveProperties.curvature, 0);
     var mid = new THREE.Vector3().add(a).add(b).multiplyScalar(0.5).add(bend);
@@ -49,9 +43,6 @@ function makeCurve(a, b) {
     var geometry = new THREE.Geometry();
     var splinePoints = spline.getPoints(curveProperties.splineDensity);
     Array.prototype.push.apply(geometry.vertices, splinePoints);
-
-    // Make the actual Object3d thing
-    var line = new THREE.Line(geometry, materials.edge);
-    return line;
-}
+    return new THREE.Line(geometry, materials.materials.edge);
+};
 
