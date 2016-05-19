@@ -1,14 +1,19 @@
 var editor = {};
-var pi2 = Math.pi / 2;
+var pi2 = Math.PI / 2;
 
 editor.nearest = undefined;
 
-editor.orientations = {
-    xy: new THREE.Matrix4(),
-    xz: new THREE.Matrix4(),
-    yz: new THREE.Matrix4()
-};
-editor.orientations.xz.makeRotationX(pi2);
+editor.orientations = [
+    new THREE.Matrix4(),
+    new THREE.Matrix4(),
+    new THREE.Matrix4()
+];
+
+editor.orientation = 0;
+
+editor.orientations[1].makeRotationX(pi2);
+editor.orientations[2].makeRotationX(pi2);
+editor.orientations[2].makeRotationZ(pi2);
 
 editor.onFreeMove = function() {
     var n = editor.nearestNode(mouse.ray);
@@ -59,7 +64,12 @@ editor.prepare = function() {
 editor.onKey = function(evt) {
     if (evt.keyCode == 32) {
         editor.grid.rotation.x += Math.PI / 2;
+        editor.orientation = (editor.orientation+1) % 3;
+        console.log(editor.orientation);
+        var m = editor.orientations[editor.orientation];
         editor.plane.applyMatrix4(m);
+        console.log(m);
+        editor.grid.matrix = m;
         gui.render();
         gui.serverMessage("Rotated into the XY plane or whatever");
     }
@@ -69,7 +79,7 @@ editor.makeGrid = function() {
     editor.grid = new THREE.GridHelper(10, 1);
     editor.grid.rotation.x = Math.PI / 2;
     editor.grid.setColors(0xbbbbbb, 0xeeeeee);
-    //editor.grid.matrixAutoUpdate = false;
+    editor.grid.matrixAutoUpdate = false;
     editor.plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
     gui.scene.add(editor.grid);
 };
