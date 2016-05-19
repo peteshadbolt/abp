@@ -6,9 +6,12 @@ import itertools as it
 import clifford
 import json
 import qi
-import networkx as nx
+try:
+    from networkx import Graph as NXGraph
+except ImportError:
+    NXGraph = object
 
-class GraphState(object):
+class GraphState(NXGraph):
 
     def __init__(self, nodes=[]):
         self.adj, self.node = {}, {}
@@ -195,6 +198,4 @@ class GraphState(object):
     def __eq__(self, other):
         """ Check equality between graphs """
         return self.adj == other.adj and self.node == other.node
-
-
 
