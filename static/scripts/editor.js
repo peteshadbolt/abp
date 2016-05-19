@@ -29,7 +29,7 @@ editor.focus = function(node) {
     gui.controls.target.copy(abj.node[node].position);
     gui.hideNodeMessage();
     editor.selection = node;
-    gui.serverMessage("Selected node " + node + "");
+    gui.serverMessage("Selected node " + node + ".");
 };
 
 editor.addQubitAtPoint = function(point) {
@@ -37,13 +37,22 @@ editor.addQubitAtPoint = function(point) {
         return;
     }
     point.round();
-    abj.add_node(abj.order(), {
-        position: point
-    });
+
+    // Check for clashes
+    for (var node in abj.node) {
+        var delta = new THREE.Vector3();
+        delta.subVectors(abj.node[node].position, point);
+        if (delta.length()<0.1){
+            editor.focus(node);
+            return;
+        }
+    }
+
+    abj.add_node(abj.order(), { position: point });
     editor.grid.position.copy(point);
     gui.controls.target.copy(point);
     graph.update();
-    gui.serverMessage("Created node at " + JSON.stringify(point));
+    gui.serverMessage("Created node.");
 };
 
 editor.onClick = function() {
@@ -92,7 +101,7 @@ editor.update = function() {};
 // Gets a reference to the node nearest to the mouse cursor
 editor.findNodeOnRay = function(ray) {
     for (var n in abj.node) {
-        if (ray.distanceSqToPoint(abj.node[n].position) < 0.03) {
+        if (ray.distanceSqToPoint(abj.node[n].position) < 0.3) {
             return n;
         }
     }
