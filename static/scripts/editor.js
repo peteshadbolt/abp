@@ -3,13 +3,12 @@ var pi2 = Math.PI / 2;
 
 editor.selection = undefined;
 
-editor.planes = [
-    new THREE.Plane(new THREE.Vector3(0, 0, 1), 0),
-    new THREE.Plane(new THREE.Vector3(0, 1, 0), 0),
-    new THREE.Plane(new THREE.Vector3(1, 0, 0), 0)
+editor.orientations = [
+    new THREE.Euler(pi2, 0, 0),
+    new THREE.Euler(0, 0, 0),
+    new THREE.Euler(pi2, 0, pi2),
 ];
-editor.orientation = 0;
-editor.plane = editor.planes[editor.orientation];
+
 
 editor.onFreeMove = function() {
     var found = editor.findNodeOnRay(mouse.ray);
@@ -42,10 +41,7 @@ editor.addQubitAtPoint = function(point) {
     for (var node in abj.node) {
         var delta = new THREE.Vector3();
         delta.subVectors(abj.node[node].position, point);
-        if (delta.length()<0.1){
-            editor.focus(node);
-            return;
-        }
+        if (delta.length()<0.1){ return; }
     }
 
     abj.add_node(abj.order(), { position: point });
@@ -75,24 +71,25 @@ editor.prepare = function() {
 };
 
 editor.onKey = function(evt) {
-    if (evt.keyCode == 32) {
-        editor.grid.rotation.x += Math.PI / 2;
-        editor.orientation = (editor.orientation + 1) % 3;
-        console.log(editor.orientation);
-        var m = editor.orientations[editor.orientation];
-        editor.plane.applyMatrix4(m);
-        console.log(m);
-        editor.grid.matrix = m;
-        gui.render();
-        gui.serverMessage("Rotated into the XY plane or whatever");
-    }
+    if (evt.keyCode !== 32) {return;}
+    editor.setOrientation((editor.orientation + 1) % 3);
+};
+
+editor.setOrientation = function(orientation) {
+    editor.orientation = orientation;
+    var rotation = editor.orientations[orientation];
+    var normal = new THREE.Vector3(0, 1, 0);
+    normal.applyEuler(rotation);
+    editor.grid.rotation.copy(rotation);
+    editor.plane = new THREE.Plane();
+    editor.plane.setFromNormalAndCoplanarPoint(normal, editor.grid.position);
+    gui.render();
 };
 
 editor.makeGrid = function() {
     editor.grid = new THREE.GridHelper(10, 1);
-    editor.grid.rotation.x = Math.PI / 2;
     editor.grid.setColors(0xbbbbbb, 0xeeeeee);
-    editor.grid.matrixAutoUpdate = true;
+    editor.setOrientation(0);
     gui.scene.add(editor.grid);
 };
 
@@ -101,7 +98,7 @@ editor.update = function() {};
 // Gets a reference to the node nearest to the mouse cursor
 editor.findNodeOnRay = function(ray) {
     for (var n in abj.node) {
-        if (ray.distanceSqToPoint(abj.node[n].position) < 0.3) {
+        if (ray.distanceSqToPoint(abj.node[n].position) < 0.012) {
             return n;
         }
     }
