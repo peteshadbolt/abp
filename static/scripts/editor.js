@@ -1,26 +1,22 @@
 var editor = {};
 var pi2 = Math.PI / 2;
 
-editor.nearest = undefined;
+editor.selection = undefined;
 
-editor.orientations = [
-    new THREE.Matrix4(),
-    new THREE.Matrix4(),
-    new THREE.Matrix4()
+editor.planes = [
+    new THREE.Plane(new THREE.Vector3(0, 0, 1), 0),
+    new THREE.Plane(new THREE.Vector3(0, 1, 0), 0),
+    new THREE.Plane(new THREE.Vector3(1, 0, 0), 0)
 ];
-
 editor.orientation = 0;
-
-editor.orientations[1].makeRotationX(pi2);
-editor.orientations[2].makeRotationX(pi2);
-editor.orientations[2].makeRotationZ(pi2);
+editor.plane = editor.planes[editor.orientation];
 
 editor.onFreeMove = function() {
-    var n = editor.nearestNode(mouse.ray);
-    if (editor.nearest !== n) {
-        editor.nearest = n;
-        if (n) {
-            gui.nodeMessage("Node " + n + " (VOP:" + abj.vops[n] + ")" +
+    var found = editor.findNodeOnRay(mouse.ray);
+    if (editor.selection !== found) {
+        editor.selection = found;
+        if (found) {
+            gui.nodeMessage("Node " + found + " (VOP:" + abj.node[found].vop + ")" +
                 "<br/>" + "Click to edit neighbourhood");
         } else {
             gui.hideNodeMessage();
@@ -28,29 +24,37 @@ editor.onFreeMove = function() {
     }
 };
 
+editor.focus = function(node) {
+    editor.grid.position.copy(abj.node[node].position);
+    gui.controls.target.copy(abj.node[node].position);
+    gui.hideNodeMessage();
+    editor.selection = node;
+    gui.serverMessage("Selected node " + node + "");
+};
+
+editor.addQubitAtPoint = function(point) {
+    if (point === null) {
+        return;
+    }
+    point.round();
+    abj.add_node(abj.order(), {
+        position: point
+    });
+    editor.grid.position.copy(point);
+    gui.controls.target.copy(point);
+    graph.update();
+    gui.serverMessage("Created node at " + JSON.stringify(point));
+};
+
 editor.onClick = function() {
-    var n = editor.nearestNode(mouse.ray);
-    if (n) {
-        var p = abj.meta[n].position;
-        editor.grid.position.set(p.x, p.y, p.z);
-        gui.controls.target.set(p.x, p.y, p.z);
-        gui.hideNodeMessage();
-        editor.nearest = undefined;
-        gui.serverMessage("Selected node " + n + "");
+    var found = editor.findNodeOnRay(mouse.ray);
+    if (found) {
+        editor.focus(found);
     } else {
-        //TODO: ghastly
         var intersection = mouse.ray.intersectPlane(editor.plane);
-        intersection.x = Math.round(intersection.x, 0);
-        intersection.y = Math.round(intersection.y, 0);
-        intersection.z = Math.round(intersection.z, 0);
-        var newNode = abj.order();
-        abj.add_node(newNode, {
-            position: intersection
-        });
-        editor.grid.position.set(intersection.x, intersection.y, intersection.z);
-        gui.controls.target.set(intersection.x, intersection.y, intersection.z);
-        graph.update();
-        gui.serverMessage("Created node " + newNode + " at ");
+        if (intersection !== null) {
+            editor.addQubitAtPoint(intersection);
+        }
     }
 };
 
@@ -64,7 +68,7 @@ editor.prepare = function() {
 editor.onKey = function(evt) {
     if (evt.keyCode == 32) {
         editor.grid.rotation.x += Math.PI / 2;
-        editor.orientation = (editor.orientation+1) % 3;
+        editor.orientation = (editor.orientation + 1) % 3;
         console.log(editor.orientation);
         var m = editor.orientations[editor.orientation];
         editor.plane.applyMatrix4(m);
@@ -79,20 +83,17 @@ editor.makeGrid = function() {
     editor.grid = new THREE.GridHelper(10, 1);
     editor.grid.rotation.x = Math.PI / 2;
     editor.grid.setColors(0xbbbbbb, 0xeeeeee);
-    editor.grid.matrixAutoUpdate = false;
-    editor.plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    editor.grid.matrixAutoUpdate = true;
     gui.scene.add(editor.grid);
 };
 
-editor.update = function(){
-};
+editor.update = function() {};
 
 // Gets a reference to the node nearest to the mouse cursor
-// TODO: get rid of meta{}
-editor.nearestNode = function(ray) {
-    for (var j in abj.meta) {
-        if (ray.distanceSqToPoint(abj.meta[j].position) < 0.03) {
-            return j;
+editor.findNodeOnRay = function(ray) {
+    for (var n in abj.node) {
+        if (ray.distanceSqToPoint(abj.node[n].position) < 0.03) {
+            return n;
         }
     }
     return undefined;

@@ -76,15 +76,3 @@ gui.loop = function() {
     requestAnimationFrame(gui.loop);
 };
 
-// Try to add a qubit at the current mouse position
-gui.addQubitAtMouse = function(event) {
-    this.raycaster.setFromCamera(mouse, camera);
-    var intersection = this.raycaster.ray.intersectPlane(this.plane);
-    intersection.x = Math.round(intersection.x);
-    intersection.y = Math.round(intersection.y);
-    abj.add_node(Object.keys(vops).length, {
-        "position": intersection
-    });
-    graph.update();
-};
-

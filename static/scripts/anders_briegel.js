@@ -1,12 +1,12 @@
 var abj = {};
-abj.vops = {};
-abj.ngbh = {};
-abj.meta = {};
+abj.node = {};
+abj.adj = {};
 
-abj.add_node = function(node, m) {
-    abj.ngbh[node] = {};
-    abj.vops[node] = tables.clifford.hadamard;
-    abj.meta[node] = m ? m : {};
+abj.add_node = function(node, meta) {
+    abj.adj[node] = {};
+    abj.node[node] = {};
+    abj.node[node].vop = tables.clifford.hadamard;
+    Object.assign(abj.node[node], meta);
 };
 
 abj.add_nodes = function(nodes) {
@@ -14,8 +14,8 @@ abj.add_nodes = function(nodes) {
 };
 
 abj.add_edge = function(a, b) {
-    abj.ngbh[a][b] = true;
-    abj.ngbh[b][a] = true;
+    abj.adj[a][b] = {};
+    abj.adj[b][a] = {};
 };
 
 abj.add_edges = function(edges) {
@@ -25,12 +25,12 @@ abj.add_edges = function(edges) {
 };
 
 abj.del_edge = function(a, b) {
-    delete abj.ngbh[a][b];
-    delete abj.ngbh[b][a];
+    delete abj.adj[a][b];
+    delete abj.adj[b][a];
 };
 
 abj.has_edge = function(a, b) {
-    return Object.prototype.hasOwnProperty.call(abj.ngbh[a], b);
+    return Object.prototype.hasOwnProperty.call(abj.adj[a], b);
 };
 
 abj.toggle_edge = function(a, b) {
@@ -42,7 +42,7 @@ abj.toggle_edge = function(a, b) {
 };
 
 abj.get_swap = function(node, avoid) {
-    for (var i in abj.ngbh[node]) {
+    for (var i in abj.adj[node]) {
         if (i != avoid) {
             return i;
         }
@@ -52,7 +52,7 @@ abj.get_swap = function(node, avoid) {
 
 abj.remove_vop = function(node, avoid) {
     var swap_qubit = get_swap(node, avoid);
-    var decomposition = decompositions[abj.vops[node]];
+    var decomposition = decompositions[abj.node[node].vop];
     for (var i = decomposition.length - 1; i >= 0; --i) {
         var v = decomposition[i];
         local_complementation(v == "x" ? a : swap_qubit);
@@ -60,19 +60,19 @@ abj.remove_vop = function(node, avoid) {
 };
 
 abj.local_complementation = function(node) {
-    var keys = Object.keys(abj.ngbh[node]);
+    var keys = Object.keys(abj.adj[node]);
     for (var i = 0; i < keys.length; ++i) {
         for (var j = i + 1; j < keys.length; ++j) {
             toggle_edge(keys[i], keys[j]);
         }
-        abj.vops[i] = tables.times_table[abj.vops[keys[i]]][sqz_h];
+        abj.node[i].vop = tables.times_table[abj.node[keys[i]].vop][sqz_h];
     }
-    abj.vops[node] = tables.times_table[abj.vops[node]][msqx_h];
+    abj.node[node].vop = tables.times_table[abj.node[node].vop][msqx_h];
 };
 
 abj.act_local_rotation = function(node, operation) {
     var rotation = tables.clifford[operation];
-    abj.vops[node] = tables.times_table[rotation][abj.vops[node]];
+    abj.node[node].vop = tables.times_table[rotation][abj.node[node].vop];
 };
 
 abj.act_hadamard = function(node) {
@@ -84,19 +84,19 @@ abj.is_sole_member = function(node, group) {
 };
 
 abj.act_cz = function(a, b) {
-    if (is_sole_member(abj.ngbh[a], b)) {
+    if (is_sole_member(abj.adj[a], b)) {
         remove_vop(a, b);
     }
-    if (is_sole_member(abj.ngbh[b], a)) {
+    if (is_sole_member(abj.adj[b], a)) {
         remove_vop(b, a);
     }
-    if (is_sole_member(abj.ngbh[a], b)) {
+    if (is_sole_member(abj.adj[a], b)) {
         remove_vop(a, b);
     }
     var edge = has_edge(a, b);
-    var new_state = tables.cz_table[edge ? 1 : 0][abj.vops[a]][abj.vops[b]];
-    abj.vops[a] = new_state[1];
-    abj.vops[b] = new_state[2];
+    var new_state = tables.cz_table[edge ? 1 : 0][abj.node[a].vop][abj.node[b].vop];
+    abj.node[a].vop = new_state[1];
+    abj.node[b].vop = new_state[2];
     if (new_state[0] != edge) {
         toggle_edge(a, b);
     }
@@ -105,8 +105,8 @@ abj.act_cz = function(a, b) {
 abj.edgelist = function() {
     var seen = {};
     var output = [];
-    for (var i in abj.ngbh) {
-        for (var j in abj.ngbh[i]) {
+    for (var i in abj.adj) {
+        for (var j in abj.adj[i]) {
             if (!Object.prototype.hasOwnProperty.call(seen, j)) {
                 output.push([i, j]);
             }
@@ -117,17 +117,16 @@ abj.edgelist = function() {
 };
 
 abj.log_graph_state = function() {
-    console.log(JSON.stringify(abj.vops));
-    console.log(JSON.stringify(abj.ngbh));
+    console.log(JSON.stringify(abj.node));
+    console.log(JSON.stringify(abj.adj));
 };
 
 abj.update = function(newState) {
-    abj.vops = newState.vops;
-    abj.ngbh = newState.ngbh;
-    abj.meta = newState.meta;
+    abj.node = newState.node;
+    abj.adj = newState.adj;
 };
 
 abj.order = function(){
-    return Object.keys(abj.vops).length;
+    return Object.keys(abj.node).length;
 };
 

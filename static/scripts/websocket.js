@@ -12,9 +12,9 @@ websocket.connect = function(update) {
 
     ws.onmessage = function(evt) {
         json = JSON.parse(evt.data);
-        for (var i in json.meta) {
-            var pos = json.meta[i].position;
-            json.meta[i].position = new THREE.Vector3(pos.x, pos.y, pos.z);
+        for (var i in json.node) {
+            var pos = json.node[i].position;
+            json.node[i].position = new THREE.Vector3(pos.x, pos.y, pos.z);
         }
         update(json);
     };
