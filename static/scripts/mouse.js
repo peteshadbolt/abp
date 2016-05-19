@@ -47,6 +47,7 @@ mouse.onUp = function(event) {
 };
 
 mouse.onMove = function(event) {
+    // TODO: wasclick sux
     mouse.wasClick = false;
     mouse.position_absolute = {
         x: event.clientX,
