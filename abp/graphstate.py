@@ -17,13 +17,12 @@ class GraphState(NXGraph):
         self.adj, self.node = {}, {}
         self.add_nodes(nodes)
 
-    def add_node(self, v, position = None, meta = {}):
+    def add_node(self, v, **kwargs):
         """ Add a node """
         assert not v in self.node
         self.adj[v] = {}
-        self.node[v] = {"vop": clifford.by_name["hadamard"],
-                         "position": position}
-        self.node[v].update(meta)
+        self.node[v] = {"vop": clifford.by_name["hadamard"]}
+        self.node[v].update(kwargs)
 
     def add_nodes(self, nodes):
         """ Add a buncha nodes """
