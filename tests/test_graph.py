@@ -7,9 +7,10 @@ import time
 def test_graph_basic():
     """ Test that we can construct graphs, delete edges, whatever """
     g = demograph()
-    assert g.ngbh[0] == set([1, 2, 3])
+    print g.adj[0].keys()
+    assert set(g.adj[0].keys()) == set([1, 2, 3])
     g.del_edge(0, 1)
-    assert g.ngbh[0] == set([2, 3])
+    assert set(g.adj[0].keys()) == set([2, 3])
     assert g.has_edge(1, 2)
     assert not g.has_edge(0, 1)
 
@@ -47,13 +48,13 @@ def test_remove_vop():
     """ Test that removing VOPs really works """
     g = demograph()
     g.remove_vop(0, 1)
-    assert g.vops[0] == clifford.by_name["identity"]
+    assert g.node[0]["vop"] == clifford.by_name["identity"]
     g.remove_vop(1, 1)
-    assert g.vops[1] == clifford.by_name["identity"]
+    assert g.node[1]["vop"] == clifford.by_name["identity"]
     g.remove_vop(2, 1)
-    assert g.vops[2] == clifford.by_name["identity"]
+    assert g.node[2]["vop"] == clifford.by_name["identity"]
     g.remove_vop(0, 1)
-    assert g.vops[0] == clifford.by_name["identity"]
+    assert g.node[0]["vop"] == clifford.by_name["identity"]
 
 
 def test_edgelist():
@@ -77,8 +78,6 @@ def test_stress(n = int(1e5)):
 def test_cz():
     """ Test CZ gate """
     g = GraphState([0, 1])
-    g.add_node(0)
-    g.add_node(1)
     g.act_local_rotation(0, clifford.by_name["hadamard"])
     g.act_local_rotation(1, clifford.by_name["hadamard"])
     g.act_local_rotation(1, clifford.by_name["py"])
