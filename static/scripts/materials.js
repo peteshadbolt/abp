@@ -15,6 +15,10 @@ materials.prepare = function() {
         transparent: false,
         linewidth: 1
     });
+    materials.gimbalEdge = new THREE.LineBasicMaterial({
+        color: "black",
+        linewidth: 1,
+    });
     materials.tip = new THREE.PointsMaterial({
         size: 0.4,
         map: tipSprite,
