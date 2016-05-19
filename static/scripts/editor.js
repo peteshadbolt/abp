@@ -1,5 +1,14 @@
 var editor = {};
+var pi2 = Math.pi / 2;
+
 editor.nearest = undefined;
+
+editor.orientations = {
+    xy: new THREE.Matrix4(),
+    xz: new THREE.Matrix4(),
+    yz: new THREE.Matrix4()
+};
+editor.orientations.xz.makeRotationX(pi2);
 
 editor.onFreeMove = function() {
     var n = editor.nearestNode(mouse.ray);
@@ -16,7 +25,7 @@ editor.onFreeMove = function() {
 
 editor.onClick = function() {
     var n = editor.nearestNode(mouse.ray);
-    if (n){
+    if (n) {
         var p = abj.meta[n].position;
         editor.grid.position.set(p.x, p.y, p.z);
         gui.controls.target.set(p.x, p.y, p.z);
@@ -30,7 +39,9 @@ editor.onClick = function() {
         intersection.y = Math.round(intersection.y, 0);
         intersection.z = Math.round(intersection.z, 0);
         var newNode = abj.order();
-        abj.add_node(newNode, {position:intersection});
+        abj.add_node(newNode, {
+            position: intersection
+        });
         editor.grid.position.set(intersection.x, intersection.y, intersection.z);
         gui.controls.target.set(intersection.x, intersection.y, intersection.z);
         graph.update();
@@ -41,15 +52,13 @@ editor.onClick = function() {
 editor.prepare = function() {
     mouse.onFreeMove = editor.onFreeMove;
     mouse.onClick = editor.onClick;
-    document.addEventListener("keydown", editor.onKey, false); 
+    document.addEventListener("keydown", editor.onKey, false);
     editor.makeGrid();
 };
 
-editor.onKey = function(evt){
-    if (evt.keyCode==32){
-        editor.grid.rotation.x += Math.PI/2;
-        var m = new THREE.Matrix4();
-        m.makeRotationX(Math.PI/2);
+editor.onKey = function(evt) {
+    if (evt.keyCode == 32) {
+        editor.grid.rotation.x += Math.PI / 2;
         editor.plane.applyMatrix4(m);
         gui.render();
         gui.serverMessage("Rotated into the XY plane or whatever");
@@ -60,9 +69,13 @@ editor.makeGrid = function() {
     editor.grid = new THREE.GridHelper(10, 1);
     editor.grid.rotation.x = Math.PI / 2;
     editor.grid.setColors(0xbbbbbb, 0xeeeeee);
+    //editor.grid.matrixAutoUpdate = false;
     editor.plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
     gui.scene.add(editor.grid);
-}
+};
+
+editor.update = function(){
+};
 
 // Gets a reference to the node nearest to the mouse cursor
 // TODO: get rid of meta{}
@@ -74,4 +87,3 @@ editor.nearestNode = function(ray) {
     }
     return undefined;
 };
-

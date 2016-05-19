@@ -72,6 +72,7 @@ gui.setInfoPosition = function(position){
 // The main loop
 gui.loop = function() {
     gui.controls.update();
+    editor.update();
     requestAnimationFrame(gui.loop);
 };
 

@@ -124,17 +124,19 @@ def write_javascript_tables():
     """ Write the tables to javascript files for consumption in the browser """
     path = os.path.dirname(sys.argv[0])
     path = os.path.split(path)[0]
-    with open(os.path.join(path, "client/tables.js"), "w") as f:
-        f.write("var decompositions = {};\n"\
+    with open(os.path.join(path, "static/scripts/tables.js"), "w") as f:
+        f.write("var tables = {\n");
+        f.write("\tdecompositions : {},\n"\
                 .format(json.dumps(decompositions)))
-        f.write("var conjugation_table = {};\n"\
+        f.write("\tconjugation_table : {},\n"\
                 .format(json.dumps(conjugation_table.tolist())))
-        f.write("var times_table = {};\n"\
+        f.write("\ttimes_table : {},\n"\
                 .format(json.dumps(times_table.tolist())))
-        f.write("var cz_table = {};\n"\
+        f.write("\tcz_table : {},\n"\
                 .format(json.dumps(cz_table.tolist())))
-        f.write("var clifford = {};\n"\
+        f.write("\tclifford : {}\n"\
                 .format(json.dumps(by_name)))
+        f.write("};");
 
 
 # First try to load tables from cache. If that fails, build them from
