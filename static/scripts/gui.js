@@ -22,7 +22,6 @@ gui.prepare = function() {
 
 // Someone resized the window
 gui.onWindowResize = function(evt) {
-    console.log(gui);
     gui.camera.aspect = window.innerWidth / window.innerHeight;
     gui.camera.updateProjectionMatrix();
     gui.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -39,20 +38,17 @@ gui.render = function() {
 // Make the extra bits of gui
 gui.makeScene = function() {
     gui.scene = new THREE.Scene();
-    var grid = new THREE.GridHelper(10, 1);
-    grid.rotation.x = Math.PI / 2;
-    grid.setColors(0xdddddd, 0xeeeeee);
-    gui.scene.add(grid);
 };
 
 // Put an HTML message to the screen
-gui.serverMessage = function(msgtext) {
-    if (msgtext) {
-        server_info.innerHTML = msgtext;
-        server_info.className = "visible";
-    } else {
-        server_info.innerHTML = "";
-        server_info.className = "hidden";
+// TODO: write a generic messaging class?
+gui.serverMessage = function(msgtext, persist) {
+    if (persist === undefined) {persist = false;}
+    server_info.innerHTML = msgtext;
+    server_info.className = "visible";
+    clearInterval(gui.ki);
+    if (!persist){
+        gui.ki = setInterval(function(){server_info.className="hidden";}, 3000);
     }
 };
 

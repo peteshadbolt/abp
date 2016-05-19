@@ -43,7 +43,3 @@ graph.update = function(newState) {
     gui.render();
 };
 
-graph.add_node = function(x, y, z) {
-    meta = {position: new THREE.Vector3(x, y, z)};
-    abj.add_node(abj.order(), meta);
-};

@@ -1,6 +1,11 @@
-function bootstrap(){
-    graph.add_node(0, 0, 0);
-    graph.add_node(3, 0, 0);
+function bootstrap() {
+
+    abj.add_node(0, {
+        position: new THREE.Vector3(0, 0, 0)
+    });
+    abj.add_node(1, {
+        position: new THREE.Vector3(1, 0, 0)
+    });
     graph.update();
 }
 

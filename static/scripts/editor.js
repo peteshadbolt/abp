@@ -1,6 +1,5 @@
 var editor = {};
 editor.nearest = undefined;
-editor.gimbalVertices = [];
 
 editor.onFreeMove = function() {
     var n = editor.nearestNode(mouse.ray);
@@ -17,55 +16,62 @@ editor.onFreeMove = function() {
 
 editor.onClick = function() {
     var n = editor.nearestNode(mouse.ray);
-    //if (n.type=="node") {
+    if (n){
         var p = abj.meta[n].position;
-        editor.gimbal.position.set(p.x, p.y, p.z);
+        editor.grid.position.set(p.x, p.y, p.z);
         gui.controls.target.set(p.x, p.y, p.z);
         gui.hideNodeMessage();
         editor.nearest = undefined;
-        gui.render();
-    //}
+        gui.serverMessage("Selected node " + n + "");
+    } else {
+        //TODO: ghastly
+        var intersection = mouse.ray.intersectPlane(editor.plane);
+        intersection.x = Math.round(intersection.x, 0);
+        intersection.y = Math.round(intersection.y, 0);
+        intersection.z = Math.round(intersection.z, 0);
+        var newNode = abj.order();
+        abj.add_node(newNode, {position:intersection});
+        editor.grid.position.set(intersection.x, intersection.y, intersection.z);
+        gui.controls.target.set(intersection.x, intersection.y, intersection.z);
+        graph.update();
+        gui.serverMessage("Created node " + newNode + " at ");
+    }
 };
 
 editor.prepare = function() {
     mouse.onFreeMove = editor.onFreeMove;
     mouse.onClick = editor.onClick;
-    editor.makeGimbal();
+    document.addEventListener("keydown", editor.onKey, false); 
+    editor.makeGrid();
 };
 
-// Gets a reference to the node nearest to the mouse cursor
-editor.nearestNode = function(ray) {
-    for (var i=0; i < editor.gimbalVertices.length; ++i) {
-        if (ray.distanceSqToPoint(editor.gimbalVertices[i]) < 0.03) {
-            //return {type: "gimbal", node: i};
-        }
+editor.onKey = function(evt){
+    if (evt.keyCode==32){
+        editor.grid.rotation.x += Math.PI/2;
+        var m = new THREE.Matrix4();
+        m.makeRotationX(Math.PI/2);
+        editor.plane.applyMatrix4(m);
+        gui.render();
+        gui.serverMessage("Rotated into the XY plane or whatever");
     }
+};
 
+editor.makeGrid = function() {
+    editor.grid = new THREE.GridHelper(10, 1);
+    editor.grid.rotation.x = Math.PI / 2;
+    editor.grid.setColors(0xbbbbbb, 0xeeeeee);
+    editor.plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    gui.scene.add(editor.grid);
+}
+
+// Gets a reference to the node nearest to the mouse cursor
+// TODO: get rid of meta{}
+editor.nearestNode = function(ray) {
     for (var j in abj.meta) {
         if (ray.distanceSqToPoint(abj.meta[j].position) < 0.03) {
-            //return {type: "node", node: i};
             return j;
         }
     }
     return undefined;
-};
-
-editor.makeGimbal = function(center) {
-    editor.gimbal = new THREE.Object3D();
-
-    var pointGeometry = new THREE.Geometry();
-    pointGeometry.vertices = [
-        new THREE.Vector3(1, 0, 0),
-        new THREE.Vector3(0, 1, 0),
-        new THREE.Vector3(0, 0, 1),
-        new THREE.Vector3(-1, 0, 0),
-        new THREE.Vector3(0, -1, 0),
-        new THREE.Vector3(0, 0, -1)
-    ];
-    editor.gimbalVertices = pointGeometry.vertices;
-    var tips = new THREE.Points(pointGeometry, materials.tip);
-
-    editor.gimbal.add(tips);
-    gui.scene.add(editor.gimbal);
 };
 

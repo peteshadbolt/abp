@@ -8,7 +8,7 @@ mouse.onFreeMove = function() {
     console.log("Free move");
 };
 mouse.onDrag = function() {
-    console.log("Drag");
+    //console.log("Drag");
 };
 mouse.onClick = function() {
     console.log("Click");
