@@ -4,6 +4,7 @@ import numpy as np
 import websocket
 from socket import error as socket_error
 import graphstate
+import clifford
 import util
 
 class GraphState(graphstate.GraphState, networkx.Graph):
@@ -33,6 +34,9 @@ class GraphState(graphstate.GraphState, networkx.Graph):
         if not all(("position" in node) for node in self.node.values()):
             self.layout()
 
+        if not all(("vop" in node) for node in self.node.values()):
+            self.add_vops()
+
         # Send data to browser and rate-limit
         self.ws.send(json.dumps(self.to_json()))
         time.sleep(delay)
@@ -44,5 +48,11 @@ class GraphState(graphstate.GraphState, networkx.Graph):
         pos = {key: value - middle for key, value in pos.items()}
         for key, (x, y, z) in pos.items():
             self.node[key]["position"] = util.xyz(x, y, z)
+
+    def add_vops(self):
+        """ Automatically add vops if they're not present """
+        for key in self.node:
+            if not "vop" in self.node[key]:
+                self.node[key]["vop"] = clifford.by_name["identity"]
 
         

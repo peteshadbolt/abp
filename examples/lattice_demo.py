@@ -30,7 +30,7 @@ def lattice(unit_cell, size):
     return nodes, edges
 
 # s = VisibleGraphState()
-nodes, edges = lattice(square_unit_cell, (4, 4))
+nodes, edges = lattice(square_unit_cell, (10, 10))
 
 psi = GraphState()
 for node in nodes:
