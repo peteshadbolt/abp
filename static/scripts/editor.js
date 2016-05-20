@@ -2,6 +2,7 @@ var editor = {};
 var pi2 = Math.PI / 2;
 
 editor.selection = undefined;
+editor.mouseOver = undefined;
 
 editor.orientations = [
     new THREE.Euler(pi2, 0, 0),
@@ -12,11 +13,10 @@ editor.orientations = [
 
 editor.onFreeMove = function() {
     var found = editor.findNodeOnRay(mouse.ray);
-    if (editor.selection !== found) {
-        editor.selection = found;
+    if (editor.mouseOver !== found) {
+        editor.mouseOver = found;
         if (found) {
-            gui.nodeMessage("Node " + found + " (VOP:" + abj.node[found].vop + ")" +
-                "<br/>" + "Click to edit neighbourhood");
+            gui.nodeMessage("Node " + found + " (VOP:" + abj.node[found].vop + ")");
         } else {
             gui.hideNodeMessage();
         }
@@ -29,6 +29,9 @@ editor.focus = function(node) {
     gui.hideNodeMessage();
     editor.selection = node;
     gui.serverMessage("Selected node " + node + ".");
+    node_name.innerHTML = "Node " + node;
+    node_data.className = "visible";
+    node_vop.innerHTML = "VOP: " + abj.node[node].vop;
 };
 
 editor.addQubitAtPoint = function(point) {
@@ -44,11 +47,12 @@ editor.addQubitAtPoint = function(point) {
         if (delta.length()<0.1){ return; }
     }
 
-    abj.add_node(abj.order(), { position: point });
-    editor.grid.position.copy(point);
-    gui.controls.target.copy(point);
+    // TODO: This SUCKS
+    var new_node = Math.random()*100000|0;
+    abj.add_node(new_node, { position: point, vop:0 });
+    editor.focus(new_node);
     graph.update();
-    gui.serverMessage("Created node.");
+    gui.serverMessage("Created node " + new_node +".");
 };
 
 editor.onClick = function() {
@@ -63,16 +67,44 @@ editor.onClick = function() {
     }
 };
 
+editor.onShiftClick = function() {
+    var found = editor.findNodeOnRay(mouse.ray);
+    if (found === undefined){ return; }
+    if (editor.selection === undefined){ return; }
+    if (found === editor.selection){ return; }
+    abj.act_cz(found, editor.selection);
+    editor.focus(found);
+    gui.serverMessage("Acted CZ between " + found + " & " + editor.selection + ".");
+    graph.update();
+};
+
+editor.onCtrlClick = function() {
+    var found = editor.findNodeOnRay(mouse.ray);
+    if (found === undefined){ return; }
+    if (editor.selection === undefined){ return; }
+    editor.focus(found);
+    abj.act_hadamard(found);
+    gui.serverMessage("Acted H on node " + found + ".");
+    graph.update();
+};
+
+
 editor.prepare = function() {
     mouse.onFreeMove = editor.onFreeMove;
     mouse.onClick = editor.onClick;
+    mouse.onShiftClick = editor.onShiftClick;
+    mouse.onCtrlClick = editor.onCtrlClick;
     document.addEventListener("keydown", editor.onKey, false);
     editor.makeGrid();
 };
 
 editor.onKey = function(evt) {
-    if (evt.keyCode !== 32) {return;}
-    editor.setOrientation((editor.orientation + 1) % 3);
+    if (evt.keyCode === 32) {
+        editor.setOrientation((editor.orientation + 1) % 3);
+    }
+    if (evt.keyCode === 46 || evt.keyCode === 68) {
+        editor.deleteNode();
+    }
 };
 
 editor.setOrientation = function(orientation) {
@@ -103,4 +135,13 @@ editor.findNodeOnRay = function(ray) {
         }
     }
     return undefined;
+};
+
+editor.deleteNode = function() {
+    if (editor.selection === undefined){ return; }
+    abj.del_node(editor.selection);
+    graph.update();
+    gui.serverMessage("Deleted node " + editor.selection + ".");
+    editor.selection = undefined;
+    node_data.className = "hidden";
 };

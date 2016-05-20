@@ -15,6 +15,6 @@ window.onload = function() {
     gui.prepare();
     mouse.prepare();
     editor.prepare();
-    bootstrap();
+    //bootstrap();
     gui.loop();
 };

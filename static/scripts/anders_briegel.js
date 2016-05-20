@@ -13,6 +13,13 @@ abj.add_nodes = function(nodes) {
     nodes.forEach(add_node);
 };
 
+abj.del_node = function(node) {
+    for (var i in abj.adj[node]) {
+        abj.del_edge(node, i);
+    }
+    delete abj.node[node];
+};
+
 abj.add_edge = function(a, b) {
     abj.adj[a][b] = {};
     abj.adj[b][a] = {};
@@ -34,10 +41,10 @@ abj.has_edge = function(a, b) {
 };
 
 abj.toggle_edge = function(a, b) {
-    if (has_edge(a, b)) {
-        del_edge(a, b);
+    if (abj.has_edge(a, b)) {
+        abj.del_edge(a, b);
     } else {
-        add_edge(a, b);
+        abj.add_edge(a, b);
     }
 };
 
@@ -76,7 +83,7 @@ abj.act_local_rotation = function(node, operation) {
 };
 
 abj.act_hadamard = function(node) {
-    act_local_rotation(node, 10);
+    abj.act_local_rotation(node, 10);
 };
 
 abj.is_sole_member = function(node, group) {
@@ -84,21 +91,21 @@ abj.is_sole_member = function(node, group) {
 };
 
 abj.act_cz = function(a, b) {
-    if (is_sole_member(abj.adj[a], b)) {
+    if (abj.is_sole_member(abj.adj[a], b)) {
         remove_vop(a, b);
     }
-    if (is_sole_member(abj.adj[b], a)) {
+    if (abj.is_sole_member(abj.adj[b], a)) {
         remove_vop(b, a);
     }
-    if (is_sole_member(abj.adj[a], b)) {
+    if (abj.is_sole_member(abj.adj[a], b)) {
         remove_vop(a, b);
     }
-    var edge = has_edge(a, b);
+    var edge = abj.has_edge(a, b);
     var new_state = tables.cz_table[edge ? 1 : 0][abj.node[a].vop][abj.node[b].vop];
     abj.node[a].vop = new_state[1];
     abj.node[b].vop = new_state[2];
     if (new_state[0] != edge) {
-        toggle_edge(a, b);
+        abj.toggle_edge(a, b);
     }
 };
 

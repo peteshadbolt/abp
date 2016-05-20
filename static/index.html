@@ -20,25 +20,25 @@
 </head>
 
 <body>
-<img id="ball" src="img/ball.png" style=display:none;>
-<img id="tip" src="img/tip.png" style=display:none;>
+<img id=ball src="img/ball.png" style=display:none;>
+<img id=tip src="img/tip.png" style=display:none;>
 <div id=node_info class=hidden> nothing </div>
 <div id=server_info class=hidden> </div>
 
-<div id=pallette>
-<h3>Node (5,2)</h3>
+<div id=node_data class=hidden>
+<h3 id=node_name></h3>
 <ul>
-    <li>VOP: Hadamard</li>
-    <li>x: 0 | y: 5 | z: 10</li>
+    <li id=node_vop></li>
     <li><a href="#">Measure in X</a></li>
     <li><a href="#">Measure in Y</a></li>
     <li><a href="#">Measure in Z</a></li>
     <li><a href="#">Act Hadamard</a></li>
-    <li>
-    <a href="#">IA</a>
-    <a href="#">IB</a>
-    </li>
-    <li><a href="#">Delete</a></li>
+    <li><a href="#">Act Phase</a></li>
+    <!--<li>-->
+    <!--<a href="#">IA</a>-->
+    <!--<a href="#">IB</a>-->
+    <!--</li>-->
+    <li><a href="#" onclick="editor.deleteNode()">Delete</a></li>
 </ul>
 </div>
 

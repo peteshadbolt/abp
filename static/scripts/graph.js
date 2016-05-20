@@ -1,5 +1,5 @@
 var graph = {};
-graph.colors = ["lightblue", "green", "yellow", "red", "pink", "orange", "purple"];
+graph.colors = ["red", "green", "yellow", "green", "pink", "orange", "purple"];
 
 graph.prepare = function() {
     materials.prepare();
