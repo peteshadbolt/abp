@@ -1,3 +1,5 @@
+venv/
+fresh_venv/
 *.npy
 *.cache
 *.pkl

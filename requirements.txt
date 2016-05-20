@@ -1,0 +1,11 @@
+-e git+pete@rpi:gitpi/abp.git@68e7de7088ff268a21a7df05435120f328ad7eae#egg=abp-github/master
+argparse==1.2.1
+backports.ssl-match-hostname==3.5.0.1
+decorator==4.0.9
+networkx==1.11
+numpy==1.11.0
+six==1.10.0
+tqdm==4.7.0
+websocket-client==0.37.0
+websocket-server==0.4
+wsgiref==0.1.2

@@ -7,7 +7,6 @@ And a circuit-model simulator
 """
 
 import numpy as np
-from scipy.linalg import sqrtm
 import itertools as it
 
 def hermitian_conjugate(u):
@@ -25,13 +24,12 @@ ha = hadamard = np.array([[1, 1], [1, -1]], dtype=complex) * ir2
 ph = np.array([[1, 0], [0, 1j]], dtype=complex)
 t = np.array([[1, 0], [0, np.exp(1j*np.pi/4)]], dtype=complex)
 
-sqy = sqrtm(1j * py)
-msqy = np.array(sqrtm(-1j * py))
-sqz = np.array(sqrtm(1j * pz))
-msqz = np.array(sqrtm(-1j * pz))
-sqx = np.array(sqrtm(1j * px))
-msqx = np.array(sqrtm(-1j * px))
-paulis = (px, py, pz)
+sqx = np.array([[ 1.+0.j, -0.+1.j], [-0.+1.j, 1.-0.j]], dtype=complex)*ir2
+msqx = np.array([[ 1.+0.j, 0.-1.j], [ 0.-1.j, 1.-0.j]], dtype=complex)*ir2
+sqy = np.array([[ 1.+0.j, 1.+0.j], [-1.-0.j, 1.-0.j]], dtype=complex)*ir2
+msqy = np.array([[ 1.+0.j, -1.-0.j], [ 1.+0.j, 1.-0.j]], dtype=complex)*ir2
+sqz = np.array([[ 1.+1.j, 0.+0.j], [ 0.+0.j, 1.-1.j]], dtype=complex)*ir2
+msqz = np.array([[ 1.-1.j, 0.+0.j], [ 0.+0.j, 1.+1.j]], dtype=complex)*ir2
 
 # CZ gate
 cz = np.array(np.eye(4), dtype=complex)
