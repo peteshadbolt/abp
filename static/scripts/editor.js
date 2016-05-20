@@ -48,7 +48,7 @@ editor.addQubitAtPoint = function(point) {
     }
 
     // TODO: This SUCKS
-    var new_node = Math.random()*100000|0;
+    var new_node = point.x + "." + point.y + "." + point.z;
     abj.add_node(new_node, { position: point, vop:0 });
     editor.focus(new_node);
     graph.update();
@@ -144,4 +144,11 @@ editor.deleteNode = function() {
     gui.serverMessage("Deleted node " + editor.selection + ".");
     editor.selection = undefined;
     node_data.className = "hidden";
+};
+
+editor.localComplementation = function() {
+    if (editor.selection === undefined){ return; }
+    abj.local_complementation(editor.selection);
+    graph.update();
+    gui.serverMessage("Inverted neighbourhood of " + editor.selection + ".");
 };

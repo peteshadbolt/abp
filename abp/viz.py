@@ -2,7 +2,7 @@
 Allows us to visualize the state in a browser
 """
 
-import atexit, json
+import atexit, json, time
 from graphstate import GraphState
 from websocket import create_connection
 
@@ -21,14 +21,9 @@ class VisibleGraphState(GraphState):
         self.update()
         self.ws.close()
 
-    def to_json(self):
-        """ We override to_json() so that we send the whole `ngbh` structure in JS-friendly form """
-        ngbh = {a: {b: True for b in self.ngbh[a]}
-                for a in self.ngbh}
-        return {"vops": self.vops, "ngbh": ngbh, "meta": self.meta}
-
-    def update(self):
+    def update(self, delay = 0.5):
         """ Call this function when you are ready to send data to the browser """
         data = json.dumps(self.to_json())
         self.ws.send(data)
+        time.sleep(delay)
 
