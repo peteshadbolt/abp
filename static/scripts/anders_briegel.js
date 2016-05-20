@@ -58,21 +58,26 @@ abj.get_swap = function(node, avoid) {
 };
 
 abj.remove_vop = function(node, avoid) {
-    var swap_qubit = get_swap(node, avoid);
-    var decomposition = decompositions[abj.node[node].vop];
+    var swap_qubit = abj.get_swap(node, avoid);
+    var decomposition = tables.decompositions[abj.node[node].vop];
     for (var i = decomposition.length - 1; i >= 0; --i) {
         var v = decomposition[i];
-        local_complementation(v == "x" ? a : swap_qubit);
+        abj.local_complementation(v == "x" ? node : swap_qubit);
     }
 };
 
 abj.local_complementation = function(node) {
-    var keys = Object.keys(abj.adj[node]);
-    for (var i = 0; i < keys.length; ++i) {
-        for (var j = i + 1; j < keys.length; ++j) {
-            abj.toggle_edge(keys[i], keys[j]);
+    // TODO: inefficient
+    var done = {};
+    for (var i in abj.adj) {
+        for (var j in abj.adj[i]) {
+            var name = i>j ? [i,j] : [j,i];
+            if (done[name]===false){
+                abj.toggle_edge(i, j);
+                done[name] = true;
+            }
         }
-        abj.node[i].vop = tables.times_table[abj.node[keys[i]].vop][6];
+        abj.node[i].vop = tables.times_table[abj.node[i].vop][6];
     }
     abj.node[node].vop = tables.times_table[abj.node[node].vop][14];
 };
@@ -86,19 +91,20 @@ abj.act_hadamard = function(node) {
     abj.act_local_rotation(node, 10);
 };
 
-abj.is_sole_member = function(node, group) {
-    return group.length == 1 && group[0] == node;
+abj.is_sole_member = function(group, node) {
+    var keys = Object.keys(group);
+    return keys.length == 1 && keys[0] == node;
 };
 
 abj.act_cz = function(a, b) {
     if (abj.is_sole_member(abj.adj[a], b)) {
-        remove_vop(a, b);
+        abj.remove_vop(a, b);
     }
     if (abj.is_sole_member(abj.adj[b], a)) {
-        remove_vop(b, a);
+        abj.remove_vop(b, a);
     }
     if (abj.is_sole_member(abj.adj[a], b)) {
-        remove_vop(a, b);
+        abj.remove_vop(a, b);
     }
     var edge = abj.has_edge(a, b);
     var new_state = tables.cz_table[edge ? 1 : 0][abj.node[a].vop][abj.node[b].vop];
