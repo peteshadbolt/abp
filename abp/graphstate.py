@@ -3,27 +3,14 @@ Provides an extremely basic graph structure, based on neighbour lists
 """
 
 import itertools as it
-import clifford
 import json
-import qi
-try:
-    from networkx import Graph as NXGraph
-except ImportError:
-    NXGraph = object
-try:
-    import websocket
-    from socket import error as socket_error
-    import time, atexit
-except ImportError:
-    websocket = None
+import qi, clifford, util
 
-class GraphState(NXGraph):
+class GraphState(object):
 
-    def __init__(self, nodes=[], connect_to_server=True):
+    def __init__(self, nodes=[]):
         self.adj, self.node = {}, {}
         self.add_nodes(nodes)
-        if connect_to_server:
-            self.connect_to_server()
 
     def add_node(self, v, **kwargs):
         """ Add a node """
@@ -206,27 +193,3 @@ class GraphState(NXGraph):
         """ Check equality between graphs """
         return self.adj == other.adj and self.node == other.node
 
-    def connect_to_server(self, uri = "ws://localhost:5000"):
-        """ Attempt to connect to the websocket server """
-        if not websocket: 
-            return
-        try:
-            self.ws = websocket.create_connection(uri)
-            atexit.register(self.shutdown)
-        except socket_error:
-            #print "Could not establish connection to server ({}).".format(uri)
-            self.ws = None
-
-
-    def shutdown(self):
-        """ Close the connection to the websocket """
-        self.update()
-        self.ws.close()
-
-    def update(self, delay = 0.5):
-        """ Call this function when you are ready to send data to the browser """
-        if not self.ws:
-            return
-        data = json.dumps(self.to_json())
-        self.ws.send(data)
-        time.sleep(delay)

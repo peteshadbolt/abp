@@ -1,8 +1,8 @@
-from abp.viz import VisibleGraphState
+from abp.fancy import GraphState
 from abp.util import xyz
 from abp.clifford import *
 
-psi = VisibleGraphState()
+psi = GraphState()
 psi.add_node(0, position = xyz(0, 0))
 psi.add_node(1, position = xyz(1, 1))
 psi.add_node(2, position = xyz(3, 2))

@@ -1,4 +1,4 @@
-from abp.graphstate import GraphState
+from abp.fancy import GraphState
 from abp.util import xyz
 import numpy as np
 import time

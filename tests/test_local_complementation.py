@@ -1,4 +1,4 @@
-from abp import GraphState
+from abp.fancy import GraphState
 from abp import qi
 
 def test_local_comp():
