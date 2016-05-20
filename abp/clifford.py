@@ -105,7 +105,6 @@ def get_cz_table(unitaries):
     """ Compute the lookup table for the CZ (A&B eq. 9) """
     # Get a cached state table and a list of gates which commute with CZ
     commuters = get_commuters(unitaries)
-    print commuters
     state_table = get_state_table(unitaries)
 
     # And now build the CZ table

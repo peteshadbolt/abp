@@ -1,4 +1,4 @@
-from abp.viz import VisibleGraphState
+from abp.graphstate import GraphState
 from abp.util import xyz
 import numpy as np
 import time
@@ -32,7 +32,7 @@ def lattice(unit_cell, size):
 # s = VisibleGraphState()
 nodes, edges = lattice(square_unit_cell, (4, 4))
 
-psi = VisibleGraphState()
+psi = GraphState()
 for node in nodes:
     psi.add_node(str(node), position=xyz(node[0], node[1]))
     psi.act_hadamard(str(node))

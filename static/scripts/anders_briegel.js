@@ -3,6 +3,7 @@ abj.node = {};
 abj.adj = {};
 
 abj.add_node = function(node, meta) {
+    if (meta === undefined){meta = {};}
     abj.adj[node] = {};
     abj.node[node] = {};
     abj.node[node].vop = tables.clifford.hadamard;
@@ -142,4 +143,5 @@ abj.update = function(newState) {
 abj.order = function(){
     return Object.keys(abj.node).length;
 };
+
 
