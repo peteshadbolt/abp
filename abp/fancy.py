@@ -34,8 +34,8 @@ class GraphState(graphstate.GraphState, networkx.Graph):
         if not all(("position" in node) for node in self.node.values()):
             self.layout()
 
-        if not all(("vop" in node) for node in self.node.values()):
-            self.add_vops()
+        #if not all(("vop" in node) for node in self.node.values()):
+            #self.add_vops()
 
         # Send data to browser and rate-limit
         self.ws.send(json.dumps(self.to_json()))

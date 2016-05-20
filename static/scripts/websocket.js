@@ -15,6 +15,9 @@ websocket.connect = function(update) {
         for (var i in json.node) {
             var pos = json.node[i].position;
             json.node[i].position = new THREE.Vector3(pos.x, pos.y, pos.z);
+            if (json.node[i].vop === undefined){
+                json.node[i].vop = 0;
+            }
         }
         update(json);
     };

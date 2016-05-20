@@ -5,6 +5,7 @@ Provides an extremely basic graph structure, based on neighbour lists
 import itertools as it
 import json
 import qi, clifford, util
+import random
 
 class GraphState(object):
 
@@ -104,7 +105,7 @@ class GraphState(object):
 
     def measure_z(self, node, force=None):
         """ Measure the graph in the Z-basis """
-        res = force if force else np.random.choice([0, 1])
+        res = force if force!=None else random.choice([0, 1])
 
         # Disconnect
         for neighbour in self.adj[node]:

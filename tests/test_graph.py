@@ -7,7 +7,6 @@ import time
 def test_graph_basic():
     """ Test that we can construct graphs, delete edges, whatever """
     g = demograph()
-    print g.adj[0].keys()
     assert set(g.adj[0].keys()) == set([1, 2, 3])
     g.del_edge(0, 1)
     assert set(g.adj[0].keys()) == set([2, 3])
@@ -26,22 +25,6 @@ def test_local_complementation():
     assert g.has_edge(3, 1)
 
     # TODO: test VOP conditions
-
-
-#def test_remove_vop_simple():
-    #""" Test that removing VOPs really works """
-    #g = GraphState(xrange(2))
-    #print g
-    #g.remove_vop(0, 1)
-    #print g
-    #assert g.vops[0] == clifford.by_name["identity"]
-    #g.remove_vop(1, 1)
-    #assert g.vops[1] == clifford.by_name["identity"]
-    #g.remove_vop(2, 1)
-    #assert g.vops[2] == clifford.by_name["identity"]
-    #g.remove_vop(0, 1)
-    #assert g.vops[0] == clifford.by_name["identity"]
-
 
 
 def test_remove_vop():
