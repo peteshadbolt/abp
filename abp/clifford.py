@@ -15,9 +15,9 @@ decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
                   "xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
                   "zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
 
-def conjugate(vop, transform):
+def conjugate(operator, unitary):
     """ Returns transform * vop * transform^dagger and a phase in {+1, -1} """
-    return measurement_table[vop, transform]
+    return measurement_table[operator, unitary]
 
 def use_old_cz():
     """ Use the CZ table from A&B's code """
@@ -101,22 +101,32 @@ def get_state_table(unitaries):
             np.dot(kp, state).T)
     return state_table
 
+def get_measurement_entry(operator, unitary):
+    """ 
+    Any Clifford group unitary will map an operator A in {I, X, Y, Z} 
+    to an operator B in +-{I, X, Y, Z}. This finds that mapping.
+    """
+    matrices = ({"x": qi.msqx, "z": qi.sqz}[c] for c in decompositions[unitary])
+    unitary = reduce(np.dot, matrices, np.eye(2, dtype=complex))
+    operator = qi.operators[operator]
+    new_operator = reduce(np.dot, (unitary, operator, qi.hermitian_conjugate(unitary)))
+
+    for i, o in enumerate(qi.operators):
+        if np.allclose(o, new_operator):
+            return i, 1
+        elif np.allclose(o, -new_operator):
+            return i, -1
+
+    raise IndexError
+
 def get_measurement_table():
     """ 
     Compute a table of transform * operation * transform^dagger 
     This is pretty unintelligible right now, we should probably compute the phase from unitaries instead
     """
     measurement_table = np.zeros((4, 24, 2), dtype=complex)
-    for vop, transform in it.product(range(4), range(24)):
-        assert vop in set(xrange(4))
-        op = times_table[transform, vop]
-        op = times_table[op, conjugation_table[transform]]
-        is_id_or_vop = (transform % 4 == 0) or (transform % 4 == vop)
-        is_non_pauli = (transform >= 4) and (transform <= 15)
-        phase = ((-1, 1), (1, -1))[is_id_or_vop][is_non_pauli]
-        if vop == 0: 
-            phase = 1
-        measurement_table[vop, transform] = [op, phase]
+    for operator, unitary in it.product(range(4), range(24)):
+        measurement_table[operator, unitary] = [operator, unitary]
     return measurement_table
 
 

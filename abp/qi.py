@@ -36,6 +36,8 @@ cz = np.array(np.eye(4), dtype=complex)
 cz[3,3]=-1
 
 # States
+zero = np.array([[1],[0]], dtype=complex)
+one = np.array([[0],[1]], dtype=complex)
 plus = np.array([[1],[1]], dtype=complex) / np.sqrt(2)
 bond = cz.dot(np.kron(plus, plus))
 nobond = np.kron(plus, plus)
@@ -46,6 +48,7 @@ names = "identity", "px", "py", "pz", "hadamard", "phase", "sqz", "msqz", "sqy",
 by_name = dict(zip(names, common_us))
 
 paulis = px, py, pz
+operators = id, px, py, pz
 
 
 def normalize_global_phase(m):
