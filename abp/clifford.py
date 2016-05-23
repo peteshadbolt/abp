@@ -15,15 +15,17 @@ decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
                   "xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
                   "zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
 
+
 def conjugate(operator, unitary):
     """ Returns transform * vop * transform^dagger and a phase in {+1, -1} """
     return measurement_table[operator, unitary]
+
 
 def use_old_cz():
     """ Use the CZ table from A&B's code """
     global cz_table
     from anders_cz import cz_table
-    
+
 
 def get_name(i):
     """ Get the human-readable name of this clifford """
@@ -101,15 +103,18 @@ def get_state_table(unitaries):
             np.dot(kp, state).T)
     return state_table
 
+
 def get_measurement_entry(operator, unitary):
-    """ 
-    Any Clifford group unitary will map an operator A in {I, X, Y, Z} 
+    """
+    Any Clifford group unitary will map an operator A in {I, X, Y, Z}
     to an operator B in +-{I, X, Y, Z}. This finds that mapping.
     """
-    matrices = ({"x": qi.msqx, "z": qi.sqz}[c] for c in decompositions[unitary])
+    matrices = ({"x": qi.msqx, "z": qi.sqz}[c]
+                for c in decompositions[unitary])
     unitary = reduce(np.dot, matrices, np.eye(2, dtype=complex))
     operator = qi.operators[operator]
-    new_operator = reduce(np.dot, (unitary, operator, qi.hermitian_conjugate(unitary)))
+    new_operator = reduce(
+        np.dot, (unitary, operator, qi.hermitian_conjugate(unitary)))
 
     for i, o in enumerate(qi.operators):
         if np.allclose(o, new_operator):
@@ -119,14 +124,16 @@ def get_measurement_entry(operator, unitary):
 
     raise IndexError
 
+
 def get_measurement_table():
-    """ 
-    Compute a table of transform * operation * transform^dagger 
+    """
+    Compute a table of transform * operation * transform^dagger
     This is pretty unintelligible right now, we should probably compute the phase from unitaries instead
     """
     measurement_table = np.zeros((4, 24, 2), dtype=complex)
     for operator, unitary in it.product(range(4), range(24)):
-        measurement_table[operator, unitary] = [operator, unitary]
+        measurement_table[operator, unitary] = get_measurement_entry(
+            operator, unitary)
     return measurement_table
 
 
@@ -160,23 +167,25 @@ def write_javascript_tables():
     path = os.path.dirname(sys.argv[0])
     path = os.path.split(path)[0]
     with open(os.path.join(path, "static/scripts/tables.js"), "w") as f:
-        f.write("var tables = {\n");
-        f.write("\tdecompositions : {},\n"\
+        f.write("var tables = {\n")
+        f.write("\tdecompositions : {},\n"
                 .format(json.dumps(decompositions)))
-        f.write("\tconjugation_table : {},\n"\
+        f.write("\tconjugation_table : {},\n"
                 .format(json.dumps(conjugation_table.tolist())))
-        f.write("\ttimes_table : {},\n"\
+        f.write("\ttimes_table : {},\n"
                 .format(json.dumps(times_table.tolist())))
-        f.write("\tcz_table : {},\n"\
+        f.write("\tcz_table : {},\n"
                 .format(json.dumps(cz_table.tolist())))
-        f.write("\tclifford : {}\n"\
+        f.write("\tclifford : {}\n"
                 .format(json.dumps(by_name)))
-        f.write("};");
+        f.write("};")
+
 
 def temp(filename):
     """ Get a temporary path """
     tempdir = tempfile.gettempdir()
     return os.path.join(tempdir, filename)
+
 
 def compute_everything():
     """ Compute all lookup tables """
@@ -187,6 +196,7 @@ def compute_everything():
     times_table = get_times_table(unitaries)
     cz_table = get_cz_table(unitaries)
     measurement_table = get_measurement_table()
+
 
 def save_to_disk():
     """ Save all tables to disk """
@@ -199,6 +209,7 @@ def save_to_disk():
     write_javascript_tables()
     with open(temp("by_name.json"), "wb") as f:
         json.dump(by_name, f)
+
 
 def load_from_disk():
     """ Load all the tables from disk """
