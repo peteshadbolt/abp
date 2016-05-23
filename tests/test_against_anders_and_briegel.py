@@ -1,5 +1,6 @@
 from abp import GraphState
 from anders_briegel import graphsim
+from abp import CircuitModel
 from abp import clifford
 import random
 import difflib
@@ -15,6 +16,13 @@ def compare(a, b):
         print aa
         print bb
         raise
+
+def isequal(a, b):
+    """ TODO: Sketchy as you like. Remove this abomination """
+    aa = a.get_adj_list()
+    bb = b.adj_list()
+    return re.sub("\\s", "", aa) == re.sub("\\s", "", bb)
+
 
 def test_hadamard():
     """ Test hadamards """
@@ -50,23 +58,45 @@ def test_cz_table(N=10):
 
     clifford.use_old_cz()
 
-    for j in range(24):
-        a = graphsim.GraphRegister(2)
-        b = GraphState()
-        b.add_node(0)
-        b.add_node(1)
-        compare(a, b)
+    for i in range(24):
+        for j in range(24):
 
-        a.local_op(0, graphsim.LocCliffOp(j))
-        b.act_local_rotation(0, j)
+            a = graphsim.GraphRegister(2)
+            b = GraphState()
+            b.add_nodes([0, 1])
 
-        a.local_op(1, graphsim.LocCliffOp(j))
-        b.act_local_rotation(1, j)
+            a.local_op(0, graphsim.LocCliffOp(i))
+            b.act_local_rotation(0, i)
+            a.local_op(1, graphsim.LocCliffOp(j))
+            b.act_local_rotation(1, j)
 
-        a.cphase(0, 1)
-        b.act_cz(0, 1)
-        compare(a, b)
+            a.cphase(0, 1)
+            b.act_cz(0, 1)
 
+            compare(a, b)
+
+    for i in range(24):
+        for j in range(24):
+
+            a = graphsim.GraphRegister(2)
+            b = GraphState()
+            b.add_nodes([0, 1])
+
+            a.local_op(0, graphsim.LocCliffOp(10))
+            b.act_local_rotation(0, 10)
+
+            a.cphase(0, 1)
+            b.act_cz(0, 1)
+
+            a.local_op(0, graphsim.LocCliffOp(i))
+            b.act_local_rotation(0, i)
+            a.local_op(1, graphsim.LocCliffOp(j))
+            b.act_local_rotation(1, j)
+
+            a.cphase(0, 1)
+            b.act_cz(0, 1)
+
+            compare(a, b)
 
 
 def test_with_cphase_gates_hadamard_only(N=10):
@@ -87,18 +117,16 @@ def test_with_cphase_gates_hadamard_only(N=10):
     compare(a, b)
 
 
-def test_all(N=10):
+def test_all(N=3):
     """ Test all gates at random """
+    #TODO: Currently fails. Why???
 
     clifford.use_old_cz()
 
     a = graphsim.GraphRegister(N)
-    b = GraphState()
+    b = GraphState(range(N))
 
-    for i in range(N):
-        b.add_node(i)
-
-    for i in range(100):
+    for i in range(1000):
         if random.random()>0.5:
             j = random.randint(0, N-1)
             a.hadamard(j)
@@ -107,9 +135,7 @@ def test_all(N=10):
             q = random.randint(0, N-2)
             a.cphase(q, q+1)
             b.act_cz(q, q+1)
-
-    aa = a.get_adj_list()
-    bb = b.adj_list()
-    compare(a, b)
+            compare(a, b)
+        #print b
 
 

@@ -167,17 +167,14 @@ class GraphState(object):
 
     def to_stabilizer(self):
         """ Get the stabilizer of this graph """
-        # TODO: VOPs are not implemented yet
-        output = ""
-        for a in self.adj:
-            for b in self.adj:
-                if a == b:
-                    output += " X "
-                elif a in self.adj[b]:
-                    output += " Z "
-                else:
-                    output += " I "
-            output += "\n"
+        output = {a:{} for a in self.node}
+        for a, b in it.product(self.node, self.node):
+            if a == b:
+                output[a][b] = "X"
+            elif a in self.adj[b]:
+                output[a][b] = "Z"
+            else:
+                output[a][b] = "I"
         return output
 
     def adj_list(self):
