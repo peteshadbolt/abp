@@ -9,14 +9,24 @@ from functools import reduce
 import itertools as it
 import numpy as np
 from tqdm import tqdm
-# import argparse
-
 import qi
 
 decompositions = ("xxxx", "xx", "zzxx", "zz", "zxx", "z", "zzz", "xxz",
                   "xzx", "xzxxx", "xzzzx", "xxxzx", "xzz", "zzx", "xxx", "x",
                   "zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
 
+def conjugate(vop, transform):
+    """ Returns transform * vop * transform^dagger and a phase in {+1, -1} """
+    assert vop in set(xrange(4))
+    op = times_table[transform, vop]
+    op = times_table[op, conjugation_table[transform]]
+    is_id_or_vop = (transform % 4 == 0) or (transform % 4 == vop)
+    is_non_pauli = (transform >= 4) and (transform <= 15)
+    phase = ((-1, 1), (1, -1))[is_id_or_vop][is_non_pauli]
+    if vop == 0: 
+        phase = 1
+    return op, phase
+    
 
 def get_name(i):
     """ Get the human-readable name of this clifford """
@@ -93,6 +103,24 @@ def get_state_table(unitaries):
         state_table[bond, i, j, :] = qi.normalize_global_phase(
             np.dot(kp, state).T)
     return state_table
+
+def get_measurement_table():
+    """ 
+    Compute a table of transform * operation * transform^dagger 
+    This is pretty unintelligible right now, we should probably compute the phase from unitaries instead
+    """
+    for operation_index, transform_index in itertools.product(range(4), range(24)):
+        assert vop in set(xrange(4))
+        op = times_table[transform, vop]
+        op = times_table[op, conjugation_table[transform]]
+        is_id_or_vop = (transform % 4 == 0) or (transform % 4 == vop)
+        is_non_pauli = (transform >= 4) and (transform <= 15)
+        phase = ((-1, 1), (1, -1))[is_id_or_vop][is_non_pauli]
+        if vop == 0: 
+            phase = 1
+        return op, phase
+    
+
 
 
 def get_commuters(unitaries):

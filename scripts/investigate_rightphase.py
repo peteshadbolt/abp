@@ -1,13 +1,13 @@
 from anders_briegel import graphsim
+from abp import clifford, qi
+import itertools
+import numpy as np
 
-for i in range(4):
-    for j in range(24):
-        a = graphsim.LocCliffOp(i)
-        b = graphsim.LocCliffOp(j)
-        print
-        print i, j
-        print i, j, a.op, b.op
-        output = a.conjugate(b)
-        print i, j, a.op, b.op, output.ph
+for i, j in itertools.product(range(4), range(24)):
+    operation, phase = clifford.conjugate(i, j)
+    vop_u = clifford.unitaries[i]
+    transform_u = clifford.unitaries[j]
+    u = np.dot(transform_u, np.dot(vop_u, qi.hermitian_conjugate(transform_u)))
+    #print u.round(2)
 
 
