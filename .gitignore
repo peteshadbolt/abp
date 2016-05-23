@@ -1,3 +1,4 @@
+.agignore
 venv/
 fresh_venv/
 *.npy
