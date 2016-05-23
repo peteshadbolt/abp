@@ -48,9 +48,7 @@ def test_local_rotations():
 def test_cz_table(N=10):
     """ Test the CZ table """
 
-    # Don't test if we are using Pete's CZ table - doesn't make sense
-    if not clifford.legacy_cz:
-        return
+    clifford.use_old_cz()
 
     for j in range(24):
         a = graphsim.GraphRegister(2)
@@ -92,9 +90,7 @@ def test_with_cphase_gates_hadamard_only(N=10):
 def test_all(N=10):
     """ Test all gates at random """
 
-    # Don't test if we are using Pete's CZ table - doesn't make sense
-    if not clifford.legacy_cz:
-        return
+    clifford.use_old_cz()
 
     a = graphsim.GraphRegister(N)
     b = GraphState()
