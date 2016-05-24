@@ -5,6 +5,7 @@ from abp import clifford
 import random
 import difflib
 import re
+from copy import deepcopy
 
 def compare(a, b):
     """ TODO: Sketchy as you like. Remove this abomination """
@@ -116,17 +117,17 @@ def test_with_cphase_gates_hadamard_only(N=10):
 
     compare(a, b)
 
-
 def test_all(N=3):
     """ Test all gates at random """
     #TODO: Currently fails. Why???
 
     clifford.use_old_cz()
 
+
     a = graphsim.GraphRegister(N)
     b = GraphState(range(N))
-
-    for i in range(1000):
+    previous_state, previous_cz = None, None
+    while isequal(a, b):
         if random.random()>0.5:
             j = random.randint(0, N-1)
             a.hadamard(j)
@@ -135,7 +136,15 @@ def test_all(N=3):
             q = random.randint(0, N-2)
             a.cphase(q, q+1)
             b.act_cz(q, q+1)
-            compare(a, b)
-        #print b
+            previous_state = deepcopy(b)
+            previous_cz = q, q+1
+
+    print "Initial state:"
+    print previous_state.node
+    print previous_state.adj
+    print "CZ:", previous_cz
+    print "Pete state:\n", a.get_adj_list()
+    print "Anders state:\n", b.adj_list()
+
 
 

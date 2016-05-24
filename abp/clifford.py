@@ -223,6 +223,9 @@ def load_from_disk():
     with open(temp("by_name.json")) as f:
         by_name = json.load(f)
 
+def is_diagonal(v):
+    """ TODO:remove. Checks if a VOP is diagonal or not """
+    return v in {0, 3, 5, 6}
 
 if __name__ == "__main__":
     compute_everything()

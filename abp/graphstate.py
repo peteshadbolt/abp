@@ -90,14 +90,31 @@ class GraphState(object):
 
     def act_cz(self, a, b):
         """ Act a controlled-phase gate on two qubits """
-        #TODO: inefficient
-        if set(self.adj[a]) - {b}:
+        ci = self.get_connection_info(a, b)
+        if ci["non1"]:
             self.remove_vop(a, b)
-        if set(self.adj[b]) - {a}:
+
+        ci = self.get_connection_info(a, b)
+        if ci["non2"]:
             self.remove_vop(b, a)
-        if set(self.adj[a]) - {b}:
-            self.remove_vop(a, b)
-        edge = int(self.has_edge(a, b))
+
+        ci = self.get_connection_info(a, b)
+        if ci["non1"] and not clifford.is_diagonal(self.node[a]["vop"]):
+            self.remove_vop(b, a)
+        self.cz_with_table(a, b, ci["was_edge"])
+
+    def get_connection_info(self, a, b):
+        if self.has_edge(a, b):
+            return {"was_edge": True,
+                    "non1": len(self.node.get(a, [])) > 0,
+                    "non2": len(self.node.get(b, [])) > 0}
+        else:
+            return {"was_edge": False,
+                    "non1": len(self.node.get(a, [])) > 1,
+                    "non2": len(self.node.get(b, [])) > 1}
+
+    def cz_with_table(self, a, b, edge):
+        """ Run the table """
         new_edge, self.node[a]["vop"], self.node[
             b]["vop"] = clifford.cz_table[edge, self.node[a]["vop"], self.node[b]["vop"]]
         if new_edge != edge:
