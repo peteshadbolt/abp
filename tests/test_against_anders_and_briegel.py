@@ -133,8 +133,9 @@ def test_all(N=3):
             b.act_hadamard(j)
         else:
             q = random.randint(0, N-2)
-            a.cphase(q, q+1)
-            b.act_cz(q, q+1)
+            if a!=b:
+                a.cphase(q, q+1)
+                b.act_cz(q, q+1)
         compare(a, b)
 
 
