@@ -123,7 +123,6 @@ def test_all(N=3):
 
     clifford.use_old_cz()
 
-
     a = graphsim.GraphRegister(N)
     b = GraphState(range(N))
     previous_state, previous_cz = None, None
@@ -136,15 +135,6 @@ def test_all(N=3):
             q = random.randint(0, N-2)
             a.cphase(q, q+1)
             b.act_cz(q, q+1)
-            previous_state = deepcopy(b)
-            previous_cz = q, q+1
-
-    print "Initial state:"
-    print previous_state.node
-    print previous_state.adj
-    print "CZ:", previous_cz
-    print "Pete state:\n", a.get_adj_list()
-    print "Anders state:\n", b.adj_list()
-
+        compare(a, b)
 
 

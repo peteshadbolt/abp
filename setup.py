@@ -1,14 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = "abp",
+    name = "chp",
     version = "0.1",
     packages = find_packages(),
     test_suite = 'tests',
-    author = "Pete Shadbolt",
-    author_email = "hello@peteshadbolt.co.uk",
-    description = "Implements Anders and Briegel in Python",
-    license = "MIT",
+    author = "Scott Aaronson & Daniel Gottesman (Ported by Pete Shadbolt)",
+    description = "CNOT Hadamard Phase",
+    license = "Copyright Scott & others",
     keywords = "quantum",
-    url = "https://github.com/peteshadbolt/abp/"
+    url = "http://www.scottaaronson.com/chp/"
 )
