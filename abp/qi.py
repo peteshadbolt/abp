@@ -74,6 +74,12 @@ class CircuitModel(object):
             if (i & control) and (i & target):
                 self.state[i, 0] *= -1
 
+    def act_cnot(self, control, target):
+        """ Act a CNOT """
+        self.act_hadamard(target)
+        self.act_cz(control, target)
+        self.act_hadamard(target)
+
     def act_hadamard(self, qubit):
         """ Act a hadamard somewhere """
         where = 1 << qubit

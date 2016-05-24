@@ -631,6 +631,21 @@ static PyObject* act_cnot(PyObject* self, PyObject* args)
 }
 
 
+static char act_cz_docs[] = "act_cz(): Do a cz";
+static PyObject* act_cz(PyObject* self, PyObject* args)
+{
+    int a, b;
+    if (!PyArg_ParseTuple(args, "ii", &a, &b)) { return NULL; }
+    hadamard(q, b);
+    cnot(q, a, b);
+    hadamard(q, b);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+
+
 
 static char get_ket_docs[] = "get_ket(): Get the state vector";
 static PyObject* get_ket(PyObject* self, PyObject* noarg)
@@ -958,6 +973,7 @@ static PyMethodDef chp_funcs[] = {
     {"get_ket", (PyCFunction)get_ket, METH_NOARGS, get_ket_docs},
     {"act_hadamard", (PyCFunction)act_hadamard, METH_VARARGS, act_hadamard_docs},
     {"act_cnot", (PyCFunction)act_cnot, METH_VARARGS, act_cnot_docs},
+    {"act_cz", (PyCFunction)act_cz, METH_VARARGS, act_cz_docs},
     {"act_phase", (PyCFunction)act_phase, METH_VARARGS, act_phase_docs},
     {NULL}
 };
