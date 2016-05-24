@@ -31,4 +31,5 @@ def anders():
     b.print_adj_list()
 
 pete()
+anders()
 

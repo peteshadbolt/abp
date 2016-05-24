@@ -7,8 +7,9 @@ import json
 import qi, clifford, util
 import random
 
+output = open("debug_pete.txt", "w")
 def debug(x):
-    pass
+    output.write(str(x)+"\n")
 
 class GraphState(object):
 
@@ -41,6 +42,7 @@ class GraphState(object):
 
     def del_edge(self, v1, v2):
         """ Delete an edge between two vertices in the self """
+        debug("deling edge")
         del self.adj[v1][v2]
         del self.adj[v2][v1]
 
@@ -65,7 +67,7 @@ class GraphState(object):
 
     def remove_vop(self, a, avoid):
         """ Reduces VOP[a] to the identity """
-
+        # TODO: sucks!
         others = set(self.adj[a]) - {avoid}
         swap_qubit = others.pop() if others else avoid
 
@@ -73,10 +75,16 @@ class GraphState(object):
         self.print_adj_list_line(a)
         self.print_adj_list_line(avoid)
         self.print_adj_list_line(swap_qubit)
-        debug("using {}".format(clifford.decompositions[self.node[a]["vop"]]))
+        converted = clifford.decompositions[self.node[a]["vop"]]
+        converted = "".join("U" if x == "x" else "V" for x in converted)
+        debug("using {}".format(converted))
 
         for v in reversed(clifford.decompositions[self.node[a]["vop"]]):
-            self.local_complementation(a if v == "x" else swap_qubit)
+            if v == "x":
+                self.local_complementation(a, "U ->")
+            else:
+                self.local_complementation(swap_qubit, "V ->")
+
         assert self.node[a]["vop"]==0
 
         debug("remove_byprod_op: after (v, avoid, vb):")
@@ -84,9 +92,11 @@ class GraphState(object):
         self.print_adj_list_line(avoid)
         self.print_adj_list_line(swap_qubit)
 
-    def local_complementation(self, v):
+        assert self.node[a]["vop"] == 0
+
+    def local_complementation(self, v, prefix = ""):
         """ As defined in LISTING 1 of Anders & Briegel """
-        debug("V ->Inverting about {}".format(self.get_adj_list_line(v)))
+        debug("{}Inverting about {}".format(prefix, self.get_adj_list_line(v)))
         for i, j in it.combinations(self.adj[v], 2):
             self.toggle_edge(i, j)
 
@@ -149,19 +159,15 @@ class GraphState(object):
             assert ci["non1"]==False or clifford.is_diagonal(self.node[a]["vop"])
             assert ci["non2"]==False or clifford.is_diagonal(self.node[b]["vop"])
         except AssertionError:
-            print ci
-            print self.node[a]["vop"]
-            print self.node[b]["vop"]
+            debug(ci)
+            debug(self.node[a]["vop"])
+            debug(self.node[b]["vop"])
             
         edge = self.has_edge(a, b)
         new_edge, self.node[a]["vop"], self.node[
             b]["vop"] = clifford.cz_table[edge, self.node[a]["vop"], self.node[b]["vop"]]
         if new_edge != edge:
             self.toggle_edge(a, b)
-            if new_edge:
-                debug("adding edge")
-            else:
-                debug("deling edge")
 
         debug("cphase_with_table: after")
         self.print_adj_list_line(a)

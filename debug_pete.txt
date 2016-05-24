@@ -1,0 +1,364 @@
+before cphase between 0 and 1
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+cphase_with_table called on:
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+cphase_with_table: after
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+before cphase between 0 and 1
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+cphase_with_table called on:
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+cphase_with_table: after
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+before cphase between 0 and 1
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+cphase_with_table called on:
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+cphase_with_table: after
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+before cphase between 0 and 1
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+cphase_with_table called on:
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+cphase_with_table: after
+Vertex 0: VOp YC, neighbors 
+Vertex 1: VOp YC, neighbors 
+before cphase between 1 and 2
+Vertex 1: VOp YC, neighbors 
+Vertex 2: VOp YC, neighbors 
+cphase_with_table called on:
+Vertex 1: VOp YC, neighbors 
+Vertex 2: VOp YC, neighbors 
+cphase_with_table: after
+Vertex 1: VOp YC, neighbors 
+Vertex 2: VOp YC, neighbors 
+before cphase between 0 and 1
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp YC, neighbors 
+cphase_with_table called on:
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp YC, neighbors 
+cphase_with_table: after
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp YC, neighbors 
+before cphase between 0 and 1
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp IA, neighbors 
+cphase_with_table called on:
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp IA, neighbors 
+cphase_with_table: after
+Vertex 0: VOp IA, neighbors 1
+Vertex 1: VOp IA, neighbors 0
+before cphase between 1 and 2
+Vertex 1: VOp IA, neighbors 0
+Vertex 2: VOp IA, neighbors 
+cphase: left vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0
+Vertex 2: VOp IA, neighbors 
+Vertex 0: VOp IA, neighbors 1
+using UUUU
+U ->Inverting about Vertex 1: VOp IA, neighbors 0
+U ->Inverting about Vertex 1: VOp YD, neighbors 0
+U ->Inverting about Vertex 1: VOp XA, neighbors 0
+U ->Inverting about Vertex 1: VOp ZD, neighbors 0
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0
+Vertex 2: VOp IA, neighbors 
+Vertex 0: VOp IA, neighbors 1
+cphase_with_table called on:
+Vertex 1: VOp IA, neighbors 0
+Vertex 2: VOp IA, neighbors 
+cphase_with_table: after
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp IA, neighbors 1
+before cphase between 1 and 2
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp YC, neighbors 1
+cphase: left vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp YC, neighbors 1
+Vertex 0: VOp IA, neighbors 1
+using UUUU
+U ->Inverting about Vertex 1: VOp IA, neighbors 0 2
+U ->Inverting about Vertex 1: VOp YD, neighbors 0 2
+deling edge
+U ->Inverting about Vertex 1: VOp XA, neighbors 0 2
+U ->Inverting about Vertex 1: VOp ZD, neighbors 0 2
+deling edge
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp YC, neighbors 1
+Vertex 0: VOp IA, neighbors 1
+cphase_with_table called on:
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp YC, neighbors 1
+cphase_with_table: after
+Vertex 1: VOp XB, neighbors 0 2
+Vertex 2: VOp XF, neighbors 1
+before cphase between 1 and 2
+Vertex 1: VOp XB, neighbors 0 2
+Vertex 2: VOp XF, neighbors 1
+cphase: left vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp XB, neighbors 0 2
+Vertex 2: VOp XF, neighbors 1
+Vertex 0: VOp IA, neighbors 1
+using V
+V ->Inverting about Vertex 0: VOp IA, neighbors 1
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp XF, neighbors 1
+Vertex 0: VOp YD, neighbors 1
+cphase_with_table called on:
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp XF, neighbors 1
+cphase_with_table: after
+Vertex 1: VOp XB, neighbors 0 2
+Vertex 2: VOp ZC, neighbors 1
+before cphase between 1 and 2
+Vertex 1: VOp XB, neighbors 0 2
+Vertex 2: VOp ZC, neighbors 1
+cphase: left vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp XB, neighbors 0 2
+Vertex 2: VOp ZC, neighbors 1
+Vertex 0: VOp YD, neighbors 1
+using V
+V ->Inverting about Vertex 0: VOp YD, neighbors 1
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp ZC, neighbors 1
+Vertex 0: VOp XA, neighbors 1
+cphase_with_table called on:
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp ZC, neighbors 1
+cphase_with_table: after
+Vertex 1: VOp XB, neighbors 0 2
+Vertex 2: VOp IF, neighbors 1
+before cphase between 0 and 1
+Vertex 0: VOp XA, neighbors 1
+Vertex 1: VOp XB, neighbors 0 2
+cphase: right vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp XB, neighbors 0 2
+Vertex 0: VOp XA, neighbors 1
+Vertex 2: VOp IF, neighbors 1
+using V
+V ->Inverting about Vertex 2: VOp IF, neighbors 1
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 0: VOp XA, neighbors 1
+Vertex 2: VOp YC, neighbors 1
+cphase_with_table called on:
+Vertex 0: VOp XA, neighbors 1
+Vertex 1: VOp IA, neighbors 0 2
+deling edge
+cphase_with_table: after
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp ZA, neighbors 2
+before cphase between 0 and 1
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp ZA, neighbors 2
+cphase: right vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp ZA, neighbors 2
+Vertex 0: VOp IA, neighbors 
+Vertex 2: VOp IA, neighbors 1
+using VV
+V ->Inverting about Vertex 2: VOp IA, neighbors 1
+V ->Inverting about Vertex 2: VOp YD, neighbors 1
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 2
+Vertex 0: VOp IA, neighbors 
+Vertex 2: VOp XA, neighbors 1
+cphase_with_table called on:
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp IA, neighbors 2
+cphase_with_table: after
+Vertex 0: VOp IA, neighbors 1
+Vertex 1: VOp IA, neighbors 0 2
+before cphase between 0 and 1
+Vertex 0: VOp IA, neighbors 1
+Vertex 1: VOp IA, neighbors 0 2
+cphase: right vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 0: VOp IA, neighbors 1
+Vertex 2: VOp ZC, neighbors 1
+using UUUU
+U ->Inverting about Vertex 1: VOp IA, neighbors 0 2
+U ->Inverting about Vertex 1: VOp YD, neighbors 0 2
+deling edge
+U ->Inverting about Vertex 1: VOp XA, neighbors 0 2
+U ->Inverting about Vertex 1: VOp ZD, neighbors 0 2
+deling edge
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 0: VOp IA, neighbors 1
+Vertex 2: VOp ZC, neighbors 1
+cphase_with_table called on:
+Vertex 0: VOp IA, neighbors 1
+Vertex 1: VOp IA, neighbors 0 2
+deling edge
+cphase_with_table: after
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp IA, neighbors 2
+before cphase between 0 and 1
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp IA, neighbors 2
+cphase: right vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 2
+Vertex 0: VOp IA, neighbors 
+Vertex 2: VOp ZC, neighbors 1
+using UUUU
+U ->Inverting about Vertex 1: VOp IA, neighbors 2
+U ->Inverting about Vertex 1: VOp YD, neighbors 2
+U ->Inverting about Vertex 1: VOp XA, neighbors 2
+U ->Inverting about Vertex 1: VOp ZD, neighbors 2
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 2
+Vertex 0: VOp IA, neighbors 
+Vertex 2: VOp ZC, neighbors 1
+cphase_with_table called on:
+Vertex 0: VOp IA, neighbors 
+Vertex 1: VOp IA, neighbors 2
+cphase_with_table: after
+Vertex 0: VOp IA, neighbors 1
+Vertex 1: VOp IA, neighbors 0 2
+before cphase between 0 and 1
+Vertex 0: VOp YC, neighbors 1
+Vertex 1: VOp IA, neighbors 0 2
+cphase: right vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 0: VOp YC, neighbors 1
+Vertex 2: VOp XA, neighbors 1
+using UUUU
+U ->Inverting about Vertex 1: VOp IA, neighbors 0 2
+U ->Inverting about Vertex 1: VOp YD, neighbors 0 2
+deling edge
+U ->Inverting about Vertex 1: VOp XA, neighbors 0 2
+U ->Inverting about Vertex 1: VOp ZD, neighbors 0 2
+deling edge
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 0: VOp YC, neighbors 1
+Vertex 2: VOp XA, neighbors 1
+cphase_with_table called on:
+Vertex 0: VOp YC, neighbors 1
+Vertex 1: VOp IA, neighbors 0 2
+cphase_with_table: after
+Vertex 0: VOp IF, neighbors 1
+Vertex 1: VOp YB, neighbors 0 2
+before cphase between 1 and 2
+Vertex 1: VOp YB, neighbors 0 2
+Vertex 2: VOp XA, neighbors 1
+cphase: left vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp YB, neighbors 0 2
+Vertex 2: VOp XA, neighbors 1
+Vertex 0: VOp IF, neighbors 1
+using VVV
+V ->Inverting about Vertex 0: VOp IF, neighbors 1
+V ->Inverting about Vertex 0: VOp YC, neighbors 1
+V ->Inverting about Vertex 0: VOp XF, neighbors 1
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp XA, neighbors 1
+Vertex 0: VOp ZC, neighbors 1
+cphase_with_table called on:
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp XA, neighbors 1
+deling edge
+cphase_with_table: after
+Vertex 1: VOp ZA, neighbors 0
+Vertex 2: VOp IA, neighbors 
+before cphase between 0 and 1
+Vertex 0: VOp ZC, neighbors 1
+Vertex 1: VOp ZA, neighbors 0
+cphase_with_table called on:
+Vertex 0: VOp ZC, neighbors 1
+Vertex 1: VOp ZA, neighbors 0
+cphase_with_table: after
+Vertex 0: VOp IF, neighbors 1
+Vertex 1: VOp YB, neighbors 0
+before cphase between 1 and 2
+Vertex 1: VOp YB, neighbors 0
+Vertex 2: VOp IA, neighbors 
+cphase: left vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp YB, neighbors 0
+Vertex 2: VOp IA, neighbors 
+Vertex 0: VOp IF, neighbors 1
+using VVV
+V ->Inverting about Vertex 0: VOp IF, neighbors 1
+V ->Inverting about Vertex 0: VOp YC, neighbors 1
+V ->Inverting about Vertex 0: VOp XF, neighbors 1
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 0
+Vertex 2: VOp IA, neighbors 
+Vertex 0: VOp ZC, neighbors 1
+cphase_with_table called on:
+Vertex 1: VOp IA, neighbors 0
+Vertex 2: VOp IA, neighbors 
+cphase_with_table: after
+Vertex 1: VOp IA, neighbors 0 2
+Vertex 2: VOp IA, neighbors 1
+before cphase between 0 and 1
+Vertex 0: VOp ZC, neighbors 1
+Vertex 1: VOp YC, neighbors 0 2
+cphase: right vertex has NONs -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp YC, neighbors 0 2
+Vertex 0: VOp ZC, neighbors 1
+Vertex 2: VOp IA, neighbors 1
+using UVVVU
+U ->Inverting about Vertex 1: VOp YC, neighbors 0 2
+V ->Inverting about Vertex 2: VOp YB, neighbors 0 1
+deling edge
+V ->Inverting about Vertex 2: VOp XE, neighbors 0 1
+V ->Inverting about Vertex 2: VOp ZB, neighbors 0 1
+deling edge
+U ->Inverting about Vertex 1: VOp ZD, neighbors 2
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 2
+Vertex 0: VOp ZC, neighbors 2
+Vertex 2: VOp YC, neighbors 0 1
+cphase: left one needs treatment again -> putting it to Id
+remove_byprod_op called: (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 2
+Vertex 0: VOp ZC, neighbors 2
+Vertex 2: VOp YC, neighbors 0 1
+using UUUU
+U ->Inverting about Vertex 1: VOp IA, neighbors 2
+U ->Inverting about Vertex 1: VOp YD, neighbors 2
+U ->Inverting about Vertex 1: VOp XA, neighbors 2
+U ->Inverting about Vertex 1: VOp ZD, neighbors 2
+remove_byprod_op: after (v, avoid, vb):
+Vertex 1: VOp IA, neighbors 2
+Vertex 0: VOp ZC, neighbors 2
+Vertex 2: VOp YC, neighbors 0 1
+cphase_with_table called on:
+Vertex 0: VOp ZC, neighbors 2
+Vertex 1: VOp IA, neighbors 2
+{'was_edge': False, 'non1': True, 'non2': True}
+11
+0
+cphase_with_table: after
+Vertex 0: VOp YC, neighbors 2
+Vertex 1: VOp IA, neighbors 2
