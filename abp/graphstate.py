@@ -67,6 +67,7 @@ class GraphState(object):
         swap_qubit = others.pop() if others else avoid
         for v in reversed(clifford.decompositions[self.node[a]["vop"]]):
             self.local_complementation(a if v == "x" else swap_qubit)
+        assert self.node[a]["vop"]==0
 
     def local_complementation(self, v):
         """ As defined in LISTING 1 of Anders & Briegel """
@@ -101,7 +102,8 @@ class GraphState(object):
         ci = self.get_connection_info(a, b)
         if ci["non1"] and not clifford.is_diagonal(self.node[a]["vop"]):
             self.remove_vop(b, a)
-        self.cz_with_table(a, b, ci["was_edge"])
+
+        self.cz_with_table(a, b)
 
     def get_connection_info(self, a, b):
         if self.has_edge(a, b):
@@ -113,12 +115,20 @@ class GraphState(object):
                     "non1": len(self.node.get(a, [])) > 1,
                     "non2": len(self.node.get(b, [])) > 1}
 
-    def cz_with_table(self, a, b, edge):
+    def cz_with_table(self, a, b):
         """ Run the table """
+        ci = self.get_connection_info(a, b)
+        assert ci["non1"]==False or clifford.is_diagonal(self.node[a]["vop"])
+        assert ci["non2"]==False or clifford.is_diagonal(self.node[b]["vop"])
+        edge = self.has_edge(a, b)
         new_edge, self.node[a]["vop"], self.node[
             b]["vop"] = clifford.cz_table[edge, self.node[a]["vop"], self.node[b]["vop"]]
         if new_edge != edge:
             self.toggle_edge(a, b)
+
+        ci = self.get_connection_info(a, b)
+        assert ci["non1"]==False or clifford.is_diagonal(self.node[a]["vop"])
+        assert ci["non2"]==False or clifford.is_diagonal(self.node[b]["vop"])
 
     def measure_z(self, node, force=None):
         """ Measure the graph in the Z-basis """
