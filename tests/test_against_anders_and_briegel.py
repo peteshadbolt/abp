@@ -118,20 +118,42 @@ def test_with_cphase_gates_hadamard_only(N=10):
 
     compare(a, b)
 
-def test_all(N=3):
-    """ Test all gates at random """
-    #TODO: Currently fails. Why???
+def _test_cz_hadamard(N=3):
+    """ Test CZs and Hadamards at random """
 
     clifford.use_old_cz()
 
     a = graphsim.GraphRegister(N)
     b = GraphState(range(N))
     previous_state, previous_cz = None, None
-    for i in tqdm(range(100000), desc="Testing against Anders and Briegel"):
+    for i in tqdm(range(100000), desc="Testing CZ and Hadamard against A&B"):
         if random.random()>0.5:
             j = random.randint(0, N-1)
             a.hadamard(j)
             b.act_hadamard(j)
+        else:
+            q = random.randint(0, N-2)
+            if a!=b:
+                a.cphase(q, q+1)
+                b.act_cz(q, q+1)
+        compare(a, b)
+
+
+
+def test_all(N=5):
+    """ Test everything"""
+
+    clifford.use_old_cz()
+
+    a = graphsim.GraphRegister(N)
+    b = GraphState(range(N))
+    previous_state, previous_cz = None, None
+    for i in tqdm(range(100000), desc="Testing all gates against Anders and Briegel"):
+        if random.random()>0.5:
+            j = random.randint(0, N-1)
+            u = random.randint(0, 23)
+            a.local_op(j, graphsim.LocCliffOp(u))
+            b.act_local_rotation(j, u)
         else:
             q = random.randint(0, N-2)
             if a!=b:
