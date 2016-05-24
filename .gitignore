@@ -1,3 +1,5 @@
+*.o
+*.chp
 .agignore
 venv/
 fresh_venv/

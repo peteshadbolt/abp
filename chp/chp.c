@@ -511,7 +511,7 @@ void printbasisstate(struct QState *q)
 
 void dumpbasisstate(struct QState *q, PyObject *output, int index)
 
-// Prints the result of applying the Pauli operator in the "scratch space" of q to |0...0>
+// Dumps the result of applying the Pauli operator in the "scratch space" of q to |0...0>
 
 {
 
@@ -535,17 +535,16 @@ void dumpbasisstate(struct QState *q, PyObject *output, int index)
 	if (e==3) strcat(buffer, "-i|");
 
 
+    int key;
+    key = 0;
 	for (j = 0; j < q->n; j++)
 	{
          j5 = j>>5;
          pw = q->pw[j&31];
-         if (q->x[2*q->n][j5]&pw) strcat(buffer, "1");
-                 else strcat(buffer, "0");
+         if (q->x[2*q->n][j5]&pw) key = key ^ (1 << j);
 	}
 
-    strcat(buffer, ">");
-
-    PyList_SetItem(output, index, Py_BuildValue("s", buffer));
+    PyDict_SetItem(output, Py_BuildValue("i", key), Py_BuildValue("i", e));
 	return;
 }
 
@@ -647,7 +646,7 @@ static PyObject* get_ket(PyObject* self, PyObject* noarg)
 
     g = gaussian(q);
 
-    PyObject *output = PyList_New(g+1);
+    PyObject *output = PyDict_New();
     if (g > 30) { return output; }
 
     seed(q, g);
