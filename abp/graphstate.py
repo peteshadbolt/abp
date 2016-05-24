@@ -134,7 +134,7 @@ class GraphState(object):
         ci = self.get_connection_info(a, b)
         if ci["non1"] and not clifford.is_diagonal(self.node[a]["vop"]):
             debug("cphase: left one needs treatment again -> putting it to Id")
-            self.remove_vop(b, a)
+            self.remove_vop(a, b)
 
         self.cz_with_table(a, b)
 
