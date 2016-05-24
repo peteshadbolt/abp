@@ -6,6 +6,7 @@ import random
 import difflib
 import re
 from copy import deepcopy
+from tqdm import tqdm
 
 def compare(a, b):
     """ TODO: Sketchy as you like. Remove this abomination """
@@ -126,7 +127,7 @@ def test_all(N=3):
     a = graphsim.GraphRegister(N)
     b = GraphState(range(N))
     previous_state, previous_cz = None, None
-    while isequal(a, b):
+    for i in tqdm(range(100000), desc="Testing against Anders and Briegel"):
         if random.random()>0.5:
             j = random.randint(0, N-1)
             a.hadamard(j)
