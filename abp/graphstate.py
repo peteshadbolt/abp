@@ -7,10 +7,6 @@ import json
 import qi, clifford, util
 import random
 
-output = open("debug_pete.txt", "w")
-def debug(x):
-    output.write(str(x)+"\n")
-
 class GraphState(object):
 
     def __init__(self, nodes=[]):
@@ -42,7 +38,6 @@ class GraphState(object):
 
     def del_edge(self, v1, v2):
         """ Delete an edge between two vertices in the self """
-        debug("deling edge")
         del self.adj[v1][v2]
         del self.adj[v2][v1]
 
@@ -67,17 +62,8 @@ class GraphState(object):
 
     def remove_vop(self, a, avoid):
         """ Reduces VOP[a] to the identity """
-        # TODO: sucks!
         others = set(self.adj[a]) - {avoid}
         swap_qubit = others.pop() if others else avoid
-
-        debug("remove_byprod_op called: (v, avoid, vb):")
-        self.print_adj_list_line(a)
-        self.print_adj_list_line(avoid)
-        self.print_adj_list_line(swap_qubit)
-        converted = clifford.decompositions[self.node[a]["vop"]]
-        converted = "".join("U" if x == "x" else "V" for x in converted)
-        debug("using {}".format(converted))
 
         for v in reversed(clifford.decompositions[self.node[a]["vop"]]):
             if v == "x":
@@ -85,18 +71,8 @@ class GraphState(object):
             else:
                 self.local_complementation(swap_qubit, "V ->")
 
-        assert self.node[a]["vop"]==0
-
-        debug("remove_byprod_op: after (v, avoid, vb):")
-        self.print_adj_list_line(a)
-        self.print_adj_list_line(avoid)
-        self.print_adj_list_line(swap_qubit)
-
-        assert self.node[a]["vop"] == 0
-
     def local_complementation(self, v, prefix = ""):
         """ As defined in LISTING 1 of Anders & Briegel """
-        debug("{}Inverting about {}".format(prefix, self.get_adj_list_line(v)))
         for i, j in it.combinations(self.adj[v], 2):
             self.toggle_edge(i, j)
 
@@ -117,23 +93,16 @@ class GraphState(object):
 
     def act_cz(self, a, b):
         """ Act a controlled-phase gate on two qubits """
-        debug("before cphase between {} and {}".format(a, b))
-        self.print_adj_list_line(a)
-        self.print_adj_list_line(b)
-
         ci = self.get_connection_info(a, b)
         if ci["non1"]:
-            debug("cphase: left vertex has NONs -> putting it to Id")
             self.remove_vop(a, b)
 
         ci = self.get_connection_info(a, b)
         if ci["non2"]:
-            debug("cphase: right vertex has NONs -> putting it to Id")
             self.remove_vop(b, a)
 
         ci = self.get_connection_info(a, b)
         if ci["non1"] and not clifford.is_diagonal(self.node[a]["vop"]):
-            debug("cphase: left one needs treatment again -> putting it to Id")
             self.remove_vop(a, b)
 
         self.cz_with_table(a, b)
@@ -150,32 +119,13 @@ class GraphState(object):
 
     def cz_with_table(self, a, b):
         """ Run the table """
-        debug("cphase_with_table called on:")
-        self.print_adj_list_line(a)
-        self.print_adj_list_line(b)
-
         ci = self.get_connection_info(a, b)
-        try:
-            assert ci["non1"]==False or clifford.is_diagonal(self.node[a]["vop"])
-            assert ci["non2"]==False or clifford.is_diagonal(self.node[b]["vop"])
-        except AssertionError:
-            debug(ci)
-            debug(self.node[a]["vop"])
-            debug(self.node[b]["vop"])
-            
         edge = self.has_edge(a, b)
         new_edge, self.node[a]["vop"], self.node[
             b]["vop"] = clifford.cz_table[edge, self.node[a]["vop"], self.node[b]["vop"]]
         if new_edge != edge:
             self.toggle_edge(a, b)
 
-        debug("cphase_with_table: after")
-        self.print_adj_list_line(a)
-        self.print_adj_list_line(b)
-
-        ci = self.get_connection_info(a, b)
-        assert ci["non1"]==False or clifford.is_diagonal(self.node[a]["vop"])
-        assert ci["non2"]==False or clifford.is_diagonal(self.node[b]["vop"])
 
     def measure_z(self, node, force=None):
         """ Measure the graph in the Z-basis """
@@ -260,18 +210,6 @@ class GraphState(object):
             s = "Vertex {}: VOp {}, neighbors {}".format(key, vop, adj)
             rows.append(s)
         return " \n".join(rows) + " \n"
-
-    def get_adj_list_line(self, key):
-        """ TODO: delete """
-        node = self.node[key]
-        adj = " ".join(map(str, sorted(self.adj[key])))
-        vop = clifford.get_name(node["vop"])
-        s = "Vertex {}: VOp {}, neighbors {}".format(key, vop, adj)
-        return s
-
-    def print_adj_list_line(self, key):
-        debug(self.get_adj_list_line(key))
-
 
     def __eq__(self, other):
         """ Check equality between graphs """
