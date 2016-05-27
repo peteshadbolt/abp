@@ -7,7 +7,7 @@ import webbrowser
 clients = []
 
 def new_message(client, server, message):
-    print "Receieved update from client {}.".format(client["id"])
+    print "Received update from client {}.".format(client["id"])
     server.send_message_to_all(message)
 
 def new_client(client, server):

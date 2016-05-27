@@ -41,3 +41,7 @@ graph.update = function(newState) {
     gui.render();
 };
 
+graph.test = function(command) {
+    //Act the command
+    //Send it back to the server, ultimately thru to python
+};
