@@ -3,28 +3,11 @@ from anders_briegel import graphsim
 from abp import CircuitModel
 from abp import clifford
 import random
-import difflib
-import re
 from copy import deepcopy
 from tqdm import tqdm
 
-def compare(a, b):
-    """ TODO: Sketchy as you like. Remove this abomination """
-    aa = a.get_adj_list()
-    bb = b.adj_list()
-    try:
-        assert re.sub("\\s", "", aa) == re.sub("\\s", "", bb)
-    except AssertionError:
-        print aa
-        print bb
-        raise
-
-def isequal(a, b):
-    """ TODO: Sketchy as you like. Remove this abomination """
-    aa = a.get_adj_list()
-    bb = b.adj_list()
-    return re.sub("\\s", "", aa) == re.sub("\\s", "", bb)
-
+def assert_equal(a, b):
+    assert a.to_json() == b.to_json()
 
 def test_hadamard():
     """ Test hadamards """
@@ -32,13 +15,13 @@ def test_hadamard():
     b = GraphState()
     b.add_node(0)
 
-    compare(a, b)
+    assert_equal(a, b)
     a.hadamard(0)
     b.act_hadamard(0)
-    compare(a, b)
+    assert_equal(a, b)
     a.hadamard(0)
     b.act_hadamard(0)
-    compare(a, b)
+    assert_equal(a, b)
 
 
 def test_local_rotations():
@@ -46,13 +29,13 @@ def test_local_rotations():
     a = graphsim.GraphRegister(1)
     b = GraphState()
     b.add_node(0)
-    compare(a, b)
+    assert_equal(a, b)
 
     for i in range(1000):
         j = random.randint(0, 23)
         a.local_op(0, graphsim.LocCliffOp(j))
         b.act_local_rotation(0, j)
-        compare(a, b)
+        assert_equal(a, b)
 
 
 def test_cz_table(N=10):
@@ -75,7 +58,7 @@ def test_cz_table(N=10):
             a.cphase(0, 1)
             b.act_cz(0, 1)
 
-            compare(a, b)
+            assert_equal(a, b)
 
     for i in range(24):
         for j in range(24):
@@ -98,7 +81,7 @@ def test_cz_table(N=10):
             a.cphase(0, 1)
             b.act_cz(0, 1)
 
-            compare(a, b)
+            assert_equal(a, b)
 
 
 def test_with_cphase_gates_hadamard_only(N=10):
@@ -116,7 +99,7 @@ def test_with_cphase_gates_hadamard_only(N=10):
         a.cphase(i, i+1)
         b.act_cz(i, i+1)
 
-    compare(a, b)
+    assert_equal(a, b)
 
 def _test_cz_hadamard(N=3):
     """ Test CZs and Hadamards at random """
@@ -136,7 +119,7 @@ def _test_cz_hadamard(N=3):
             if a!=b:
                 a.cphase(q, q+1)
                 b.act_cz(q, q+1)
-        compare(a, b)
+        assert_equal(a, b)
 
 
 
@@ -159,6 +142,6 @@ def test_all(N=5):
             if a!=b:
                 a.cphase(q, q+1)
                 b.act_cz(q, q+1)
-        compare(a, b)
+        assert_equal(a, b)
 
 
