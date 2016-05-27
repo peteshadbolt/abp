@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
 """
-This program generates lookup tables and handles the Clifford group
+This program generates and caches lookup tables, and handles the Clifford group.
+It provides tables for Clifford group multiplication and conjugation,
+as well as CZ and decompositions of the 2x2 Cliffords.
 """
 
 import os, json, tempfile, os, sys, json, string
@@ -183,6 +185,7 @@ def write_javascript_tables():
 
 def temp(filename):
     """ Get a temporary path """
+    # TODO: this STILL fucking fails sometimes. WHY
     tempdir = tempfile.gettempdir()
     return os.path.join(tempdir, filename)
 
@@ -224,7 +227,7 @@ def load_from_disk():
         by_name = json.load(f)
 
 def is_diagonal(v):
-    """ TODO:remove. Checks if a VOP is diagonal or not """
+    """ TODO: remove this. Checks if a VOP is diagonal or not """
     return v in {0, 3, 5, 6}
 
 if __name__ == "__main__":

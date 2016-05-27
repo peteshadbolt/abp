@@ -93,6 +93,7 @@ abj.act_hadamard = function(node) {
 };
 
 abj.is_sole_member = function(group, node) {
+    // TODO: this is slow as heck
     var keys = Object.keys(group);
     return keys.length == 1 && keys[0] == node;
 };

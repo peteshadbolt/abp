@@ -7,6 +7,7 @@ import json
 import qi, clifford, util
 import random
 
+
 class GraphState(object):
 
     def __init__(self, nodes=[]):
@@ -25,7 +26,7 @@ class GraphState(object):
         for n in nodes:
             self.add_node(n)
 
-    def add_edge(self, v1, v2, data = {}):
+    def add_edge(self, v1, v2, data={}):
         """ Add an edge between two vertices in the self """
         assert v1 != v2
         self.adj[v1][v2] = data
@@ -56,8 +57,8 @@ class GraphState(object):
         """ Describe a graph as an edgelist """
         # TODO: inefficient
         edges = set(tuple(sorted((i, n)))
-                          for i, v in self.adj.items()
-                          for n in v)
+                    for i, v in self.adj.items()
+                    for n in v)
         return tuple(edges)
 
     def remove_vop(self, a, avoid):
@@ -71,7 +72,7 @@ class GraphState(object):
             else:
                 self.local_complementation(swap_qubit, "V ->")
 
-    def local_complementation(self, v, prefix = ""):
+    def local_complementation(self, v, prefix=""):
         """ As defined in LISTING 1 of Anders & Briegel """
         for i, j in it.combinations(self.adj[v], 2):
             self.toggle_edge(i, j)
@@ -80,56 +81,45 @@ class GraphState(object):
         sqz_h = clifford.conjugation_table[clifford.by_name["sqz"]]
         self.node[v]["vop"] = clifford.times_table[self.node[v]["vop"], msqx_h]
         for i in self.adj[v]:
-            self.node[i]["vop"] = clifford.times_table[self.node[i]["vop"], sqz_h]
+            self.node[i]["vop"] = clifford.times_table[
+                self.node[i]["vop"], sqz_h]
 
     def act_local_rotation(self, v, op):
         """ Act a local rotation """
         rotation = clifford.by_name[str(op)]
-        self.node[v]["vop"] = clifford.times_table[rotation, self.node[v]["vop"]]
+        self.node[v]["vop"] = clifford.times_table[
+            rotation, self.node[v]["vop"]]
 
     def act_hadamard(self, qubit):
         """ Shorthand """
         self.act_local_rotation(qubit, 10)
 
+    def lonely(self, a, b):
+        """ Is this qubit lonely ? """
+        return len(self.adj[a]) > (b in self.adj[a])
+
     def act_cz(self, a, b):
         """ Act a controlled-phase gate on two qubits """
-        ci = self.get_connection_info(a, b)
-        if ci["non1"]:
+        if self.lonely(a, b):
             self.remove_vop(a, b)
 
-        ci = self.get_connection_info(a, b)
-        if ci["non2"]:
+        if self.lonely(b, a):
             self.remove_vop(b, a)
 
-        ci = self.get_connection_info(a, b)
-        if ci["non1"] and not clifford.is_diagonal(self.node[a]["vop"]):
+        if self.lonely(a, b) and not clifford.is_diagonal(self.node[a]["vop"]):
             self.remove_vop(a, b)
 
-        self.cz_with_table(a, b)
-
-    def get_connection_info(self, a, b):
-        if self.has_edge(a, b):
-            return {"was_edge": True,
-                    "non1": len(self.adj.get(a)) > 1,
-                    "non2": len(self.adj.get(b)) > 1}
-        else:
-            return {"was_edge": False,
-                    "non1": len(self.adj.get(a)) > 0,
-                    "non2": len(self.adj.get(b)) > 0}
-
-    def cz_with_table(self, a, b):
-        """ Run the table """
-        ci = self.get_connection_info(a, b)
         edge = self.has_edge(a, b)
-        new_edge, self.node[a]["vop"], self.node[
-            b]["vop"] = clifford.cz_table[edge, self.node[a]["vop"], self.node[b]["vop"]]
+        va = self.node[a]["vop"]
+        vb = self.node[b]["vop"]
+        new_edge, self.node[a]["vop"], self.node[b]["vop"] = \
+                clifford.cz_table[edge, va, vb]
         if new_edge != edge:
             self.toggle_edge(a, b)
 
-
     def measure_z(self, node, force=None):
         """ Measure the graph in the Z-basis """
-        res = force if force!=None else random.choice([0, 1])
+        res = force if force != None else random.choice([0, 1])
 
         # Disconnect
         for neighbour in self.adj[node]:
@@ -163,7 +153,7 @@ class GraphState(object):
     def __str__(self):
         """ Represent as a string for quick debugging """
         node = {key: clifford.get_name(value["vop"])
-                  for key, value in self.node.items()}
+                for key, value in self.node.items()}
         nbstr = str(self.adj)
         return "graph:\n node: {}\n adj: {}\n".format(node, nbstr)
 
@@ -174,7 +164,7 @@ class GraphState(object):
     def from_json(self, data):
         """ Reconstruct from JSON """
         self.__init__([])
-        #TODO
+        # TODO
 
     def to_state_vector(self):
         """ Get the full state vector """
@@ -191,7 +181,7 @@ class GraphState(object):
 
     def to_stabilizer(self):
         """ Get the stabilizer of this graph """
-        output = {a:{} for a in self.node}
+        output = {a: {} for a in self.node}
         for a, b in it.product(self.node, self.node):
             if a == b:
                 output[a][b] = "X"
@@ -214,4 +204,3 @@ class GraphState(object):
     def __eq__(self, other):
         """ Check equality between graphs """
         return self.adj == other.adj and self.node == other.node
-
