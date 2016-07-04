@@ -191,16 +191,6 @@ class GraphState(object):
                 output[a][b] = "I"
         return output
 
-    def adj_list(self):
-        """ For comparison with Anders and Briegel's C++ implementation """
-        rows = []
-        for key, node in self.node.items():
-            adj = " ".join(map(str, sorted(self.adj[key])))
-            vop = clifford.get_name(node["vop"])
-            s = "Vertex {}: VOp {}, neighbors {}".format(key, vop, adj)
-            rows.append(s)
-        return " \n".join(rows) + " \n"
-
     def __eq__(self, other):
         """ Check equality between graphs """
         return self.adj == other.adj and self.node == other.node
