@@ -166,7 +166,7 @@ def get_cz_table(unitaries):
 
 def write_javascript_tables():
     """ Write the tables to javascript files for consumption in the browser """
-    path = os.path.dirname(sys.argv[0])
+    path = os.path.dirname(__file__)
     path = os.path.split(path)[0]
     with open(os.path.join(path, "static/scripts/tables.js"), "w") as f:
         f.write("var tables = {\n")
@@ -222,13 +222,13 @@ def load_from_disk():
     times_table = np.load(temp("times_table.npy"))
     measurement_table = np.load(temp("measurement_table.npy"))
     cz_table = np.load(temp("cz_table.npy"))
-
     with open(temp("by_name.json")) as f:
         by_name = json.load(f)
 
 def is_diagonal(v):
     """ TODO: remove this. Checks if a VOP is diagonal or not """
     return v in {0, 3, 5, 6}
+
 
 if __name__ == "__main__":
     compute_everything()

@@ -16,7 +16,15 @@ editor.onFreeMove = function() {
     if (editor.mouseOver !== found) {
         editor.mouseOver = found;
         if (found) {
-            gui.nodeMessage("Node " + found + " (VOP:" + abj.node[found].vop + ")");
+            var n = abj.node[found];
+            var s = "Node " + found + "<br/> ";
+            for (var i in n) {
+                if (i!="position"){
+                    s += i + ":" + n[i] + " ";
+                }
+            }
+            s += "";
+            gui.nodeMessage(s);
         } else {
             gui.hideNodeMessage();
         }

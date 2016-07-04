@@ -38,7 +38,7 @@ class GraphState(graphstate.GraphState, networkx.Graph):
             #self.add_vops()
 
         # Send data to browser and rate-limit
-        self.ws.send(json.dumps(self.to_json()))
+        self.ws.send(json.dumps(self.to_json(), default = str))
         time.sleep(delay)
 
     def layout(self, dim=3):

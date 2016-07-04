@@ -16,6 +16,9 @@ graph.update = function(newState) {
     geometry.colors = [];
     for (var i in abj.node) {
         var color = graph.colors[abj.node[i].vop % graph.colors.length];
+        if (abj.node[i].color !== undefined){
+            color = abj.node[i].color;
+        }
         geometry.vertices.push(abj.node[i].position);
         geometry.colors.push(new THREE.Color(color));
     }
