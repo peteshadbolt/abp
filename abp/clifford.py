@@ -6,7 +6,7 @@ It provides tables for Clifford group multiplication and conjugation,
 as well as CZ and decompositions of the 2x2 Cliffords.
 """
 
-import os, json, tempfile, os, sys, json, string
+import os, json, tempfile, json
 from functools import reduce
 import itertools as it
 import numpy as np

@@ -117,6 +117,26 @@ class GraphState(object):
         if new_edge != edge:
             self.toggle_edge(a, b)
 
+    def measure(self, node, basis, force=None):
+        """ Measure in an arbitrary basis """
+        basis = clifford.by_name[basis]
+        old_basis = basis
+        ha = clifford.conjugation_table[self.node[node]["vop"]]
+        basis, phase = clifford.conjugate(basis, ha)
+        print basis, phase
+        assert phase in (-1, 1) # TODO: remove
+
+        # TODO: wtf
+        force = force ^ 0x01 if force != -1 and phase == 0 else force
+
+        which = {1: self.measure_x, 2: self.measure_y, 3: self.measure_z}[basis]
+        res = which(node, force)
+        res = res if phase == 1 else not res
+
+        # TODO: put the asserts from graphsim.cpp into tests
+        return res
+
+
     def measure_z(self, node, force=None):
         """ Measure the graph in the Z-basis """
         res = force if force != None else random.choice([0, 1])
@@ -136,12 +156,12 @@ class GraphState(object):
 
         return res
 
-    def measure_x(self, i):
+    def measure_x(self, node, force=None):
         """ Measure the graph in the X-basis """
         # TODO
         pass
 
-    def measure_y(self, i):
+    def measure_y(self, node, force=None):
         """ Measure the graph in the Y-basis """
         # TODO
         pass
