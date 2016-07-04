@@ -1,7 +1,7 @@
 var materials = {};
 
 var curveProperties = {
-    splineDensity: 8,
+    splineDensity: 1,
     curvature: 20
 };
 
@@ -13,18 +13,7 @@ materials.prepare = function() {
     materials.edge = new THREE.LineBasicMaterial({
         color: "gray",
         transparent: false,
-        linewidth: 1
-    });
-    materials.gimbalEdge = new THREE.LineBasicMaterial({
-        color: "black",
-        linewidth: 1,
-    });
-    materials.tip = new THREE.PointsMaterial({
-        size: 0.4,
-        map: tipSprite,
-        alphaTest: 0.5,
-        transparent: true,
-        color: "red"
+        linewidth: 3
     });
     materials.qubit = new THREE.PointsMaterial({
         size: 0.5,

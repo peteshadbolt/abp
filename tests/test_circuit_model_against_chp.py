@@ -15,7 +15,7 @@ def get_chp_state():
     return output
 
 
-def _bell_test():
+def bell_test():
     chp.init(n)
     chp.act_hadamard(0)
     chp.act_cnot(0, 1)
