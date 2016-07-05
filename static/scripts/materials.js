@@ -7,9 +7,7 @@ var curveProperties = {
 
 materials.prepare = function() {
     var ballSprite = new THREE.Texture(document.getElementById("ball"));
-    var tipSprite = new THREE.Texture(document.getElementById("tip"));
     ballSprite.needsUpdate = true;
-    tipSprite.needsUpdate = true;
     materials.edge = new THREE.LineBasicMaterial({
         color: "gray",
         transparent: false,

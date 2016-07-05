@@ -6,6 +6,15 @@ graph.prepare = function() {
     websocket.connect(graph.update);
 };
 
+graph.center = function() {
+    var middle = new THREE.Vector3(0, 0, 0);
+    for (var i in abj.node) {
+        middle = middle.add(abj.node[i].position);
+    }
+    middle = middle.multiplyScalar(1.0/abj.order());
+    return middle;
+};
+
 graph.update = function(newState) {
     if (newState){abj.update(newState);}
 
@@ -22,6 +31,9 @@ graph.update = function(newState) {
         geometry.vertices.push(abj.node[i].position);
         geometry.colors.push(new THREE.Color(color));
     }
+
+    graph.center();
+    gui.controls.target.copy(graph.center());
 
     var edges = new THREE.Object3D();
     var my_edges = abj.edgelist();
@@ -42,6 +54,10 @@ graph.update = function(newState) {
     graph.object.add(edges);
     gui.scene.add(graph.object);
     gui.render();
+    geometry = null;
+    edges=null;
+    particles = null;
+    graph.object = null;
 };
 
 graph.test = function(command) {
