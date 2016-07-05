@@ -3,6 +3,7 @@ from SimpleHTTPServer import SimpleHTTPRequestHandler
 from BaseHTTPServer import HTTPServer
 import os, sys, threading
 import webbrowser
+import argparse
 
 clients = []
 
@@ -19,6 +20,10 @@ def client_left(client, server):
     clients.remove(client)
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description = "ABP websocket server")
+    parser.add_argument("-v", action="store_true", help="Launch browser")
+    args = parser.parse_args()
+
     # Change to the right working dir
     where = os.path.join(sys.path[0], "../static")
     os.chdir(where)
@@ -28,7 +33,9 @@ if __name__ == '__main__':
     thread = threading.Thread(target = httpserver.serve_forever)
     thread.daemon = True
     thread.start()
-    webbrowser.open("http://localhost:5001/")
+
+    if args.v:
+        webbrowser.open("http://localhost:5001/")
 
     # Start the websocket server
     server = WebsocketServer(5000)

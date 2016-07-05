@@ -15,7 +15,7 @@ class GraphState(graphstate.GraphState, networkx.Graph):
     def connect_to_server(self, uri = "ws://localhost:5000"):
         """ Attempt to connect to the websocket server """
         try:
-            self.ws = websocket.create_connection(uri)
+            self.ws = websocket.create_connection(uri, timeout=0.1)
             atexit.register(self.shutdown)
         except socket_error:
             self.ws = None
@@ -39,6 +39,7 @@ class GraphState(graphstate.GraphState, networkx.Graph):
 
         # Send data to browser and rate-limit
         self.ws.send(json.dumps(self.to_json(), default = str))
+        self.ws.recv()
         time.sleep(delay)
 
     def layout(self, dim=3):
