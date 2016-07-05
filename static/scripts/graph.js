@@ -18,8 +18,8 @@ graph.center = function() {
 graph.update = function(newState) {
     if (newState){abj.update(newState);}
 
-    if (graph.object){gui.scene.remove(graph.object);}
-    graph.object = null;
+    var gs = gui.scene.getObjectByName("graphstate");
+    if (gs){ gui.scene.remove(gs); }
 
     var geometry = new THREE.Geometry();
     geometry.colors = [];
@@ -48,19 +48,11 @@ graph.update = function(newState) {
     }
 
     var particles = new THREE.Points(geometry, materials.qubit);
-    graph.object = new THREE.Object3D();
-    graph.object.name = "graphstate";
-    graph.object.add(particles);
-    graph.object.add(edges);
-    gui.scene.add(graph.object);
+    var object = new THREE.Object3D();
+    object.name = "graphstate";
+    object.add(particles);
+    object.add(edges);
+    gui.scene.add(object);
     gui.render();
-    geometry = null;
-    edges=null;
-    particles = null;
-    graph.object = null;
 };
 
-graph.test = function(command) {
-    //Act the command
-    //Send it back to the server, ultimately thru to python
-};

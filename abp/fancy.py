@@ -1,4 +1,5 @@
 import time, atexit, json
+import sys
 import networkx
 import numpy as np
 import websocket
@@ -34,13 +35,16 @@ class GraphState(graphstate.GraphState, networkx.Graph):
         if not all(("position" in node) for node in self.node.values()):
             self.layout()
 
-        #if not all(("vop" in node) for node in self.node.values()):
-            #self.add_vops()
-
         # Send data to browser and rate-limit
-        self.ws.send(json.dumps(self.to_json(), default = str))
-        self.ws.recv()
-        time.sleep(delay)
+        try:
+            self.ws.send(json.dumps(self.to_json(), default = str))
+            self.ws.recv()
+            time.sleep(delay)
+        except websocket._exceptions.WebSocketTimeoutException:
+            print "Timed out ... you might be pushing a bit hard"
+            sys.exit(0)
+            #self.ws.close()
+            #self.connect_to_server()
 
     def layout(self, dim=3):
         """ Automatically lay out the graph """
