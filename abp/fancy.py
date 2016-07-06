@@ -23,6 +23,8 @@ class GraphState(graphstate.GraphState, networkx.Graph):
 
     def shutdown(self):
         """ Close the connection to the websocket """
+        if not self.ws:
+            return
         self.update()
         self.ws.close()
 

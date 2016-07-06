@@ -21,7 +21,7 @@ def client_left(client, server):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = "ABP websocket server")
-    parser.add_argument("-v", action="store_true", help="Launch browser")
+    parser.add_argument("-v", action="store_false", help="Launch browser")
     args = parser.parse_args()
 
     # Change to the right working dir

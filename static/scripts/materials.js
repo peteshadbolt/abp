@@ -11,7 +11,7 @@ materials.prepare = function() {
     materials.edge = new THREE.LineBasicMaterial({
         color: "gray",
         transparent: false,
-        linewidth: 3
+        linewidth: 2
     });
     materials.qubit = new THREE.PointsMaterial({
         size: 0.5,

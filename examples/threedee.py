@@ -8,8 +8,18 @@ threedee_unit_cell = (
      (( 0, 0, 0),    (0, 1, 0)),
      (( 0, 0, 0),    (1, 0, 0)),
      (( 1, 0, 0),    (1, 1, 0)),
-     (( 0, 1, 0),    (1, 1, 0)))
-        )
+     (( 0, 1, 0),    (1, 1, 0)),
+
+     (( 0, 0, 1),    (0, 1, 1)),
+     (( 0, 0, 1),    (1, 0, 1)),
+     (( 1, 0, 1),    (1, 1, 1)),
+     (( 0, 1, 1),    (1, 1, 1)),
+
+     (( 0, 0, 0),    (0, 0, 1)),
+     (( 0, 1, 0),    (0, 1, 1)),
+     (( 1, 0, 0),    (1, 0, 1)),
+     (( 1, 1, 0),    (1, 1, 1))
+     )
 
 def add_offset(vector, offset):
     """ Offset a vector in n-dimensional space """
@@ -32,16 +42,12 @@ def lattice(unit_cell, size):
 
 nodes, edges = lattice(threedee_unit_cell, (4, 4, 4))
 
-for j in range(100):
-    psi = GraphState()
-    for node in nodes:
-        psi.add_node(str(node), position=xyz(node[0], node[1], 0))
-        psi.act_hadamard(str(node))
-        psi.update(0)
+psi = GraphState()
+for node in nodes:
+    psi.add_node(str(node), position=xyz(*node))
+    psi.act_hadamard(str(node))
 
-    for edge in edges:
-        psi.act_cz(str(edge[0]), str(edge[1]))
-        psi.update(0)
+for edge in edges:
+    psi.act_cz(str(edge[0]), str(edge[1]))
 
-    psi.shutdown()
 
