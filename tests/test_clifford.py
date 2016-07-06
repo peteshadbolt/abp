@@ -2,6 +2,7 @@ from numpy import *
 from tqdm import tqdm
 import itertools as it
 from abp import clifford
+from abp import build_tables
 from abp import qi
 from nose.tools import raises
 
@@ -16,14 +17,14 @@ def identify_pauli(m):
 
 def test_find_clifford():
     """ Test that slightly suspicious function """
-    assert clifford.find_clifford(qi.id, clifford.unitaries) == 0
-    assert clifford.find_clifford(qi.px, clifford.unitaries) == 1
+    assert build_tables.find_clifford(qi.id, clifford.unitaries) == 0
+    assert build_tables.find_clifford(qi.px, clifford.unitaries) == 1
 
 
 @raises(IndexError)
 def test_find_non_clifford():
     """ Test that looking for a non-Clifford gate fails """
-    clifford.find_clifford(qi.t, clifford.unitaries)
+    build_tables.find_clifford(qi.t, clifford.unitaries)
 
 
 def get_action(u):
@@ -44,14 +45,14 @@ def test_we_have_24_matrices():
 def test_we_have_all_useful_gates():
     """ Check that all the interesting gates are included up to a global phase """
     for name, u in qi.by_name.items():
-        clifford.find_clifford(u, clifford.unitaries)
+        build_tables.find_clifford(u, clifford.unitaries)
 
 
 def test_group():
     """ Test we are really in a group """
     matches = set()
     for a, b in tqdm(it.combinations(clifford.unitaries, 2), "Testing this is a group"):
-        i = clifford.find_clifford(a.dot(b), clifford.unitaries)
+        i = build_tables.find_clifford(a.dot(b), clifford.unitaries)
         matches.add(i)
     assert len(matches) == 24
 
@@ -76,4 +77,4 @@ def test_cz_table_makes_sense():
 
 def test_commuters():
     """ Test that commutation is good """
-    assert len(clifford.get_commuters(clifford.unitaries)) == 4
+    assert len(build_tables.get_commuters(clifford.unitaries)) == 4

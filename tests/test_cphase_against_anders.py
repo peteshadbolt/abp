@@ -4,11 +4,11 @@ import sys
 import os
 import itertools as it
 from string import maketrans
-from abp import clifford, qi, anders_cz
+from abp import clifford, qi, anders_cz, build_tables
 
 def test_cz_table():
     """ Does our clifford code work with anders & briegel's table? """
-    state_table = clifford.get_state_table(clifford.unitaries)
+    state_table = build_tables.get_state_table(clifford.unitaries)
     ab_cz_table = anders_cz.cz_table
 
     rows = it.product([0, 1], it.combinations_with_replacement(range(24), 2))

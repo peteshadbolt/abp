@@ -1,10 +1,10 @@
 import numpy as np
-from abp import clifford, qi
+from abp import clifford, qi, build_tables
 import itertools as it
 
 def test_cz_table():
     """ Does the CZ code work good? """
-    state_table = clifford.get_state_table(clifford.unitaries)
+    state_table = build_tables.get_state_table(clifford.unitaries)
 
     rows = it.product([0, 1], it.combinations_with_replacement(range(24), 2))
 

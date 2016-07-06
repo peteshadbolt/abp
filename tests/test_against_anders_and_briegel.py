@@ -101,7 +101,7 @@ def test_with_cphase_gates_hadamard_only(N=10):
 
     assert_equal(a, b)
 
-def _test_cz_hadamard(N=3):
+def test_cz_hadamard(N=3):
     """ Test CZs and Hadamards at random """
 
     clifford.use_old_cz()
