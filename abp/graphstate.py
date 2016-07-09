@@ -1,5 +1,5 @@
 """
-Provides an extremely basic graph structure, based on neighbour lists
+Provides an extremely basic graph structure, based on key/value pairs
 """
 
 import itertools as it

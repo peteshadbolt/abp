@@ -6,6 +6,8 @@ import random
 from copy import deepcopy
 from tqdm import tqdm
 
+REPEATS = 100
+
 def assert_equal(a, b):
     assert a.to_json() == b.to_json()
 
@@ -109,7 +111,7 @@ def test_cz_hadamard(N=3):
     a = graphsim.GraphRegister(N)
     b = GraphState(range(N))
     previous_state, previous_cz = None, None
-    for i in tqdm(range(100000), desc="Testing CZ and Hadamard against A&B"):
+    for i in tqdm(range(REPEATS), desc="Testing CZ and Hadamard against A&B"):
         if random.random()>0.5:
             j = random.randint(0, N-1)
             a.hadamard(j)
@@ -131,7 +133,7 @@ def test_all(N=5):
     a = graphsim.GraphRegister(N)
     b = GraphState(range(N))
     previous_state, previous_cz = None, None
-    for i in tqdm(range(100000), desc="Testing all gates against Anders and Briegel"):
+    for i in tqdm(range(REPEATS), desc="Testing all gates against Anders and Briegel"):
         if random.random()>0.5:
             j = random.randint(0, N-1)
             u = random.randint(0, 23)

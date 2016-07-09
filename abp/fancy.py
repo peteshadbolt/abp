@@ -18,7 +18,7 @@ class GraphState(graphstate.GraphState, networkx.Graph):
         try:
             self.ws = websocket.create_connection(uri, timeout=0.1)
             atexit.register(self.shutdown)
-        except socket_error:
+        except: #TODO: bad practice
             self.ws = None
 
     def shutdown(self):

@@ -71,7 +71,8 @@ def test_all(n=4):
     """ A multi qubit test with arbitrary local rotations """
     g = GraphState(range(n))
     c = CircuitModel(n)
-    for step in tqdm(xrange(1000), "Testing a deep circuit against the circuit model"):
+    depth = 100 # TODO: too small
+    for step in tqdm(xrange(depth), "Testing a deep circuit against the circuit model"):
         if random.random()>0.5:
             qubit = np.random.randint(0, n - 1)
             rotation = np.random.randint(0, 24 - 1)
@@ -83,6 +84,6 @@ def test_all(n=4):
                 g.act_cz(a, b)
                 c.act_cz(a, b)
         assert g.to_state_vector() == c
-    print g.to_state_vector()
-    print c
+    #print g.to_state_vector()
+    #print c
 
