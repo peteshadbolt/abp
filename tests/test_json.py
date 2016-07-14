@@ -1,4 +1,4 @@
-from abp import GraphState
+from abp import GraphState, fancy
 from abp import clifford
 from demograph import demograph
 import time
@@ -12,11 +12,13 @@ def test_json_basic():
     assert "node" in js
     e = GraphState()
 
-#TODO
-def _test_to_json():
-    """ Nah """
-    assert e != g
-    e.from_json(js)
-    assert e == g
+def test_tuple_keys():
+    """ Test that we can write tuple-ish keys """
+    g = fancy.GraphState()
+    g.add_node("string")
+    g.add_node((1, 2, 3))
+    g.add_edge((1, 2, 3), "string")
+    print json.dumps(g.to_json(True))
+
 
 

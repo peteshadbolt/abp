@@ -6,6 +6,7 @@ import itertools as it
 import json
 import qi, clifford, util
 import random
+from util import ABPJsonEncoder
 
 
 class GraphState(object):
@@ -177,9 +178,19 @@ class GraphState(object):
         nbstr = str(self.adj)
         return "graph:\n node: {}\n adj: {}\n".format(node, nbstr)
 
-    def to_json(self):
-        """ Convert the graph to JSON form """
-        return {"node": self.node, "adj": self.adj}
+    def to_json(self, stringify = False):
+        """ 
+        Convert the graph to JSON form.
+        JSON keys must be strings, But sometimes it is useful to have 
+        a JSON-like object whose keys are tuples!
+        """
+        if stringify:
+            node = {str(key):value for key, value in self.node.items()}
+            adj = {str(key): {str(key):value for key, value in ngbh.items()} 
+                    for key, ngbh in self.adj.items()}
+            return {"node": node, "adj": adj}
+        else: 
+            return {"node": self.node, "adj": self.adj}
 
     def from_json(self, data):
         """ Reconstruct from JSON """

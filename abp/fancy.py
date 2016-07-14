@@ -39,7 +39,7 @@ class GraphState(graphstate.GraphState, networkx.Graph):
 
         # Send data to browser and rate-limit
         try:
-            self.ws.send(json.dumps(self.to_json(), default = str))
+            self.ws.send(json.dumps(self.to_json(stringify=True)))
             self.ws.recv()
             time.sleep(delay)
         except websocket._exceptions.WebSocketTimeoutException:
