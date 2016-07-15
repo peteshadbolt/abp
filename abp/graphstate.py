@@ -137,35 +137,44 @@ class GraphState(object):
         # TODO: put the asserts from graphsim.cpp into tests
         return res
 
+    def measure_y(self, node, force=None):
+        """ Measure the graph in the Y-basis """
+        result = force if force != None else random.choice([0, 1])
+
+        # Do some rotations
+        rotation = clifford.conjugate("sqz" if result else "msqz")
+        for neighbour in self.adj[node]:
+            self.act_local_rotation(neighbour, rotation)
+
+        # A sort of local complementation
+        vngbh = set(self.adj[node]) + {node}
+        for i, j in it.combinations(vngbh, 2):
+            self.toggle_edge(i, j)
+
+        if result:
+            self.act_local_rotation(node, "msqz")
+        else:
+            self.act_local_rotation(node, clifford.conjugate("msqz"))
+        return result
+
+
 
     def measure_z(self, node, force=None):
         """ Measure the graph in the Z-basis """
-        res = force if force != None else random.choice([0, 1])
+        result = force if force != None else random.choice([0, 1])
 
         # Disconnect
         for neighbour in self.adj[node]:
             self.del_edge(node, neighbour)
-            if res:
+            if result:
                 self.act_local_rotation(neighbour, "pz")
 
         # Rotate
-        if res:
+        if result:
             self.act_local_rotation(node, "px")
-            self.act_local_rotation(node, "hadamard")
-        else:
-            self.act_local_rotation(node, "hadamard")
 
-        return res
-
-    def measure_x(self, node, force=None):
-        """ Measure the graph in the X-basis """
-        # TODO
-        pass
-
-    def measure_y(self, node, force=None):
-        """ Measure the graph in the Y-basis """
-        # TODO
-        pass
+        self.act_local_rotation(node, "hadamard")
+        return result
 
     def order(self):
         """ Get the number of qubits """
