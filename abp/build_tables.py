@@ -90,10 +90,11 @@ def get_unitaries():
     return [compose_u(d) for d in DECOMPOSITIONS]
 
 
-def get_by_name(unitaries):
+def get_by_name(unitaries, conjugation_table):
     """ Get a lookup table of cliffords by name """
     a = {name: find_clifford(u, unitaries)
          for name, u in qi.by_name.items()}
+    a.update({key+"_h": conjugation_table[value] for key, value in a.items()})
     a.update({clifford.get_name(i): i for i in range(24)})
     a.update({i: i for i in range(24)})
     return a
@@ -183,10 +184,11 @@ def get_cz_table(unitaries):
 def compute_everything():
     """ Compute all lookup tables """
     unitaries = get_unitaries()
+    conjugation_table = get_conjugation_table(unitaries)
     return {"decompositions": DECOMPOSITIONS,
             "unitaries": unitaries,
-            "by_name": get_by_name(unitaries),
-            "conjugation_table": get_conjugation_table(unitaries),
+            "by_name": get_by_name(unitaries, conjugation_table),
+            "conjugation_table": conjugation_table,
             "times_table": get_times_table(unitaries),
             "cz_table": get_cz_table(unitaries),
             "measurement_table": get_measurement_table()}

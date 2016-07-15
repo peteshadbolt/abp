@@ -78,12 +78,10 @@ class GraphState(object):
         for i, j in it.combinations(self.adj[v], 2):
             self.toggle_edge(i, j)
 
-        msqx_h = clifford.conjugation_table[clifford.by_name["msqx"]]
-        sqz_h = clifford.conjugation_table[clifford.by_name["sqz"]]
-        self.node[v]["vop"] = clifford.times_table[self.node[v]["vop"], msqx_h]
+        self.node[v]["vop"] = clifford.times_table[self.node[v]["vop"], clifford.by_name["msqx_h"]]
         for i in self.adj[v]:
             self.node[i]["vop"] = clifford.times_table[
-                self.node[i]["vop"], sqz_h]
+                self.node[i]["vop"], clifford.by_name["sqz_h"]]
 
     def act_local_rotation(self, v, op):
         """ Act a local rotation """
@@ -137,30 +135,54 @@ class GraphState(object):
         # TODO: put the asserts from graphsim.cpp into tests
         return res
 
+    def measure_x(self, node, force=None):
+        """ Measure the graph in the X-basis """
+        if len(self.adj[node]) == 0:
+            return 0
+
+        # Flip a coin
+        result = force if force != None else random.choice([0, 1])
+        
+        # Pick a vertex
+        friend = next(self.adj[node].iterkeys())
+
+        if not result:
+            # Do a z on all ngb(v) \ ngb(vb) \ {vb}, and sqy on the friend
+            self.act_local_rotation(friend, "sqy")
+            for n in set(self.adj[node]) - set(self.adj(friend)) - {friend}:
+                self.act_local_rotation(n, "pz")
+        else:
+            # Do a z on all ngb(vb) \ ngb(v) \ {v}, and some other stuff
+            self.act_local_rotation(node, "pz")
+            self.act_local_rotation(friend, "msqy")
+            for n in set(self.adj[friend]) - set(self.adj(node)) - {node}:
+                self.act_local_rotation(n, "pz")
+
+        # TODO: the really nasty bit
+
+
     def measure_y(self, node, force=None):
         """ Measure the graph in the Y-basis """
+        # Flip a coin
         result = force if force != None else random.choice([0, 1])
 
         # Do some rotations
-        rotation = clifford.conjugate("sqz" if result else "msqz")
         for neighbour in self.adj[node]:
-            self.act_local_rotation(neighbour, rotation)
+            # NB: should these be hermitian_conjugated?
+            self.act_local_rotation(neighbour, "sqz" if result else "msqz")
 
         # A sort of local complementation
-        vngbh = set(self.adj[node]) + {node}
+        vngbh = set(self.adj[node]) | {node}
         for i, j in it.combinations(vngbh, 2):
             self.toggle_edge(i, j)
 
-        if result:
-            self.act_local_rotation(node, "msqz")
-        else:
-            self.act_local_rotation(node, clifford.conjugate("msqz"))
+        self.act_local_rotation(node, "msqz" if result else "msqz_h")
         return result
-
 
 
     def measure_z(self, node, force=None):
         """ Measure the graph in the Z-basis """
+        # Flip a coin
         result = force if force != None else random.choice([0, 1])
 
         # Disconnect
@@ -175,6 +197,15 @@ class GraphState(object):
 
         self.act_local_rotation(node, "hadamard")
         return result
+
+    def toggle_edge(a, b):
+        """ Toggle edges between vertex sets a and b """
+        done = {}
+        for i, j in it.product(a, b):
+            if i==j and not (i, j) in done:
+                done.add((i, j))
+                self.toggle_edge(i, j)
+
 
     def order(self):
         """ Get the number of qubits """
