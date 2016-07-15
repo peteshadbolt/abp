@@ -135,6 +135,14 @@ class GraphState(object):
         # TODO: put the asserts from graphsim.cpp into tests
         return res
 
+    def toggle_edges(a, b):
+        """ Toggle edges between vertex sets a and b """
+        done = {}
+        for i, j in it.product(a, b):
+            if i==j and not (i, j) in done:
+                done.add((i, j), (j, i))
+                self.toggle_edge(i, j)
+
     def measure_x(self, node, force=None):
         """ Measure the graph in the X-basis """
         if len(self.adj[node]) == 0:
@@ -146,19 +154,32 @@ class GraphState(object):
         # Pick a vertex
         friend = next(self.adj[node].iterkeys())
 
-        if not result:
-            # Do a z on all ngb(v) \ ngb(vb) \ {vb}, and sqy on the friend
-            self.act_local_rotation(friend, "sqy")
-            for n in set(self.adj[node]) - set(self.adj(friend)) - {friend}:
-                self.act_local_rotation(n, "pz")
-        else:
+        # TODO: yuk yuk yuk
+        if result:
             # Do a z on all ngb(vb) \ ngb(v) \ {v}, and some other stuff
             self.act_local_rotation(node, "pz")
             self.act_local_rotation(friend, "msqy")
             for n in set(self.adj[friend]) - set(self.adj(node)) - {node}:
                 self.act_local_rotation(n, "pz")
+        else:
+            # Do a z on all ngb(v) \ ngb(vb) \ {vb}, and sqy on the friend
+            self.act_local_rotation(friend, "sqy")
+            for n in set(self.adj[node]) - set(self.adj(friend)) - {friend}:
+                self.act_local_rotation(n, "pz")
 
-        # TODO: the really nasty bit
+        # TODO: Yuk. Just awful!
+        a = set(self.adj[node].keys())
+        b = set(self.adj[friend].keys())
+        self.toggle_edges(a, b)
+        intersection = a & b 
+        for i, j in it.combinations(intersection, 2):
+            self.toggle_edge(i, j)
+
+        for n in a - {friend}:
+            self.toggle_edge(friend, n)
+
+
+
 
 
     def measure_y(self, node, force=None):
@@ -197,14 +218,6 @@ class GraphState(object):
 
         self.act_local_rotation(node, "hadamard")
         return result
-
-    def toggle_edge(a, b):
-        """ Toggle edges between vertex sets a and b """
-        done = {}
-        for i, j in it.product(a, b):
-            if i==j and not (i, j) in done:
-                done.add((i, j))
-                self.toggle_edge(i, j)
 
 
     def order(self):
