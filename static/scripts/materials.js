@@ -14,7 +14,7 @@ materials.prepare = function() {
         linewidth: 2
     });
     materials.qubit = new THREE.PointsMaterial({
-        size: 0.5,
+        size: 0.3,
         map: ballSprite,
         alphaTest: 0.5,
         transparent: true,

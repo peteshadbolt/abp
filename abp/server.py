@@ -1,6 +1,7 @@
 from websocket_server import WebsocketServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from BaseHTTPServer import HTTPServer
+from SocketServer import ThreadingMixIn
 import os, sys, threading
 import webbrowser
 import argparse
@@ -19,6 +20,9 @@ def client_left(client, server):
     print "Client {} disconnected.".format(client["id"])
     clients.remove(client)
 
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    """ Handle requests in a separate thread """
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = "ABP websocket server")
     parser.add_argument("-v", action="store_false", help="Launch browser")
@@ -29,7 +33,7 @@ if __name__ == '__main__':
     os.chdir(where)
 
     # Start the HTTP server
-    httpserver = HTTPServer(('', 5001), SimpleHTTPRequestHandler)
+    httpserver = ThreadedHTTPServer(('', 5001), SimpleHTTPRequestHandler)
     thread = threading.Thread(target = httpserver.serve_forever)
     thread.daemon = True
     thread.start()
