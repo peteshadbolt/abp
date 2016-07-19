@@ -118,20 +118,27 @@ class GraphState(object):
     def measure(self, node, basis, force=None):
         """ Measure in an arbitrary basis """
         basis = clifford.by_name[basis]
-        old_basis = basis
         ha = clifford.conjugation_table[self.node[node]["vop"]]
         basis, phase = clifford.conjugate(basis, ha)
-        assert phase in (-1, 1)  # TODO: remove
 
-        # TODO: wtf
-        force = force ^ 0x01 if force != -1 and phase == 0 else force
+        #TODO: wtf
+        #force = force ^ 0x01 if force != -1 and phase == 0 else force
+        if force != None and phase == 0+0j: 
+            force = not force
 
-        which = {1: self.measure_x, 2:
-                 self.measure_y, 3: self.measure_z}[basis]
-        res = which(node, force)
-        res = res if phase == 1 else not res
+        result = random.choice([0, 1])
+        if which == clifford.by_name["px"]:
+            result = self.measure_x(node, result)
+        elif which == clifford.by_name["py"]:
+            result = self.measure_y(node, result)
+        elif which == clifford.by_name["pz"]:
+            result = self.measure_z(node, result)
+        else:
+            raise ValueError("You can only measure in PX, PY or PZ")
 
-        # TODO: put the asserts from graphsim.cpp into tests
+        if phase == 1:
+            result = not result
+
         return res
 
     def toggle_edges(a, b):
@@ -142,13 +149,10 @@ class GraphState(object):
                 done.add((i, j), (j, i))
                 self.toggle_edge(i, j)
 
-    def measure_x(self, node, force=None):
+    def measure_x(self, node, result):
         """ Measure the graph in the X-basis """
         if len(self.adj[node]) == 0:
             return 0
-
-        # Flip a coin
-        result = force if force != None else random.choice([0, 1])
 
         # Pick a vertex
         friend = next(self.adj[node].iterkeys())
@@ -179,11 +183,8 @@ class GraphState(object):
 
         return result
 
-    def measure_y(self, node, force=None):
+    def measure_y(self, node, result):
         """ Measure the graph in the Y-basis """
-        # Flip a coin
-        result = force if force != None else random.choice([0, 1])
-
         # Do some rotations
         for neighbour in self.adj[node]:
             # NB: should these be hermitian_conjugated?
@@ -197,11 +198,8 @@ class GraphState(object):
         self.act_local_rotation(node, "msqz" if result else "msqz_h")
         return result
 
-    def measure_z(self, node, force=None):
+    def measure_z(self, node, result):
         """ Measure the graph in the Z-basis """
-        # Flip a coin
-        result = force if force != None else random.choice([0, 1])
-
         # Disconnect
         for neighbour in self.adj[node]:
             self.del_edge(node, neighbour)
@@ -268,8 +266,10 @@ class GraphState(object):
                 output[a][b] = "Z"
             else:
                 output[a][b] = "I"
+        # TODO: signs
         return output
 
     def __eq__(self, other):
         """ Check equality between graphs """
         return self.adj == other.adj and self.node == other.node
+

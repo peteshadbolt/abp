@@ -9,12 +9,13 @@ And a circuit-model simulator
 import numpy as np
 import itertools as it
 
+
 def hermitian_conjugate(u):
     """ Shortcut to the Hermitian conjugate """
     return np.conjugate(np.transpose(u))
 
-# Constants 
-ir2 = 1/np.sqrt(2)
+# Constants
+ir2 = 1 / np.sqrt(2)
 # Operators
 id = np.array(np.eye(2, dtype=complex))
 px = np.array([[0, 1], [1, 0]], dtype=complex)
@@ -22,23 +23,29 @@ py = np.array([[0, -1j], [1j, 0]], dtype=complex)
 pz = np.array([[1, 0], [0, -1]], dtype=complex)
 ha = hadamard = np.array([[1, 1], [1, -1]], dtype=complex) * ir2
 ph = np.array([[1, 0], [0, 1j]], dtype=complex)
-t = np.array([[1, 0], [0, np.exp(1j*np.pi/4)]], dtype=complex)
+t = np.array([[1, 0], [0, np.exp(1j * np.pi / 4)]], dtype=complex)
 
-sqx = np.array([[ 1.+0.j, -0.+1.j], [-0.+1.j, 1.-0.j]], dtype=complex)*ir2
-msqx = np.array([[ 1.+0.j, 0.-1.j], [ 0.-1.j, 1.-0.j]], dtype=complex)*ir2
-sqy = np.array([[ 1.+0.j, 1.+0.j], [-1.-0.j, 1.-0.j]], dtype=complex)*ir2
-msqy = np.array([[ 1.+0.j, -1.-0.j], [ 1.+0.j, 1.-0.j]], dtype=complex)*ir2
-sqz = np.array([[ 1.+1.j, 0.+0.j], [ 0.+0.j, 1.-1.j]], dtype=complex)*ir2
-msqz = np.array([[ 1.-1.j, 0.+0.j], [ 0.+0.j, 1.+1.j]], dtype=complex)*ir2
+sqx = np.array(
+    [[1. + 0.j, -0. + 1.j], [-0. + 1.j, 1. - 0.j]], dtype=complex) * ir2
+msqx = np.array(
+    [[1. + 0.j, 0. - 1.j], [0. - 1.j, 1. - 0.j]], dtype=complex) * ir2
+sqy = np.array(
+    [[1. + 0.j, 1. + 0.j], [-1. - 0.j, 1. - 0.j]], dtype=complex) * ir2
+msqy = np.array(
+    [[1. + 0.j, -1. - 0.j], [1. + 0.j, 1. - 0.j]], dtype=complex) * ir2
+sqz = np.array(
+    [[1. + 1.j, 0. + 0.j], [0. + 0.j, 1. - 1.j]], dtype=complex) * ir2
+msqz = np.array(
+    [[1. - 1.j, 0. + 0.j], [0. + 0.j, 1. + 1.j]], dtype=complex) * ir2
 
 # CZ gate
 cz = np.array(np.eye(4), dtype=complex)
-cz[3,3]=-1
+cz[3, 3] = -1
 
 # States
-zero = np.array([[1],[0]], dtype=complex)
-one = np.array([[0],[1]], dtype=complex)
-plus = np.array([[1],[1]], dtype=complex) / np.sqrt(2)
+zero = np.array([[1], [0]], dtype=complex)
+one = np.array([[0], [1]], dtype=complex)
+plus = np.array([[1], [1]], dtype=complex) / np.sqrt(2)
 bond = cz.dot(np.kron(plus, plus))
 nobond = np.kron(plus, plus)
 
@@ -60,11 +67,12 @@ def normalize_global_phase(m):
 
 
 class CircuitModel(object):
+
     def __init__(self, nqubits):
         self.nqubits = nqubits
-        self.d = 2**nqubits
+        self.d = 2 ** nqubits
         self.state = np.zeros((self.d, 1), dtype=complex)
-        self.state[0, 0]=1
+        self.state[0, 0] = 1
 
     def act_cz(self, control, target):
         """ Act a CU somewhere """
@@ -86,10 +94,9 @@ class CircuitModel(object):
         output = np.zeros((self.d, 1), dtype=complex)
         for i, v in enumerate(self.state):
             q = i & where > 0
-            output[i] += v*ha[q, q]
-            output[i ^ where] += v*ha[not q, q]
+            output[i] += v * ha[q, q]
+            output[i ^ where] += v * ha[not q, q]
         self.state = output
-
 
     def act_local_rotation(self, qubit, u):
         """ Act a local unitary somwhere """
@@ -97,8 +104,8 @@ class CircuitModel(object):
         output = np.zeros((self.d, 1), dtype=complex)
         for i, v in enumerate(self.state):
             q = i & where > 0
-            output[i] += v*u[q, q] # TODO this is probably wrong
-            output[i ^ where] += v*u[not q, q]
+            output[i] += v * u[q, q]  # TODO this is probably wrong
+            output[i ^ where] += v * u[not q, q]
         self.state = output
 
     def __eq__(self, other):
@@ -108,12 +115,10 @@ class CircuitModel(object):
         b = normalize_global_phase(other.state)
         return np.allclose(a, b)
 
-
     def __str__(self):
         s = ""
         for i in range(self.d):
             label = bin(i)[2:].rjust(self.nqubits, "0")
-            if abs(self.state[i, 0])>0.00001:
+            if abs(self.state[i, 0]) > 0.00001:
                 s += "|{}>: {}\n".format(label, self.state[i, 0].round(3))
         return s
-
