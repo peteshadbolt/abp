@@ -122,7 +122,6 @@ class GraphState(object):
         old_basis = basis
         ha = clifford.conjugation_table[self.node[node]["vop"]]
         basis, phase = clifford.conjugate(basis, ha)
-        print basis, phase
         assert phase in (-1, 1) # TODO: remove
 
         # TODO: wtf
@@ -177,8 +176,8 @@ class GraphState(object):
 
         for n in a - {friend}:
             self.toggle_edge(friend, n)
-
-
+        
+        return result
 
 
 
