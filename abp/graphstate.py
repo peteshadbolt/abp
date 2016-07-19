@@ -6,8 +6,6 @@ import itertools as it
 import json
 import qi, clifford, util
 import random
-from util import ABPJsonEncoder
-
 
 class GraphState(object):
 
@@ -78,7 +76,8 @@ class GraphState(object):
         for i, j in it.combinations(self.adj[v], 2):
             self.toggle_edge(i, j)
 
-        self.node[v]["vop"] = clifford.times_table[self.node[v]["vop"], clifford.by_name["msqx_h"]]
+        self.node[v]["vop"] = clifford.times_table[
+            self.node[v]["vop"], clifford.by_name["msqx_h"]]
         for i in self.adj[v]:
             self.node[i]["vop"] = clifford.times_table[
                 self.node[i]["vop"], clifford.by_name["sqz_h"]]
@@ -112,7 +111,7 @@ class GraphState(object):
         va = self.node[a]["vop"]
         vb = self.node[b]["vop"]
         new_edge, self.node[a]["vop"], self.node[b]["vop"] = \
-                clifford.cz_table[edge, va, vb]
+            clifford.cz_table[edge, va, vb]
         if new_edge != edge:
             self.toggle_edge(a, b)
 
@@ -122,12 +121,13 @@ class GraphState(object):
         old_basis = basis
         ha = clifford.conjugation_table[self.node[node]["vop"]]
         basis, phase = clifford.conjugate(basis, ha)
-        assert phase in (-1, 1) # TODO: remove
+        assert phase in (-1, 1)  # TODO: remove
 
         # TODO: wtf
         force = force ^ 0x01 if force != -1 and phase == 0 else force
 
-        which = {1: self.measure_x, 2: self.measure_y, 3: self.measure_z}[basis]
+        which = {1: self.measure_x, 2:
+                 self.measure_y, 3: self.measure_z}[basis]
         res = which(node, force)
         res = res if phase == 1 else not res
 
@@ -138,7 +138,7 @@ class GraphState(object):
         """ Toggle edges between vertex sets a and b """
         done = {}
         for i, j in it.product(a, b):
-            if i==j and not (i, j) in done:
+            if i == j and not (i, j) in done:
                 done.add((i, j), (j, i))
                 self.toggle_edge(i, j)
 
@@ -149,7 +149,7 @@ class GraphState(object):
 
         # Flip a coin
         result = force if force != None else random.choice([0, 1])
-        
+
         # Pick a vertex
         friend = next(self.adj[node].iterkeys())
 
@@ -170,16 +170,14 @@ class GraphState(object):
         a = set(self.adj[node].keys())
         b = set(self.adj[friend].keys())
         self.toggle_edges(a, b)
-        intersection = a & b 
+        intersection = a & b
         for i, j in it.combinations(intersection, 2):
             self.toggle_edge(i, j)
 
         for n in a - {friend}:
             self.toggle_edge(friend, n)
-        
+
         return result
-
-
 
     def measure_y(self, node, force=None):
         """ Measure the graph in the Y-basis """
@@ -199,7 +197,6 @@ class GraphState(object):
         self.act_local_rotation(node, "msqz" if result else "msqz_h")
         return result
 
-
     def measure_z(self, node, force=None):
         """ Measure the graph in the Z-basis """
         # Flip a coin
@@ -218,7 +215,6 @@ class GraphState(object):
         self.act_local_rotation(node, "hadamard")
         return result
 
-
     def order(self):
         """ Get the number of qubits """
         return len(self.node)
@@ -230,18 +226,18 @@ class GraphState(object):
         nbstr = str(self.adj)
         return "graph:\n node: {}\n adj: {}\n".format(node, nbstr)
 
-    def to_json(self, stringify = False):
-        """ 
+    def to_json(self, stringify=False):
+        """
         Convert the graph to JSON form.
-        JSON keys must be strings, But sometimes it is useful to have 
+        JSON keys must be strings, But sometimes it is useful to have
         a JSON-like object whose keys are tuples!
         """
         if stringify:
-            node = {str(key):value for key, value in self.node.items()}
-            adj = {str(key): {str(key):value for key, value in ngbh.items()} 
-                    for key, ngbh in self.adj.items()}
+            node = {str(key): value for key, value in self.node.items()}
+            adj = {str(key): {str(key): value for key, value in ngbh.items()}
+                   for key, ngbh in self.adj.items()}
             return {"node": node, "adj": adj}
-        else: 
+        else:
             return {"node": self.node, "adj": self.adj}
 
     def from_json(self, data):
