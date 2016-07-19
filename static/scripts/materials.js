@@ -5,6 +5,7 @@ var curveProperties = {
     curvature: 20
 };
 
+// Is called on boot
 materials.prepare = function() {
     var ballSprite = new THREE.Texture(document.getElementById("ball"));
     ballSprite.needsUpdate = true;
