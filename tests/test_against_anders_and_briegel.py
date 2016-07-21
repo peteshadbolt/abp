@@ -4,12 +4,14 @@ from abp import CircuitModel
 from abp import clifford
 import random
 from copy import deepcopy
+import numpy as np
 from tqdm import tqdm
+from abp.anders_cz import cz_table as abczt
 
-REPEATS = 100
+REPEATS = 100000
 
-def assert_equal(a, b):
-    assert a.to_json() == b.to_json()
+def assert_equal(a, b, debug=""):
+    assert a.to_json() == b.to_json(), "\n\n" + debug + "\n\n" + str(a.to_json()) + "\n\n" + str(b.to_json())
 
 def test_hadamard():
     """ Test hadamards """
@@ -103,14 +105,14 @@ def test_with_cphase_gates_hadamard_only(N=10):
 
     assert_equal(a, b)
 
-def test_cz_hadamard(N=3):
+def test_cz_hadamard(N=20):
     """ Test CZs and Hadamards at random """
 
     clifford.use_old_cz()
+    assert np.allclose(clifford.cz_table, abczt)
 
     a = graphsim.GraphRegister(N)
     b = GraphState(range(N))
-    previous_state, previous_cz = None, None
     for i in tqdm(range(REPEATS), desc="Testing CZ and Hadamard against A&B"):
         if random.random()>0.5:
             j = random.randint(0, N-1)
@@ -118,14 +120,13 @@ def test_cz_hadamard(N=3):
             b.act_hadamard(j)
         else:
             q = random.randint(0, N-2)
-            if a!=b:
-                a.cphase(q, q+1)
-                b.act_cz(q, q+1)
+            a.cphase(q, q+1)
+            b.act_cz(q, q+1)
         assert_equal(a, b)
 
 
 
-def test_all(N=5):
+def _test_all(N=9):
     """ Test everything"""
 
     clifford.use_old_cz()
@@ -141,9 +142,8 @@ def test_all(N=5):
             b.act_local_rotation(j, u)
         else:
             q = random.randint(0, N-2)
-            if a!=b:
-                a.cphase(q, q+1)
-                b.act_cz(q, q+1)
-        assert_equal(a, b)
+            a.cphase(q, q+1)
+            b.act_cz(q, q+1)
+        assert_equal(a, b, str(i))
 
 

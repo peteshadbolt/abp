@@ -1,7 +1,14 @@
 import numpy as np
 from abp import GraphState
-from abp import qi
+from abp import qi, clifford
 from anders_briegel import graphsim
+from tqdm import tqdm
+import random
+
+REPEATS = 100000
+LOCAL_ROTATION = 0
+CZ = 1
+MEASURE = 2
 
 def test_single_qubit_measurements():
     """ Various simple tests of measurements """
@@ -22,7 +29,6 @@ def test_single_qubit_measurements():
     assert g.measure(0, "px") == 0, "Measuring |+> in X gives 0"
     g.act_local_rotation(0, "pz")
     assert g.measure(0, "px") == 1, "Measuring |-> in X gives 1"
-
 
 def test_random_outcomes():
     """ Testing random behaviour """
@@ -47,9 +53,6 @@ def test_another_projection():
     g.measure(0, "pz", 1)
     assert np.allclose(g.to_state_vector().state, qi.one)
 
-
-
-
 def test_z_measurement_against_ab():
     for i in range(10):
         a = graphsim.GraphRegister(1)
@@ -57,3 +60,33 @@ def test_z_measurement_against_ab():
         b.add_node(0)
         #print a.measure(0, graphsim.lco_Z) 
         #print b.measure(0, "pz")
+
+def test_all(N=20):
+    """ Test everything"""
+
+    clifford.use_old_cz()
+
+    a = graphsim.GraphRegister(N)
+    b = GraphState(range(N))
+    previous_state, previous_cz = None, None
+    for i in tqdm(range(REPEATS), desc="Testing all gates against Anders and Briegel"):
+        which = random.choice([LOCAL_ROTATION, CZ, MEASURE])
+        if which == LOCAL_ROTATION:
+            j = random.randint(0, N-1)
+            u = random.randint(0, 23)
+            a.local_op(j, graphsim.LocCliffOp(u))
+            b.act_local_rotation(j, u)
+        elif which == CZ:
+            q = random.randint(0, N-2)
+            if a!=b:
+                a.cphase(q, q+1)
+                b.act_cz(q, q+1)
+        else:
+            pass
+            #q = random.randint(0, N-2)
+            #m = random.choice(["px", "py", "pz"])
+            #a.measure(q, m)
+            #b.measure(q, mm)
+        assert a.to_json() == b.to_json()
+
+
