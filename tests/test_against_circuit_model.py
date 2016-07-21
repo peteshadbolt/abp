@@ -5,7 +5,8 @@ import numpy as np
 import random
 from tqdm import tqdm
 
-REPEATS = 1
+REPEATS = 10
+DEPTH = 1000
 
 def test_single_qubit():
     """ A multi qubit test with Hadamards only"""
@@ -67,23 +68,21 @@ def test_all_multiqubit(n=4):
 
     assert g.to_state_vector() == c
 
-def test_all(n=4):
+def test_all(n=10):
     """ A multi qubit test with arbitrary local rotations """
     g = GraphState(range(n))
     c = CircuitModel(n)
-    depth = 100 # TODO: too small
-    for step in tqdm(xrange(depth), "Testing a deep circuit against the circuit model"):
-        if random.random()>0.5:
-            qubit = np.random.randint(0, n - 1)
-            rotation = np.random.randint(0, 24 - 1)
-            g.act_local_rotation(qubit, rotation)
-            c.act_local_rotation(qubit, clifford.unitaries[rotation])
-        else:
-            a, b = np.random.randint(0, n - 1, 2)
-            if a != b:
-                g.act_cz(a, b)
-                c.act_cz(a, b)
+    for repeat in tqdm(xrange(REPEATS), "Testing against circuit model"):
+        for step in xrange(DEPTH):
+            if random.random()>0.5:
+                qubit = np.random.randint(0, n - 1)
+                rotation = np.random.randint(0, 24 - 1)
+                g.act_local_rotation(qubit, rotation)
+                c.act_local_rotation(qubit, clifford.unitaries[rotation])
+            else:
+                a, b = np.random.randint(0, n - 1, 2)
+                if a != b:
+                    g.act_cz(a, b)
+                    c.act_cz(a, b)
         assert g.to_state_vector() == c
-    #print g.to_state_vector()
-    #print c
 
