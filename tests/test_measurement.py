@@ -37,16 +37,15 @@ def test_projection():
     """ Test that projection works correctly """
     g = GraphState([0])
     g.act_local_rotation(0, "hadamard")
-    #g.measure(0, "pz", 0)
-    #print g.to_state_vector()
-    #assert np.allclose(g.to_state_vector().state, qi.zero)
+    g.measure(0, "pz", 0)
+    assert np.allclose(g.to_state_vector().state, qi.zero)
 
+def test_another_projection():
+    """ This one fails at the moment """
     g = GraphState([0])
     g.act_local_rotation(0, "hadamard")
-    print g.to_state_vector()
-    #g.measure(0, "pz", 1)
-    #print g.to_state_vector()
-    #assert np.allclose(g.to_state_vector().state, qi.one)
+    g.measure(0, "pz", 1)
+    assert np.allclose(g.to_state_vector().state, qi.one)
 
 
 

@@ -115,18 +115,21 @@ class GraphState(object):
         if new_edge != edge:
             self.toggle_edge(a, b)
 
-    def measure(self, node, basis):
+    def measure(self, node, basis, force=None):
         """ Measure in an arbitrary basis """
         basis = clifford.by_name[basis]
         ha = clifford.conjugation_table[self.node[node]["vop"]]
         basis, phase = clifford.conjugate(basis, ha)
 
+        # Flip a coin
+        result = force if force!=None else random.choice([0, 1])
+
         if basis == clifford.by_name["px"]:
-            result = self.measure_x(node)
+            result = self.measure_x(node, result)
         elif basis == clifford.by_name["py"]:
-            result = self.measure_y(node)
+            result = self.measure_y(node, result)
         elif basis == clifford.by_name["pz"]:
-            result = self.measure_z(node)
+            result = self.measure_z(node, result)
         else:
             raise ValueError("You can only measure in {X,Y,Z}")
 
@@ -144,12 +147,10 @@ class GraphState(object):
                 done.add((i, j), (j, i))
                 self.toggle_edge(i, j)
 
-    def measure_x(self, node, result=0):
+    def measure_x(self, node, result):
         """ Measure the graph in the X-basis """
         if len(self.adj[node]) == 0:
             return 0
-
-        result = random.choice([0, 1])
 
         # Pick a vertex
         friend = next(self.adj[node].iterkeys())
@@ -180,11 +181,8 @@ class GraphState(object):
 
         return result
 
-    def measure_y(self, node, result=None):
+    def measure_y(self, node, result):
         """ Measure the graph in the Y-basis """
-
-        result = random.choice([0, 1])
-
         # Do some rotations
         for neighbour in self.adj[node]:
             # NB: should these be hermitian_conjugated?
@@ -198,11 +196,8 @@ class GraphState(object):
         self.act_local_rotation(node, "msqz" if result else "msqz_h")
         return result
 
-    def measure_z(self, node, result=None):
+    def measure_z(self, node, result):
         """ Measure the graph in the Z-basis """
-
-        result = random.choice([0, 1])
-
         # Disconnect
         for neighbour in self.adj[node]:
             self.del_edge(node, neighbour)
@@ -210,10 +205,10 @@ class GraphState(object):
                 self.act_local_rotation(neighbour, "pz")
 
         # Rotate
+        self.act_local_rotation(node, "hadamard")
         if result:
             self.act_local_rotation(node, "px")
 
-        self.act_local_rotation(node, "hadamard")
         return result
 
     def order(self):
