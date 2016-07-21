@@ -24,8 +24,7 @@ var tables = {{
     times_table : {times_table},
     cz_table : {cz_table},
     clifford : {by_name},
-    measurement_table_real : {measurement_table_real},
-    measurement_table_imag : {measurement_table_imag}
+    measurement_table: {measurement_table}
 }};
 """
 
@@ -39,13 +38,11 @@ conjugation_table = np.array({conjugation_table}, dtype=int)
 times_table = np.array({times_table}, dtype=int)
 cz_table = np.array({cz_table}, dtype=int)
 by_name = {by_name}
-measurement_table_real = np.array({measurement_table_real}, dtype=complex)
-measurement_table_imag = np.array({measurement_table_imag}, dtype=complex)
+measurement_table = np.array({measurement_table}, dtype=int)
 unitaries_real = np.array({unitaries_real}, dtype=complex)
 unitaries_imag = np.array({unitaries_imag}, dtype=complex)
 
 # Reconstruct
-measurement_table = measurement_table_real + 1j*measurement_table_imag
 unitaries = unitaries_real + 1j*unitaries_imag
 """
 
@@ -149,7 +146,7 @@ def get_measurement_table():
     Compute a table of transform * operation * transform^dagger
     This is pretty unintelligible right now, we should probably compute the phase from unitaries instead
     """
-    measurement_table = np.zeros((4, 24, 2), dtype=complex)
+    measurement_table = np.zeros((4, 24, 2), dtype=int)
     for operator, unitary in it.product(range(4), range(24)):
         measurement_table[operator, unitary] = get_measurement_entry(
             operator, unitary)
@@ -204,8 +201,7 @@ def human_readable(data):
             "times_table": json.dumps(data["times_table"].tolist()),
             "cz_table": json.dumps(data["cz_table"].tolist()),
             "by_name": json.dumps(data["by_name"]),
-            "measurement_table_real": json.dumps(data["measurement_table"].real.tolist()),
-            "measurement_table_imag": json.dumps(data["measurement_table"].imag.tolist())}
+            "measurement_table": json.dumps(data["measurement_table"].tolist())}
 
 
 def write_python(data):

@@ -12,10 +12,13 @@ def test_conjugation():
         operation = graphsim.LocCliffOp(operation_index)
 
         phase = operation.conjugate(transform).ph
+        if phase == 1:
+            print phase
         phase = [1, 0, -1][phase]
         new_operation = operation.op
 
         NEW_OPERATION, PHASE = clifford.conjugate(operation_index, transform_index)
+        print PHASE
         assert new_operation == NEW_OPERATION
         assert PHASE == phase
 
