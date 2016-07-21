@@ -63,7 +63,10 @@ class GraphState(object):
     def remove_vop(self, a, avoid):
         """ Reduces VOP[a] to the identity """
         others = set(self.adj[a]) - {avoid}
-        swap_qubit = others.pop() if others else avoid
+        #TODO: this is a hack for determinsim. remove
+        swap_qubit = min(others) if others else avoid
+        #swap_qubit = others.pop() if others else avoid # TODO: maybe this is the only problematic part
+        print "SWAPPING WITH {} (options were {})".format(swap_qubit, tuple(others))
 
         for v in reversed(clifford.decompositions[self.node[a]["vop"]]):
             if v == "x":
@@ -256,6 +259,7 @@ class GraphState(object):
 
     def to_stabilizer(self):
         """ Get the stabilizer of this graph """
+        return
         output = {a: {} for a in self.node}
         for a, b in it.product(self.node, self.node):
             if a == b:

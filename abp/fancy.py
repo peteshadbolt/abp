@@ -48,13 +48,13 @@ class GraphState(graphstate.GraphState, networkx.Graph):
             #self.ws.close()
             #self.connect_to_server()
 
-    def layout(self, dim=3):
+    def layout(self, dim=2):
         """ Automatically lay out the graph """
         pos = networkx.spring_layout(self, dim, scale=np.sqrt(self.order()))
         middle = np.average(pos.values(), axis=0)
         pos = {key: value - middle for key, value in pos.items()}
-        for key, (x, y, z) in pos.items():
-            self.node[key]["position"] = util.xyz(x, y, z)
+        for key, (x, y) in pos.items():
+            self.node[key]["position"] = util.xyz(x, y, 0)
 
     def add_vops(self):
         """ Automatically add vops if they're not present """

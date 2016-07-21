@@ -3,7 +3,6 @@ from anders_briegel import graphsim
 from abp import CircuitModel
 from abp import clifford
 import random
-from copy import deepcopy
 import numpy as np
 from tqdm import tqdm
 from abp.anders_cz import cz_table as abczt
@@ -105,7 +104,7 @@ def test_with_cphase_gates_hadamard_only(N=10):
 
     assert_equal(a, b)
 
-def test_cz_hadamard(N=20):
+def _test_cz_hadamard(N=10):
     """ Test CZs and Hadamards at random """
 
     clifford.use_old_cz()
@@ -126,7 +125,7 @@ def test_cz_hadamard(N=20):
 
 
 
-def _test_all(N=9):
+def test_all(N=9):
     """ Test everything"""
 
     clifford.use_old_cz()

@@ -82,11 +82,13 @@ def test_all(N=20):
                 a.cphase(q, q+1)
                 b.act_cz(q, q+1)
         else:
-            pass
-            #q = random.randint(0, N-2)
-            #m = random.choice(["px", "py", "pz"])
-            #a.measure(q, m)
-            #b.measure(q, mm)
-        assert a.to_json() == b.to_json()
+            q = random.randint(0, N-2)
+            m = random.choice([1,2,3])
+            force = random.choice([0, 1])
+            thing=3
+            ma = a.measure(q, graphsim.LocCliffOp(m))
+            mb = b.measure(q, str(m), force)
+            print ma, mb
+            assert ma == mb, i
 
 
