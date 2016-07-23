@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from websocket_server import WebsocketServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from BaseHTTPServer import HTTPServer
@@ -5,8 +6,10 @@ from SocketServer import ThreadingMixIn
 import os, sys, threading
 import webbrowser
 import argparse
+import abp
 
 clients = []
+
 
 def new_message(client, server, message):
     print "Received update from client {}.".format(client["id"])
@@ -29,7 +32,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Change to the right working dir
-    where = os.path.join(sys.path[0], "../static")
+    where = os.path.join(os.path.dirname(abp.__path__[0]), "static")
     os.chdir(where)
 
     # Start the HTTP server
