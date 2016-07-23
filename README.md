@@ -12,7 +12,7 @@ $ pip install --user abp
 
 ## Visualization
 
-`abp` comes with a tool to visualize graph states in a WebGL compatible web browser (Chrome, Firefox, Safari etc). It uses a client-server architecture to enable instant updates.
+`abp` comes with a tool to visualize graph states in a WebGL compatible web browser (Chrome, Firefox, Safari etc). It uses a client-server architecture.
 
 First, run `abpserver` in a terminal:
 
