@@ -18,8 +18,14 @@ def use_old_cz():
     from anders_cz import cz_table
 
 def get_name(i):
-    """ Get the human-readable name of this clifford """
+    """ Get the name of this clifford """
     return "IXYZ"[i & 0x03] + "ABCDEF"[i / 4]
+
+def human_name(i):
+    """ Get the human-readable name of this clifford - slow """
+    choices = sorted((key for key, value in by_name.items() if value == i), key=len)
+    return choices[-1]
+
 
 def is_diagonal(v):
     """ TODO: remove this. Checks if a VOP is diagonal or not """

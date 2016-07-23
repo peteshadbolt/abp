@@ -93,9 +93,9 @@ class CircuitModel(object):
         where = 1 << qubit
         output = np.zeros((self.d, 1), dtype=complex)
         for i, v in enumerate(self.state):
-            q = i & where > 0
+            q = int(i & where > 0)
             output[i] += v * ha[q, q]
-            output[i ^ where] += v * ha[not q, q]
+            output[i ^ where] += v * ha[int(not q), q]
         self.state = output
 
     def act_local_rotation(self, qubit, u):
@@ -103,9 +103,9 @@ class CircuitModel(object):
         where = 1 << qubit
         output = np.zeros((self.d, 1), dtype=complex)
         for i, v in enumerate(self.state):
-            q = i & where > 0
+            q = int(i & where > 0)
             output[i] += v * u[q, q]  # TODO this is probably wrong
-            output[i ^ where] += v * u[not q, q]
+            output[i ^ where] += v * u[int(not q), q]
         self.state = output
 
     def __eq__(self, other):
@@ -120,5 +120,5 @@ class CircuitModel(object):
         for i in range(self.d):
             label = bin(i)[2:].rjust(self.nqubits, "0")
             if abs(self.state[i, 0]) > 0.00001:
-                s += "|{}>: {}\n".format(label, self.state[i, 0].round(3))
+                s += "|{}>: {:.2f}\n".format(label, self.state[i, 0])
         return s

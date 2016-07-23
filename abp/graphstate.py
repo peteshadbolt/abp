@@ -220,10 +220,25 @@ class GraphState(object):
 
     def __str__(self):
         """ Represent as a string for quick debugging """
-        node = {key: clifford.get_name(value["vop"])
-                for key, value in self.node.items()}
-        nbstr = str(self.adj)
-        return "graph:\n node: {}\n adj: {}\n".format(node, nbstr)
+        s = ""
+        for key in sorted(self.node.keys()):
+            s += "{}:  {}\t".format(key, clifford.get_name(self.node[key]["vop"]).replace("YC", "-"))
+            if self.adj[key]:
+                s += str(tuple(self.adj[key].keys())).replace(" ", "")
+            else:
+                s += "-"
+            s += "\n"
+
+        return s
+
+        #clean = lambda n: str(n["vop"])
+        #nodes = ("{}: {}".format(key, clean(value)) for key, value in sorted(self.node.items()))
+        #nodes = "\n".join(nodes)
+        #return "Nodes:\n{}\n\nEdges:\n{}".format(nodes, "")
+        #node = {key: clifford.get_name(value["vop"])
+                #for key, value in self.node.items()}
+        #nbstr = str(self.adj)
+        #return "graph:\n node: {}\n adj: {}\n".format(node, nbstr)
 
     def to_json(self, stringify=False):
         """
@@ -274,4 +289,12 @@ class GraphState(object):
     def __eq__(self, other):
         """ Check equality between graphs """
         return self.adj == other.adj and self.node == other.node
+
+if __name__ == '__main__':
+    g = GraphState()
+    g.add_nodes(range(10))
+    g.add_edge(0, 5)
+    g.act_local_rotation(6, 10)
+    print g
+    print g.to_state_vector()
 

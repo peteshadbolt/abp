@@ -177,6 +177,14 @@ def get_cz_table(unitaries):
         cz_table[bond, c2, c1] = [newbond, c2p, c1p]
     return cz_table
 
+def get_display_table(unitaries):
+    """ Used to display VOPs in a human readable style """
+    for u in unitaries:
+        c = qi.CircuitModel(1)
+        c.act_local_rotation(0, u)
+        state = c.state.round(2)
+        print "{:.2f}, {:.2f}".format(state[0][0], state[1][0])
+
 
 def compute_everything():
     """ Compute all lookup tables """
@@ -221,7 +229,8 @@ def write_javascript(data):
 
 
 if __name__ == '__main__':
-    data = compute_everything()
-    data = human_readable(data)
-    write_python(data)
-    write_javascript(data)
+    get_display_table(get_unitaries())
+    #data = compute_everything()
+    #data = human_readable(data)
+    #write_python(data)
+    #write_javascript(data)
