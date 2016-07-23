@@ -6,7 +6,7 @@ import dummy
 
 N = 2
 REPEATS = 10
-PZ = graphsim.lco_Z
+m = {1: graphsim.lco_X, 2: graphsim.lco_Y, 3: graphsim.lco_Z}
 
 def _test_multiqubit_measurement_pz():
     """ Test a multiqubit measurement """
@@ -22,10 +22,12 @@ def _test_multiqubit_measurement_pz():
 
 
 def test_multiqubit_pz():
-    for i in range(10):
-        a, b = dummy.bell()
-        assert a == b
-        print a.measure(0, "pz", 1)
-        print b.measure(0, PZ, None, 1)
-        assert a == b
-        
+    for measurement in (3, 2,):
+        for outcome in (0, 1):
+            a, b = dummy.bell()
+            a.measure(0, str(measurement), outcome)
+            b.measure(0, m[measurement], None, outcome)
+            print a.to_json()
+            print b.to_json()
+            assert a == b, (measurement, outcome)
+                

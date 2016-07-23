@@ -196,7 +196,7 @@ class GraphState(object):
         for i, j in it.combinations(vngbh, 2):
             self.toggle_edge(i, j)
 
-        self.act_local_rotation(node, "msqz" if result else "msqz_h")
+        self.act_local_rotation(node, "sqz" if result else "msqz")
         return result
 
     def measure_z(self, node, result):
