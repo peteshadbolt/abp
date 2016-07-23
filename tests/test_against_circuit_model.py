@@ -35,10 +35,9 @@ def test_hadamard_only_multiqubit(n=6):
         assert g.to_state_vector() == c
 
         for i in range(100):
-            a, b = np.random.randint(0, n - 1, 2)
-            if a != b:
-                g.act_cz(a, b)
-                c.act_cz(a, b)
+            a, b = np.random.choice(range(n), 2, False)
+            g.act_cz(a, b)
+            c.act_cz(a, b)
 
         assert g.to_state_vector() == c
 
@@ -56,15 +55,14 @@ def test_all_multiqubit(n=4):
     assert g.to_state_vector() == c
 
     for repeat in tqdm(range(REPEATS), desc="Testing against circuit model"):
-        a, b = np.random.randint(0, n - 1, 2)
-        if a != b:
-            g.act_cz(a, b)
-            c.act_cz(a, b)
-            assert np.allclose(np.sum(np.abs(c.state) ** 2), 1)
-            assert np.allclose(
-                np.sum(np.abs(g.to_state_vector().state) ** 2), 1)
+        a, b = np.random.choice(range(n), 2, False)
+        g.act_cz(a, b)
+        c.act_cz(a, b)
+        assert np.allclose(np.sum(np.abs(c.state) ** 2), 1)
+        assert np.allclose(
+            np.sum(np.abs(g.to_state_vector().state) ** 2), 1)
 
-            assert g.to_state_vector() == c
+        assert g.to_state_vector() == c
 
     assert g.to_state_vector() == c
 
@@ -80,9 +78,8 @@ def test_all(n=8):
                 g.act_local_rotation(qubit, rotation)
                 c.act_local_rotation(qubit, clifford.unitaries[rotation])
             else:
-                a, b = np.random.randint(0, n - 1, 2)
-                if a != b:
-                    g.act_cz(a, b)
-                    c.act_cz(a, b)
+                a, b = np.random.choice(range(n), 2, False)
+                g.act_cz(a, b)
+                c.act_cz(a, b)
         assert g.to_state_vector() == c
 

@@ -142,9 +142,9 @@ class GraphState(object):
 
         return result
 
-    def toggle_edges(a, b):
+    def toggle_edges(self, a, b):
         """ Toggle edges between vertex sets a and b """
-        done = {}
+        done = set()
         for i, j in it.product(a, b):
             if i == j and not (i, j) in done:
                 done.add((i, j), (j, i))
@@ -163,12 +163,12 @@ class GraphState(object):
             # Do a z on all ngb(vb) \ ngb(v) \ {v}, and some other stuff
             self.act_local_rotation(node, "pz")
             self.act_local_rotation(friend, "msqy")
-            for n in set(self.adj[friend]) - set(self.adj(node)) - {node}:
+            for n in set(self.adj[friend]) - set(self.adj[node]) - {node}:
                 self.act_local_rotation(n, "pz")
         else:
             # Do a z on all ngb(v) \ ngb(vb) \ {vb}, and sqy on the friend
             self.act_local_rotation(friend, "sqy")
-            for n in set(self.adj[node]) - set(self.adj(friend)) - {friend}:
+            for n in set(self.adj[node]) - set(self.adj[friend]) - {friend}:
                 self.act_local_rotation(n, "pz")
 
         # TODO: Yuk. Just awful!
@@ -202,7 +202,7 @@ class GraphState(object):
     def measure_z(self, node, result):
         """ Measure the graph in the Z-basis """
         # Disconnect
-        for neighbour in self.adj[node]:
+        for neighbour in tuple(self.adj[node]):
             self.del_edge(node, neighbour)
             if result:
                 self.act_local_rotation(neighbour, "pz")
@@ -288,6 +288,8 @@ class GraphState(object):
 
     def __eq__(self, other):
         """ Check equality between graphs """
+        if str(type(other)) == "<class 'anders_briegel.graphsim.GraphRegister'>":
+            return self.to_json() == other.to_json()
         return self.adj == other.adj and self.node == other.node
 
 if __name__ == '__main__':
