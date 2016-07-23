@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = "chp",
-    version = "0.1",
+    name = "abp",
+    version = "0.2",
     packages = find_packages(),
-    test_suite = 'tests',
-    author = "Scott Aaronson & Daniel Gottesman (Ported by Pete Shadbolt)",
-    description = "CNOT Hadamard Phase",
-    license = "Copyright Scott & others",
+    test_suite = "tests",
+    author = "Pete Shadbolt",
+    description = "Port of C++ due to Simon Anders and Hans J Briegel",
     keywords = "quantum",
-    url = "http://www.scottaaronson.com/chp/"
+    setup_requires = ["numpy"],
+    install_requires = ["numpy", "networkx", "tqdm", "websocket-client", "websocket-server"],
 )
