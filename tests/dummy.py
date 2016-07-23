@@ -1,5 +1,6 @@
 from abp import GraphState, clifford
 from anders_briegel import graphsim
+import numpy as np
 
 def random_state(N=10, messy=True):
     """ A state to test on """

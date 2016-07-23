@@ -144,10 +144,12 @@ class GraphState(object):
 
     def toggle_edges(self, a, b):
         """ Toggle edges between vertex sets a and b """
+        # TODO: i'm pretty sure this is just a single-line it.combinations or equiv
         done = set()
         for i, j in it.product(a, b):
-            if i == j and not (i, j) in done:
-                done.add((i, j), (j, i))
+            if i != j and not (i, j) in done:
+                done.add((i, j))
+                done.add((j, i))
                 self.toggle_edge(i, j)
 
     def measure_x(self, node, result):
@@ -156,9 +158,11 @@ class GraphState(object):
             return 0
 
         # Pick a vertex
-        friend = next(self.adj[node].iterkeys())
+        #friend = next(self.adj[node].iterkeys())
+        # TODO this is enforced determinism for testing purposes
+        friend = sorted(self.adj[node].keys())[0] 
 
-        # TODO: yuk yuk yuk
+        # Update the VOPs. TODO: pretty ugly
         if result:
             # Do a z on all ngb(vb) \ ngb(v) \ {v}, and some other stuff
             self.act_local_rotation(node, "pz")
@@ -171,7 +175,7 @@ class GraphState(object):
             for n in set(self.adj[node]) - set(self.adj[friend]) - {friend}:
                 self.act_local_rotation(n, "pz")
 
-        # TODO: Yuk. Just awful!
+        # Toggle the edges. TODO: Yuk. Just awful!
         a = set(self.adj[node].keys())
         b = set(self.adj[friend].keys())
         self.toggle_edges(a, b)
