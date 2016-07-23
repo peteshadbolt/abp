@@ -127,6 +127,10 @@ class GraphState(object):
         # Flip a coin
         result = force if force!=None else random.choice([0, 1])
 
+        # Flip the result if we have negative phase
+        if phase == -1:
+            result = not result
+
         if basis == clifford.by_name["px"]:
             result = self.measure_x(node, result)
         elif basis == clifford.by_name["py"]:

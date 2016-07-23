@@ -2,7 +2,7 @@ from abp import GraphState, clifford
 from anders_briegel import graphsim
 import numpy as np
 
-def random_state(N=10, messy=True):
+def clean_random_state(N=10):
     """ A state to test on """
     a = GraphState(range(N))
     b = graphsim.GraphRegister(N)
@@ -17,8 +17,10 @@ def random_state(N=10, messy=True):
         a.act_cz(j, k)
         b.cphase(j, k)
 
-    if not messy: return a, b
+    return a, b
 
+def messy_random_state(N=10):
+    a, b = clean_random_state(N)
     for i in range(10):
         j = np.random.choice(range(N))
         k = np.random.choice(range(24))
