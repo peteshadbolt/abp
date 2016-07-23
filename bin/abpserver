@@ -32,7 +32,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Change to the right working dir
-    print abp.__path__
     where = os.path.join(os.path.dirname(abp.__path__[0]), "static")
     os.chdir(where)
 

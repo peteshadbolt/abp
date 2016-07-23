@@ -9,7 +9,7 @@ print appdata
 
 setup(
     name = "abp",
-    version = "0.2",
+    version = "0.3",
     packages = find_packages(),
     test_suite = "tests",
     author = "Pete Shadbolt",
