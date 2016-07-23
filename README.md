@@ -1,6 +1,6 @@
 # abp
 
-Python port of Anders and Briegel' s [method](https://arxiv.org/abs/quant-ph/0504117) for fast simulation of Clifford circuits.
+Python port of Anders and Briegel' s [method](https://arxiv.org/abs/quant-ph/0504117) for fast simulation of Clifford circuits. Should do thousands of qubits without much trouble.
 
 Install with `pip`:
 
@@ -8,7 +8,7 @@ Install with `pip`:
 $ pip install --user abp
 ```
 
-![demo](img/demo.gif)
+![demo](examples/demo.gif)
 
 ## Visualization
 
@@ -40,13 +40,15 @@ Now, in another terminal, use `abp.fancy.GraphState` to run a Clifford circuit:
 
 And you should see a visualization of the state:
 
-![demo](img/viz.jpg)
+![demo](examples/viz.png)
 
 ## Testing
 
-`abp` has a fairly rigorous test suite. You can run all the tests with `nose`:
+`abp` has a bunch of tests. You can run them all with `nose`:
 
 ```shell
+$ nosetests
+53 tests run in 39.5 seconds (53 tests passed)
 ```
 
 Currently I use some reference implementations of `CHP` and `graphsim` which you won't have installed, hence some tests will fail with `ImportErrors`. You can ignore those :feelsgood:.
