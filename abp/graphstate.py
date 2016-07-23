@@ -114,7 +114,7 @@ class GraphState(object):
         va = self.node[a]["vop"]
         vb = self.node[b]["vop"]
         new_edge, self.node[a]["vop"], self.node[b]["vop"] = \
-            clifford.cz_table[edge, va, vb]
+            clifford.cz_table[int(edge), va, vb]
         if new_edge != edge:
             self.toggle_edge(a, b)
 
