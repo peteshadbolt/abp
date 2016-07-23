@@ -5,12 +5,11 @@ from abp import clifford
 import random
 import numpy as np
 from tqdm import tqdm
-from abp.anders_cz import cz_table as abczt
 
 REPEATS = 100000
 
 def assert_equal(a, b, debug=""):
-    assert a.to_json() == b.to_json(), "\n\n" + debug + "\n\n" + str(a.to_json()) + "\n\n" + str(b.to_json())
+    assert a.to_json() == b.to_json()
 
 def test_hadamard():
     """ Test hadamards """
@@ -104,11 +103,10 @@ def test_with_cphase_gates_hadamard_only(N=10):
 
     assert_equal(a, b)
 
-def _test_cz_hadamard(N=10):
+def test_cz_hadamard(N=10):
     """ Test CZs and Hadamards at random """
 
     clifford.use_old_cz()
-    assert np.allclose(clifford.cz_table, abczt)
 
     a = graphsim.GraphRegister(N)
     b = GraphState(range(N))
@@ -132,7 +130,7 @@ def test_all(N=9):
 
     a = graphsim.GraphRegister(N)
     b = GraphState(range(N))
-    previous_state, previous_cz = None, None
+    print "woi"
     for i in tqdm(range(REPEATS), desc="Testing all gates against Anders and Briegel"):
         if random.random()>0.5:
             j = random.randint(0, N-1)

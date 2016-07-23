@@ -68,7 +68,7 @@ def test_all_multiqubit(n=4):
 
     assert g.to_state_vector() == c
 
-def test_all(n=10):
+def test_all(n=8):
     """ A multi qubit test with arbitrary local rotations """
     g = GraphState(range(n))
     c = CircuitModel(n)

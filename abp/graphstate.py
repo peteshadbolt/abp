@@ -66,7 +66,7 @@ class GraphState(object):
         #TODO: this is a hack for determinsim. remove
         swap_qubit = min(others) if others else avoid
         #swap_qubit = others.pop() if others else avoid # TODO: maybe this is the only problematic part
-        print "SWAPPING WITH {} (options were {})".format(swap_qubit, tuple(others))
+        #print "SWAPPING WITH {} (options were {})".format(swap_qubit, tuple(others))
 
         for v in reversed(clifford.decompositions[self.node[a]["vop"]]):
             if v == "x":
