@@ -7,6 +7,7 @@ import os, sys, threading
 import webbrowser
 import argparse
 import abp
+from pkg_resources import resource_filename
 
 clients = []
 
@@ -32,7 +33,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Change to the right working dir
-    where = os.path.join(os.path.dirname(abp.__path__[0]), "static")
+    where = os.path.abspath(resource_filename("abp.static", ""))
     os.chdir(where)
 
     # Start the HTTP server
