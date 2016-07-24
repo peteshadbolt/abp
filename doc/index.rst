@@ -3,13 +3,30 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-abp
+.. toctree::
+   :maxdepth: 2
+
+
+Welcome to abp
 ===============================
 
 This is the documentation for abp. It's a work in progress.
 
-:math:`\psi`
+This is blah blah. Link to paper. Whatever.
 
+Installing
+----------------------------
+
+You can install from ``pip``:
+
+.. code-block:: bash
+
+   $ pip install --user abp
+
+API reference
+----------------------------
+
+* :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
 
