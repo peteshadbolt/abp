@@ -21,16 +21,20 @@ def clean_random_state(N=10):
 
 def messy_random_state(N=10):
     a, b = clean_random_state(N)
-    for i in range(10):
+    for i in range(N):
+        a.act_hadamard(i)
+        b.hadamard(i)
+
+    for i in range(N):
+        j, k= np.random.choice(range(N), 2, replace=False)
+        a.act_cz(j, k)
+        b.cphase(j, k)
+
+    for i in range(N):
         j = np.random.choice(range(N))
         k = np.random.choice(range(24))
         a.act_local_rotation(j, k)
         b.local_op(j, graphsim.LocCliffOp(k))
-
-    for i in range(10):
-        j, k= np.random.choice(range(N), 2, replace=False)
-        a.act_cz(j, k)
-        b.cphase(j, k)
 
     return a, b
 

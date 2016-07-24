@@ -3,9 +3,10 @@ from anders_briegel import graphsim
 import numpy as np
 from tqdm import tqdm
 import dummy
+import itertools as it
 
 N = 10
-REPEATS = 10
+REPEATS = 1000
 m = {1: graphsim.lco_X, 2: graphsim.lco_Y, 3: graphsim.lco_Z}
 
 def test_2qubit():
@@ -30,11 +31,11 @@ def test_multiqubit():
                     
 def test_multiqubit2():
     """ Relentless testing of measurements """
-    for measurement in (3,):
+    for measurement in (3,2,1):
         for i in tqdm(range(REPEATS), "Testing {} measurement".format(measurement)):
             for outcome in (0, 1):
                 for rotation in range(24):
-                    a, b = dummy.clean_random_state(3)
+                    a, b = dummy.clean_random_state(N)
                     assert a == b
                     a.act_local_rotation(0, str(rotation))
                     b.local_op(0, graphsim.LocCliffOp(rotation))
@@ -50,3 +51,16 @@ def test_multiqubit2():
                     assert a == b, (measurement, outcome, rotation)
                     #print
                     
+
+def test_multiqubit3():
+    """ More measurement """
+    for i in tqdm(range(REPEATS), "Testing messy measurement"):
+        for measurement, outcome in it.product((3,2,1), (0,1)):
+            a, b = dummy.messy_random_state(N)
+            assert a == b
+            oa = a.measure(0, str(measurement), outcome)
+            ob = b.measure(0, m[measurement], None, outcome)
+            assert oa == ob, (oa, ob, rotation)
+            assert a == b, (measurement, outcome)
+            
+
