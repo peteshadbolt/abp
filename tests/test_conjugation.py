@@ -18,7 +18,7 @@ def test_conjugation():
         new_operation = operation.op
 
         NEW_OPERATION, PHASE = clifford.conjugate(operation_index, transform_index)
-        print PHASE
+        print new_operation, NEW_OPERATION, "  ",
         assert new_operation == NEW_OPERATION
         assert PHASE == phase
 

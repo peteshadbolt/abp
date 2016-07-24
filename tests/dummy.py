@@ -42,3 +42,8 @@ def bell():
     a.act_cz(0,1)
     b.cphase(0,1)
     return a, b
+
+def onequbit():
+    a = GraphState(range(1))
+    b = graphsim.GraphRegister(1)
+    return a, b

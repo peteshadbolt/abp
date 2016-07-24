@@ -46,8 +46,7 @@ def test_projection():
     g.measure(0, "pz", 0)
     assert np.allclose(g.to_state_vector().state, qi.zero)
 
-def test_another_projection():
-    """ This one fails at the moment """
+    # Now project onto |1>
     g = GraphState([0])
     g.act_local_rotation(0, "hadamard")
     g.measure(0, "pz", 1)

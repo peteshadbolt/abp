@@ -91,6 +91,13 @@ class GraphState(object):
         self.node[v]["vop"] = clifford.times_table[
             rotation, self.node[v]["vop"]]
 
+    def act_local_rotation2(self, v, op):
+        """ Act a local rotation """
+        rotation = clifford.by_name[str(op)]
+        self.node[v]["vop"] = clifford.times_table[
+            self.node[v]["vop"], rotation]
+
+
     def act_hadamard(self, qubit):
         """ Shorthand """
         self.act_local_rotation(qubit, 10)
@@ -122,11 +129,14 @@ class GraphState(object):
         """ Measure in an arbitrary basis """
         basis = clifford.by_name[basis]
         ha = clifford.conjugation_table[self.node[node]["vop"]]
-        basis, phase = clifford.conjugate(basis, ha)
+        #basis, phase = clifford.conjugate(basis, ha)
+        basis, phase = clifford.conjugate(basis, self.node[node]["vop"])
+
+        print "MEASURE"
+        print "Op: {} Phase: {}".format(basis, phase)
 
         # Flip a coin
         result = force if force!=None else random.choice([0, 1])
-
         # Flip the result if we have negative phase
         if phase == -1:
             result = not result
@@ -159,7 +169,11 @@ class GraphState(object):
     def measure_x(self, node, result):
         """ Measure the graph in the X-basis """
         if len(self.adj[node]) == 0:
+            print "gXm{},D".format(node),
             return 0
+
+
+        print "gXm{},{:d}".format(node, result),
 
         # Pick a vertex
         #friend = next(self.adj[node].iterkeys())
@@ -194,6 +208,7 @@ class GraphState(object):
 
     def measure_y(self, node, result):
         """ Measure the graph in the Y-basis """
+        print "gYm{},{:d}".format(node, result),
         # Do some rotations
         for neighbour in self.adj[node]:
             # NB: should these be hermitian_conjugated?
@@ -204,11 +219,17 @@ class GraphState(object):
         for i, j in it.combinations(vngbh, 2):
             self.toggle_edge(i, j)
 
-        self.act_local_rotation(node, "sqz" if result else "msqz")
+        # lcoS.herm_adjoint() if result else lcoS
+        #                               else smiZ
+        # 5                             else 6
+        print "RESULT is {:d}, op is {} doing {}".format(result, self.node[node]["vop"], 5 if result else 6)
+        self.act_local_rotation2(node, 5 if result else 6)
+        print "BECAME ", self.node[node]["vop"]
         return result
 
     def measure_z(self, node, result):
         """ Measure the graph in the Z-basis """
+        print "gZm{},{:d}".format(node, result),
         # Disconnect
         for neighbour in tuple(self.adj[node]):
             self.del_edge(node, neighbour)
@@ -238,15 +259,6 @@ class GraphState(object):
             s += "\n"
 
         return s
-
-        #clean = lambda n: str(n["vop"])
-        #nodes = ("{}: {}".format(key, clean(value)) for key, value in sorted(self.node.items()))
-        #nodes = "\n".join(nodes)
-        #return "Nodes:\n{}\n\nEdges:\n{}".format(nodes, "")
-        #node = {key: clifford.get_name(value["vop"])
-                #for key, value in self.node.items()}
-        #nbstr = str(self.adj)
-        #return "graph:\n node: {}\n adj: {}\n".format(node, nbstr)
 
     def to_json(self, stringify=False):
         """

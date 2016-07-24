@@ -40,6 +40,18 @@ def test_local_rotations():
         assert_equal(a, b)
 
 
+def test_times_table():
+    """ Test times table """
+    for i, j in it.product(range(24), range(24)):
+        a = graphsim.GraphRegister(1)
+        b = GraphState([0])
+        a.local_op(0, graphsim.LocCliffOp(i))
+        a.local_op(0, graphsim.LocCliffOp(j))
+        b.act_local_rotation(0, i)
+        b.act_local_rotation(0, j)
+        assert_equal(a, b)
+
+
 def test_cz_table(N=10):
     """ Test the CZ table """
 

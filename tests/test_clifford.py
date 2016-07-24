@@ -62,11 +62,6 @@ def test_conjugation_table():
     assert len(set(clifford.conjugation_table)) == 24
 
 
-def test_times_table():
-    """ Check the times table """
-    assert clifford.times_table[0][4] == 4
-
-
 def test_cz_table_makes_sense():
     """ Test the CZ table is symmetric """
     hadamard = clifford.by_name["hadamard"]
