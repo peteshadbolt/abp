@@ -3,13 +3,14 @@ This module implements Anders and Briegel's method for fast simulation of Cliffo
 """
 
 import itertools as it
-import json
-import random
+import json, random
 import qi, clifford, util
 
+
 class GraphState(object):
-    """ 
-    This is the main class used to model stabilizer states. 
+
+    """
+    This is the main class used to model stabilizer states.
     Internally it uses the same dictionary-of-dictionaries data structure as ``networkx``.
     """
 
@@ -115,7 +116,7 @@ class GraphState(object):
         return len(self.adj[a]) > (b in self.adj[a])
 
     def act_cz(self, a, b):
-        """ Act a controlled-phase gate on two qubits 
+        """ Act a controlled-phase gate on two qubits
 
         :param a: The first qubit
         :param b: The second qubit
@@ -144,7 +145,7 @@ class GraphState(object):
         basis, phase = clifford.conjugate(basis, ha)
 
         # Flip a coin
-        result = force if force!=None else random.choice([0, 1])
+        result = force if force != None else random.choice([0, 1])
         # Flip the result if we have negative phase
         if phase == -1:
             result = not result
@@ -166,7 +167,8 @@ class GraphState(object):
 
     def _toggle_edges(self, a, b):
         """ Toggle edges between vertex sets a and b """
-        # TODO: i'm pretty sure this is just a single-line it.combinations or equiv
+        # TODO: i'm pretty sure this is just a single-line it.combinations or
+        # equiv
         done = set()
         for i, j in it.product(a, b):
             if i != j and not (i, j) in done:
@@ -181,7 +183,7 @@ class GraphState(object):
 
         # Pick a vertex
         if self.deterministic:
-            friend = sorted(self.adj[node].keys())[0] 
+            friend = sorted(self.adj[node].keys())[0]
         else:
             friend = next(self.adj[node].iterkeys())
 
@@ -223,7 +225,9 @@ class GraphState(object):
         for i, j in it.combinations(vngbh, 2):
             self._toggle_edge(i, j)
 
-        self._update_vop(node, 5 if result else 6) # TODO: naming: # lcoS.herm_adjoint() if result else lcoS
+        self._update_vop(node, 5 if result else 6)
+                         # TODO: naming: # lcoS.herm_adjoint() if result else
+                         # lcoS
         return result
 
     def _measure_z(self, node, result):
@@ -251,7 +255,8 @@ class GraphState(object):
         """ Represent as a string for quick debugging """
         s = ""
         for key in sorted(self.node.keys()):
-            s += "{}:  {}\t".format(key, clifford.get_name(self.node[key]["vop"]).replace("YC", "-"))
+            s += "{}:  {}\t".format(
+                key, clifford.get_name(self.node[key]["vop"]).replace("YC", "-"))
             if self.adj[key]:
                 s += str(tuple(self.adj[key].keys())).replace(" ", "")
             else:
@@ -319,4 +324,3 @@ if __name__ == '__main__':
     g.act_local_rotation(6, 10)
     print g
     print g.to_state_vector()
-
