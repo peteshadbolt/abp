@@ -132,8 +132,8 @@ class GraphState(object):
         #basis, phase = clifford.conjugate(basis, ha)
         basis, phase = clifford.conjugate(basis, self.node[node]["vop"])
 
-        print "MEASURE"
-        print "Op: {} Phase: {}".format(basis, phase)
+        #print "MEASURE"
+        #print "Op: {} Phase: {}".format(basis, phase)
 
         # Flip a coin
         result = force if force!=None else random.choice([0, 1])
@@ -183,15 +183,15 @@ class GraphState(object):
         # Update the VOPs. TODO: pretty ugly
         if result:
             # Do a z on all ngb(vb) \ ngb(v) \ {v}, and some other stuff
-            self.act_local_rotation(node, "pz")
-            self.act_local_rotation(friend, "msqy")
+            self.act_local_rotation2(node, "pz")
+            self.act_local_rotation2(friend, "msqy")
             for n in set(self.adj[friend]) - set(self.adj[node]) - {node}:
-                self.act_local_rotation(n, "pz")
+                self.act_local_rotation2(n, "pz")
         else:
             # Do a z on all ngb(v) \ ngb(vb) \ {vb}, and sqy on the friend
-            self.act_local_rotation(friend, "sqy")
+            self.act_local_rotation2(friend, "sqy")
             for n in set(self.adj[node]) - set(self.adj[friend]) - {friend}:
-                self.act_local_rotation(n, "pz")
+                self.act_local_rotation2(n, "pz")
 
         # Toggle the edges. TODO: Yuk. Just awful!
         a = set(self.adj[node].keys())
@@ -212,7 +212,7 @@ class GraphState(object):
         # Do some rotations
         for neighbour in self.adj[node]:
             # NB: should these be hermitian_conjugated?
-            self.act_local_rotation(neighbour, "sqz" if result else "msqz")
+            self.act_local_rotation2(neighbour, "sqz" if result else "msqz")
 
         # A sort of local complementation
         vngbh = set(self.adj[node]) | {node}
@@ -222,9 +222,9 @@ class GraphState(object):
         # lcoS.herm_adjoint() if result else lcoS
         #                               else smiZ
         # 5                             else 6
-        print "RESULT is {:d}, op is {} doing {}".format(result, self.node[node]["vop"], 5 if result else 6)
+        #print "RESULT is {:d}, op is {} doing {}".format(result, self.node[node]["vop"], 5 if result else 6)
         self.act_local_rotation2(node, 5 if result else 6)
-        print "BECAME ", self.node[node]["vop"]
+        #print "BECAME ", self.node[node]["vop"]
         return result
 
     def measure_z(self, node, result):
@@ -234,12 +234,14 @@ class GraphState(object):
         for neighbour in tuple(self.adj[node]):
             self.del_edge(node, neighbour)
             if result:
-                self.act_local_rotation(neighbour, "pz")
+                self.act_local_rotation2(neighbour, "pz")
 
         # Rotate
-        self.act_local_rotation(node, "hadamard")
         if result:
-            self.act_local_rotation(node, "px")
+            self.act_local_rotation2(node, "px")
+            self.act_local_rotation2(node, "hadamard")
+        else:
+            self.act_local_rotation2(node, "hadamard")
 
         return result
 
