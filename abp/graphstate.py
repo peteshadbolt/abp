@@ -1,17 +1,28 @@
 """
-Provides an extremely basic graph structure, based on key/value pairs
+This module implements Anders and Briegel's method for fast simulation of Clifford circuits.
 """
 
 import itertools as it
 import json
-import qi, clifford, util
 import random
+import qi, clifford, util
 
 class GraphState(object):
+    """ 
+    This is the main class used to model stabilizer states. 
+    Internally it uses the same dictionary-of-dictionaries data structure as ``networkx``.
+    """
 
-    def __init__(self, nodes=[]):
+    def __init__(self, nodes=[], deterministic=False):
+        """ Construct a GraphState.
+
+        :param nodes: An iterable of nodes used to construct the graph.
+        :param deterministic: If ``True``, the behaviour of the graph is deterministic up to but not including the choice of measurement outcome. This is slightly less efficient, but useful for testing. If ``False``, the specific graph representation will sometimes be random -- of course, all possible representations still map to the same state vector.
+        """
+
         self.adj, self.node = {}, {}
         self.add_nodes(nodes)
+        self.deterministic = deterministic
 
     def add_node(self, v, **kwargs):
         """ Add a node """
@@ -26,7 +37,7 @@ class GraphState(object):
             self.add_node(n)
 
     def add_edge(self, v1, v2, data={}):
-        """ Add an edge between two vertices in the self """
+        """ Add an edge between two vertices  """
         assert v1 != v2
         self.adj[v1][v2] = data
         self.adj[v2][v1] = data
@@ -37,16 +48,16 @@ class GraphState(object):
             self.add_edge(v1, v2)
 
     def del_edge(self, v1, v2):
-        """ Delete an edge between two vertices in the self """
+        """ Delete an edge between two vertices  """
         del self.adj[v1][v2]
         del self.adj[v2][v1]
 
     def has_edge(self, v1, v2):
-        """ Test existence of an edge between two vertices in the self """
+        """ Test existence of an edge between two vertices  """
         return v2 in self.adj[v1]
 
     def toggle_edge(self, v1, v2):
-        """ Toggle an edge between two vertices in the self """
+        """ Toggle an edge between two vertices  """
         if self.has_edge(v1, v2):
             self.del_edge(v1, v2)
         else:
@@ -63,9 +74,10 @@ class GraphState(object):
     def remove_vop(self, a, avoid):
         """ Reduces VOP[a] to the identity """
         others = set(self.adj[a]) - {avoid}
-        #TODO: this is a hack for determinsim. remove
-        swap_qubit = min(others) if others else avoid
-        #swap_qubit = others.pop() if others else avoid
+        if self.deterministic:
+            swap_qubit = min(others) if others else avoid
+        else:
+            swap_qubit = others.pop() if others else avoid
 
         for v in reversed(clifford.decompositions[self.node[a]["vop"]]):
             if v == "x":
@@ -84,11 +96,15 @@ class GraphState(object):
             self.node[i]["vop"] = clifford.times_table[
                 self.node[i]["vop"], clifford.by_name["sqz_h"]]
 
-    def act_local_rotation(self, v, op):
-        """ Act a local rotation """
-        rotation = clifford.by_name[str(op)]
-        self.node[v]["vop"] = clifford.times_table[
-            rotation, self.node[v]["vop"]]
+    def act_local_rotation(self, node, operation):
+        """ Act a local rotation on a qubit
+
+        :param node: The index of the node to act on
+        :param operation: The Clifford-group operation to perform.
+        """
+        rotation = clifford.by_name[str(operation)]
+        self.node[node]["vop"] = clifford.times_table[
+            rotation, self.node[node]["vop"]]
 
     def _update_vop(self, v, op):
         """ Update a VOP - only used internally"""
@@ -97,7 +113,7 @@ class GraphState(object):
             self.node[v]["vop"], rotation]
 
     def act_hadamard(self, qubit):
-        """ Shorthand """
+        """ Shorthand for ``self.act_local_rotation(qubit, "hadamard")`` """
         self.act_local_rotation(qubit, 10)
 
     def _lonely(self, a, b):
@@ -105,7 +121,11 @@ class GraphState(object):
         return len(self.adj[a]) > (b in self.adj[a])
 
     def act_cz(self, a, b):
-        """ Act a controlled-phase gate on two qubits """
+        """ Act a controlled-phase gate on two qubits 
+
+        :param a: The first qubit
+        :param b: The second qubit
+        """
         if self._lonely(a, b):
             self.remove_vop(a, b)
 
@@ -166,9 +186,10 @@ class GraphState(object):
             return 0
 
         # Pick a vertex
-        #friend = next(self.adj[node].iterkeys())
-        # TODO this is enforced determinism for testing purposes
-        friend = sorted(self.adj[node].keys())[0] 
+        if self.deterministic:
+            friend = sorted(self.adj[node].keys())[0] 
+        else:
+            friend = next(self.adj[node].iterkeys())
 
         # Update the VOPs. TODO: pretty ugly
         if result:
