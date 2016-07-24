@@ -36,18 +36,13 @@ class GraphState(object):
         for n in nodes:
             self.add_node(n)
 
-    def add_edge(self, v1, v2, data={}):
+    def _add_edge(self, v1, v2, data={}):
         """ Add an edge between two vertices  """
         assert v1 != v2
         self.adj[v1][v2] = data
         self.adj[v2][v1] = data
 
-    def add_edges(self, edges):
-        """ Add a buncha edges """
-        for (v1, v2) in edges:
-            self.add_edge(v1, v2)
-
-    def del_edge(self, v1, v2):
+    def _del_edge(self, v1, v2):
         """ Delete an edge between two vertices  """
         del self.adj[v1][v2]
         del self.adj[v2][v1]
@@ -56,16 +51,15 @@ class GraphState(object):
         """ Test existence of an edge between two vertices  """
         return v2 in self.adj[v1]
 
-    def toggle_edge(self, v1, v2):
+    def _toggle_edge(self, v1, v2):
         """ Toggle an edge between two vertices  """
         if self.has_edge(v1, v2):
-            self.del_edge(v1, v2)
+            self._del_edge(v1, v2)
         else:
-            self.add_edge(v1, v2)
+            self._add_edge(v1, v2)
 
     def edgelist(self):
-        """ Describe a graph as an edgelist """
-        # TODO: inefficient
+        """ Describe a graph as an edgelist # TODO: inefficient """
         edges = set(tuple(sorted((i, n)))
                     for i, v in self.adj.items()
                     for n in v)
@@ -88,7 +82,7 @@ class GraphState(object):
     def local_complementation(self, v, prefix=""):
         """ As defined in LISTING 1 of Anders & Briegel """
         for i, j in it.combinations(self.adj[v], 2):
-            self.toggle_edge(i, j)
+            self._toggle_edge(i, j)
 
         self.node[v]["vop"] = clifford.times_table[
             self.node[v]["vop"], clifford.by_name["msqx_h"]]
@@ -141,7 +135,7 @@ class GraphState(object):
         new_edge, self.node[a]["vop"], self.node[b]["vop"] = \
             clifford.cz_table[int(edge), va, vb]
         if new_edge != edge:
-            self.toggle_edge(a, b)
+            self._toggle_edge(a, b)
 
     def measure(self, node, basis, force=None):
         """ Measure in an arbitrary basis """
@@ -170,7 +164,7 @@ class GraphState(object):
 
         return result
 
-    def toggle_edges(self, a, b):
+    def _toggle_edges(self, a, b):
         """ Toggle edges between vertex sets a and b """
         # TODO: i'm pretty sure this is just a single-line it.combinations or equiv
         done = set()
@@ -178,7 +172,7 @@ class GraphState(object):
             if i != j and not (i, j) in done:
                 done.add((i, j))
                 done.add((j, i))
-                self.toggle_edge(i, j)
+                self._toggle_edge(i, j)
 
     def _measure_x(self, node, result):
         """ Measure the graph in the X-basis """
@@ -208,13 +202,13 @@ class GraphState(object):
         # Toggle the edges. TODO: Yuk. Just awful!
         a = set(self.adj[node].keys())
         b = set(self.adj[friend].keys())
-        self.toggle_edges(a, b)
+        self._toggle_edges(a, b)
         intersection = a & b
         for i, j in it.combinations(intersection, 2):
-            self.toggle_edge(i, j)
+            self._toggle_edge(i, j)
 
         for n in a - {friend}:
-            self.toggle_edge(friend, n)
+            self._toggle_edge(friend, n)
 
         return result
 
@@ -227,7 +221,7 @@ class GraphState(object):
         # A sort of local complementation
         vngbh = set(self.adj[node]) | {node}
         for i, j in it.combinations(vngbh, 2):
-            self.toggle_edge(i, j)
+            self._toggle_edge(i, j)
 
         self._update_vop(node, 5 if result else 6) # TODO: naming: # lcoS.herm_adjoint() if result else lcoS
         return result
@@ -236,7 +230,7 @@ class GraphState(object):
         """ Measure the graph in the Z-basis """
         # Disconnect
         for neighbour in tuple(self.adj[node]):
-            self.del_edge(node, neighbour)
+            self._del_edge(node, neighbour)
             if result:
                 self._update_vop(neighbour, "pz")
 
@@ -321,7 +315,7 @@ class GraphState(object):
 if __name__ == '__main__':
     g = GraphState()
     g.add_nodes(range(10))
-    g.add_edge(0, 5)
+    g._add_edge(0, 5)
     g.act_local_rotation(6, 10)
     print g
     print g.to_state_vector()
