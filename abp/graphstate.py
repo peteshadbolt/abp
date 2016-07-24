@@ -15,7 +15,7 @@ class GraphState(object):
     """
 
     def __init__(self, nodes=[], deterministic=False):
-        """ Construct a GraphState.
+        """ Construct a ``GraphState``
 
         :param nodes: An iterable of nodes used to construct the graph.
         :param deterministic: If ``True``, the behaviour of the graph is deterministic up to but not including the choice of measurement outcome. This is slightly less efficient, but useful for testing. If ``False``, the specific graph representation will sometimes be random -- of course, all possible representations still map to the same state vector.
@@ -26,10 +26,18 @@ class GraphState(object):
         self.deterministic = deterministic
 
     def add_node(self, node, **kwargs):
-        """ Add a node 
+        """ Add a node.
         
         :param node: The name of the node, e.g. ``9``, ``start``
         :type node: Any hashable type
+        :param kwargs: Any extra node attributes
+            
+        Example of using node attributes ::
+
+            >>> g.add_node(0, label="fred", position=(1,2,3))
+            >>> g.node[0]["label"]
+            fred
+            
         """
         assert not node in self.node, "Node {} already exists".format(v)
         self.adj[node] = {}
@@ -37,18 +45,16 @@ class GraphState(object):
         self.node[node].update(kwargs)
 
     def add_nodes(self, nodes):
-        """ Add a buncha nodes """
+        """ Add many nodes in one shot. """
         for n in nodes:
             self.add_node(n)
 
     def act_circuit(self, circuit):
-        """ Run many gates in one call
+        """ Run many gates in one call.
 
-        :param circuit: An iterable containing tuples of the form ``(node, operation)``. 
-        If ``operation`` is a name for a local operation (e.g. ``6``, ``hadamard``) then that operation is performed on ``node``.
-        If ``operation`` is ``"cz"`` then a CZ is performed on the two nodes in ``node.
+        :param circuit: An iterable containing tuples of the form ``(node, operation)``.  If ``operation`` is a name for a local operation (e.g. ``6``, ``hadamard``) then that operation is performed on ``node``.  If ``operation`` is ``cz`` then a CZ is performed on the two nodes in ``node``.
 
-        For example::
+        Example (makes a Bell pair)::
             
             >>> g.act_circuit([(0, "hadamard"), (1, "hadamard"), ((0, 1), "cz")])
 
@@ -160,7 +166,15 @@ class GraphState(object):
             self._toggle_edge(a, b)
 
     def measure(self, node, basis, force=None):
-        """ Measure in an arbitrary basis """
+        """ Measure in an arbitrary basis 
+
+        :param node: The name of the qubit to measure.
+        :param basis: The basis in which to measure.
+        :type basis: :math:`\in` ``{"px", "py", "pz"}``
+        :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``.
+        :type force: boolean
+        
+        """
         basis = clifford.by_name[basis]
         ha = clifford.conjugation_table[self.node[node]["vop"]]
         basis, phase = clifford.conjugate(basis, ha)
@@ -287,10 +301,16 @@ class GraphState(object):
         return s
 
     def to_json(self, stringify=False):
-        """
-        Convert the graph to JSON form.
-        JSON keys must be strings, But sometimes it is useful to have
-        a JSON-like object whose keys are tuples!
+        """ Convert the graph to JSON-like form.
+        
+        :param stringify: JSON keys must be strings, But sometimes it is useful to have a JSON-like object whose keys are tuples.
+
+        If you want to dump a graph do disk, do something like this::
+            
+            >>> import json
+            >>> with open("graph.json") as f:
+                    json.dump(graph.to_json(True), f)
+
         """
         if stringify:
             node = {str(key): value for key, value in self.node.items()}
@@ -306,7 +326,18 @@ class GraphState(object):
         # TODO
 
     def to_state_vector(self):
-        """ Get the full state vector """
+        """ Get the full state vector corresponding to this stabilizer state. Useful for debugging, interface with other simulators.
+
+        The output state is represented as a ``abp.qi.CircuitModel``::
+        
+            >>> print g.to_state_vector()
+            |00000>: 0.18+0.00j
+            |00001>: 0.18+0.00j ...
+        
+        .. warning::
+            Obviously this method becomes very slow for more than about ten qubits!
+
+        """
         if len(self.node) > 15:
             raise ValueError("Cannot build state vector: too many qubits")
         state = qi.CircuitModel(len(self.node))
@@ -319,7 +350,8 @@ class GraphState(object):
         return state
 
     def to_stabilizer(self):
-        """ Get the stabilizer of this graph """
+        """ Get the stabilizer tableau.  Work in progress!
+        """
         return
         output = {a: {} for a in self.node}
         for a, b in it.product(self.node, self.node):

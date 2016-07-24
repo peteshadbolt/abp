@@ -15,7 +15,7 @@ $ pip install --user abp
 Or clone and install:
 
 ```shell
-$ git clone https://github.com/peteshadbolt/abp
+$ git clone https://github.com/peteshadbolt/abp.git
 $ python setup.py install --user
 ```
 

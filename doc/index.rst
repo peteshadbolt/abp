@@ -16,6 +16,8 @@ This is the documentation for ``abp``. It's a work in progress.
 That means that you can make quantum states of thousands of qubits, perform any sequence of Clifford operations, and measure in any of :math:`\{\sigma_x, \sigma_y, \sigma_z\}`.
 It should do thousands of qubits without much trouble.
 
+.. image:: ../examples/demo.gif
+
 Installing
 ----------------------------
 
@@ -58,9 +60,6 @@ It's pretty easy to build a graph state, act some gates, and do measurements::
     2:  IA	(1,3)
     3:  IA	(2,4)
     4:  IA	(3,)
-    >>> print g.to_state_vector()
-    |00000>: 0.18+0.00j
-    |00001>: 0.18+0.00j ...
     >>> g.measure(2, "px")
     0
     >>> print g
@@ -70,7 +69,7 @@ It's pretty easy to build a graph state, act some gates, and do measurements::
     3:  ZA	(0,1,4)
     4:  IA	(3,)
 
-GraphState
+Working with GraphStates
 -------------------------
 
 The ``abp.GraphState`` class is your main interface to ``abp``.  
@@ -90,14 +89,56 @@ Here follows complete documentation
 
     .. automethod:: abp.GraphState.act_cz
 
-    .. automethod:: abp.GraphState.add_edge
+    .. automethod:: abp.GraphState.act_circuit
 
-    .. automethod:: abp.GraphState.add_edges
+    .. automethod:: abp.GraphState.measure
 
-    .. automethod:: abp.GraphState.del_edge
+    .. automethod:: abp.GraphState.to_json
+
+    .. automethod:: abp.GraphState.to_state_vector
+
+    .. automethod:: abp.GraphState.to_stabilizer
+
+The Clifford group
+----------------------
+
+Visualization
+----------------------
+
+``abp`` comes with a tool to visualize graph states in a WebGL compatible web browser (Chrome, Firefox, Safari etc). It uses a client-server architecture.
+
+First, run ``abpserver`` in a terminal:
+
+.. code-block:: bash
+
+    $ abpserver
+    Listening on port 5000 for clients..
+
+Then browse to ``http://localhost:5001/`` (in some circumstances ``abp`` will automatically pop a browser window).
+
+Now, in another terminal, use ``abp.fancy.GraphState`` to run a Clifford circuit::
+
+    >>> from abp.fancy import GraphState
+    >>> g = GraphState(10)
+    >>> g = GraphState(range(10))
+    >>> for i in range(10):
+    ...     g.act_hadamard(i)
+    ... 
+    >>> g.update()
+    >>> for i in range(9):
+    ...     g.act_cz(i, i+1)
+    ... 
+    >>> g.update()
+    ```
+
+And you should see a 3D visualization of the state.
+
+.. image:: ../examples/viz.png
 
 Reference
 ----------------------------
+
+More detailed docs are available here:
 
 * :ref:`genindex`
 * :ref:`modindex`
