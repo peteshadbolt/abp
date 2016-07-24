@@ -7,10 +7,10 @@
    :maxdepth: 2
 
 
-Welcome to abp
+Welcome to ``abp``
 ===============================
 
-This is the documentation for abp. It's a work in progress.
+This is the documentation for ``abp``. It's a work in progress.
 
 This is blah blah. Link to paper. Whatever.
 

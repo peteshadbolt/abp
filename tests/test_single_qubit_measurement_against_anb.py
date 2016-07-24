@@ -4,9 +4,9 @@ import numpy as np
 from tqdm import tqdm
 import itertools as it
 import dummy
+from config import *
 
 N = 10
-REPEATS = 10
 m = {1: graphsim.lco_X, 2: graphsim.lco_Y, 3: graphsim.lco_Z}
 
 def test_1():

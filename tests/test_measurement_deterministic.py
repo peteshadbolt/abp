@@ -8,19 +8,19 @@ import itertools as it
 import networkx as nx
 
 
-def all_simple_graphs(filename="tests/graph5.g6"):
-    """ Generate all possible simple graphs """
-    with open(filename) as f:
-        for line in tqdm(f):
-            yield nx.parse_graph6(line.strip())
+#def all_simple_graphs(filename="tests/graph5.g6"):
+    #""" Generate all possible simple graphs """
+    #with open(filename) as f:
+        #for line in tqdm(f):
+            #yield nx.parse_graph6(line.strip())
     
-def rotated(simple_graphs):
-    for g in simple_graphs:
-        for r in it.product(*[range(24)]*2):
-            yield g, r
+#def rotated(simple_graphs):
+    #for g in simple_graphs:
+        #for r in it.product(*[range(24)]*2):
+            #yield g, r
 
 
-print len(list(rotated(all_simple_graphs())))
+#print len(list(rotated(all_simple_graphs())))
 
 
 #N = 3

@@ -65,8 +65,7 @@ class GraphState(object):
         others = set(self.adj[a]) - {avoid}
         #TODO: this is a hack for determinsim. remove
         swap_qubit = min(others) if others else avoid
-        #swap_qubit = others.pop() if others else avoid # TODO: maybe this is the only problematic part
-        #print "SWAPPING WITH {} (options were {})".format(swap_qubit, tuple(others))
+        #swap_qubit = others.pop() if others else avoid
 
         for v in reversed(clifford.decompositions[self.node[a]["vop"]]):
             if v == "x":
@@ -91,30 +90,29 @@ class GraphState(object):
         self.node[v]["vop"] = clifford.times_table[
             rotation, self.node[v]["vop"]]
 
-    def act_local_rotation2(self, v, op):
-        """ Act a local rotation """
+    def _update_vop(self, v, op):
+        """ Update a VOP - only used internally"""
         rotation = clifford.by_name[str(op)]
         self.node[v]["vop"] = clifford.times_table[
             self.node[v]["vop"], rotation]
-
 
     def act_hadamard(self, qubit):
         """ Shorthand """
         self.act_local_rotation(qubit, 10)
 
-    def lonely(self, a, b):
-        """ Is this qubit lonely ? """
+    def _lonely(self, a, b):
+        """ Is this qubit _lonely ? """
         return len(self.adj[a]) > (b in self.adj[a])
 
     def act_cz(self, a, b):
         """ Act a controlled-phase gate on two qubits """
-        if self.lonely(a, b):
+        if self._lonely(a, b):
             self.remove_vop(a, b)
 
-        if self.lonely(b, a):
+        if self._lonely(b, a):
             self.remove_vop(b, a)
 
-        if self.lonely(a, b) and not clifford.is_diagonal(self.node[a]["vop"]):
+        if self._lonely(a, b) and not clifford.is_diagonal(self.node[a]["vop"]):
             self.remove_vop(a, b)
 
         edge = self.has_edge(a, b)
@@ -131,9 +129,6 @@ class GraphState(object):
         ha = clifford.conjugation_table[self.node[node]["vop"]]
         basis, phase = clifford.conjugate(basis, ha)
 
-        #print "MEASURE"
-        #print "Op: {} Phase: {}".format(basis, phase)
-
         # Flip a coin
         result = force if force!=None else random.choice([0, 1])
         # Flip the result if we have negative phase
@@ -141,11 +136,11 @@ class GraphState(object):
             result = not result
 
         if basis == clifford.by_name["px"]:
-            result = self.measure_x(node, result)
+            result = self._measure_x(node, result)
         elif basis == clifford.by_name["py"]:
-            result = self.measure_y(node, result)
+            result = self._measure_y(node, result)
         elif basis == clifford.by_name["pz"]:
-            result = self.measure_z(node, result)
+            result = self._measure_z(node, result)
         else:
             raise ValueError("You can only measure in {X,Y,Z}")
 
@@ -165,39 +160,29 @@ class GraphState(object):
                 done.add((j, i))
                 self.toggle_edge(i, j)
 
-    def measure_x(self, node, result):
+    def _measure_x(self, node, result):
         """ Measure the graph in the X-basis """
         if len(self.adj[node]) == 0:
-            print "gXm{},D".format(node)
             return 0
-
-
-        print "gXm{},{:d}".format(node, result)
 
         # Pick a vertex
         #friend = next(self.adj[node].iterkeys())
         # TODO this is enforced determinism for testing purposes
         friend = sorted(self.adj[node].keys())[0] 
-        print "Friend: {}".format(friend)
 
         # Update the VOPs. TODO: pretty ugly
         if result:
             # Do a z on all ngb(vb) \ ngb(v) \ {v}, and some other stuff
-            self.act_local_rotation2(friend, "msqy")
-            self.act_local_rotation2(node, "pz")
+            self._update_vop(friend, "msqy")
+            self._update_vop(node, "pz")
 
-            print "sq(-Y) on", friend
-            print "Z on", node
             for n in set(self.adj[friend]) - set(self.adj[node]) - {node}:
-                print "Z on", n
-                self.act_local_rotation2(n, "pz")
+                self._update_vop(n, "pz")
         else:
             # Do a z on all ngb(v) \ ngb(vb) \ {vb}, and sqy on the friend
-            self.act_local_rotation2(friend, "sqy")
-            print "sq(Y) on", friend
+            self._update_vop(friend, "sqy")
             for n in set(self.adj[node]) - set(self.adj[friend]) - {friend}:
-                print "Z on", n
-                self.act_local_rotation2(n, "pz")
+                self._update_vop(n, "pz")
 
         # Toggle the edges. TODO: Yuk. Just awful!
         a = set(self.adj[node].keys())
@@ -212,42 +197,34 @@ class GraphState(object):
 
         return result
 
-    def measure_y(self, node, result):
+    def _measure_y(self, node, result):
         """ Measure the graph in the Y-basis """
-        print "gYm{},{:d}".format(node, result)
         # Do some rotations
         for neighbour in self.adj[node]:
-            # NB: should these be hermitian_conjugated?
-            self.act_local_rotation2(neighbour, "sqz" if result else "msqz")
+            self._update_vop(neighbour, "sqz" if result else "msqz")
 
         # A sort of local complementation
         vngbh = set(self.adj[node]) | {node}
         for i, j in it.combinations(vngbh, 2):
             self.toggle_edge(i, j)
 
-        # lcoS.herm_adjoint() if result else lcoS
-        #                               else smiZ
-        # 5                             else 6
-        #print "RESULT is {:d}, op is {} doing {}".format(result, self.node[node]["vop"], 5 if result else 6)
-        self.act_local_rotation2(node, 5 if result else 6)
-        #print "BECAME ", self.node[node]["vop"]
+        self._update_vop(node, 5 if result else 6) # TODO: naming: # lcoS.herm_adjoint() if result else lcoS
         return result
 
-    def measure_z(self, node, result):
+    def _measure_z(self, node, result):
         """ Measure the graph in the Z-basis """
-        print "gZm{},{:d}".format(node, result)
         # Disconnect
         for neighbour in tuple(self.adj[node]):
             self.del_edge(node, neighbour)
             if result:
-                self.act_local_rotation2(neighbour, "pz")
+                self._update_vop(neighbour, "pz")
 
         # Rotate
         if result:
-            self.act_local_rotation2(node, "px")
-            self.act_local_rotation2(node, "hadamard")
+            self._update_vop(node, "px")
+            self._update_vop(node, "hadamard")
         else:
-            self.act_local_rotation2(node, "hadamard")
+            self._update_vop(node, "hadamard")
 
         return result
 

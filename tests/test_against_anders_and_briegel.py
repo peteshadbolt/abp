@@ -5,8 +5,8 @@ from abp import clifford
 import random
 import numpy as np
 from tqdm import tqdm
-
-REPEATS = 100000
+import itertools as it
+from config import *
 
 def assert_equal(a, b, debug=""):
     assert a.to_json() == b.to_json()
@@ -142,7 +142,6 @@ def test_all(N=9):
 
     a = graphsim.GraphRegister(N)
     b = GraphState(range(N))
-    print "woi"
     for i in tqdm(range(REPEATS), desc="Testing all gates against Anders and Briegel"):
         if random.random()>0.5:
             j = random.randint(0, N-1)

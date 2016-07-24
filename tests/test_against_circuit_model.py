@@ -4,9 +4,7 @@ from abp import clifford
 import numpy as np
 import random
 from tqdm import tqdm
-
-REPEATS = 10
-DEPTH = 1000
+from config import *
 
 def test_single_qubit():
     """ A multi qubit test with Hadamards only"""

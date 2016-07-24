@@ -4,11 +4,7 @@ from abp import qi, clifford
 from anders_briegel import graphsim
 from tqdm import tqdm
 import random
-
-REPEATS = 100000
-LOCAL_ROTATION = 0
-CZ = 1
-MEASURE = 2
+from config import *
 
 def test_single_qubit_measurements():
     """ Various simple tests of measurements """
