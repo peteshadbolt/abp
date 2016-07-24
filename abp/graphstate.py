@@ -129,8 +129,7 @@ class GraphState(object):
         """ Measure in an arbitrary basis """
         basis = clifford.by_name[basis]
         ha = clifford.conjugation_table[self.node[node]["vop"]]
-        #basis, phase = clifford.conjugate(basis, ha)
-        basis, phase = clifford.conjugate(basis, self.node[node]["vop"])
+        basis, phase = clifford.conjugate(basis, ha)
 
         #print "MEASURE"
         #print "Op: {} Phase: {}".format(basis, phase)
@@ -169,28 +168,35 @@ class GraphState(object):
     def measure_x(self, node, result):
         """ Measure the graph in the X-basis """
         if len(self.adj[node]) == 0:
-            print "gXm{},D".format(node),
+            print "gXm{},D".format(node)
             return 0
 
 
-        print "gXm{},{:d}".format(node, result),
+        print "gXm{},{:d}".format(node, result)
 
         # Pick a vertex
         #friend = next(self.adj[node].iterkeys())
         # TODO this is enforced determinism for testing purposes
         friend = sorted(self.adj[node].keys())[0] 
+        print "Friend: {}".format(friend)
 
         # Update the VOPs. TODO: pretty ugly
         if result:
             # Do a z on all ngb(vb) \ ngb(v) \ {v}, and some other stuff
-            self.act_local_rotation2(node, "pz")
             self.act_local_rotation2(friend, "msqy")
+            self.act_local_rotation2(node, "pz")
+
+            print "sq(-Y) on", friend
+            print "Z on", node
             for n in set(self.adj[friend]) - set(self.adj[node]) - {node}:
+                print "Z on", n
                 self.act_local_rotation2(n, "pz")
         else:
             # Do a z on all ngb(v) \ ngb(vb) \ {vb}, and sqy on the friend
             self.act_local_rotation2(friend, "sqy")
+            print "sq(Y) on", friend
             for n in set(self.adj[node]) - set(self.adj[friend]) - {friend}:
+                print "Z on", n
                 self.act_local_rotation2(n, "pz")
 
         # Toggle the edges. TODO: Yuk. Just awful!
@@ -208,7 +214,7 @@ class GraphState(object):
 
     def measure_y(self, node, result):
         """ Measure the graph in the Y-basis """
-        print "gYm{},{:d}".format(node, result),
+        print "gYm{},{:d}".format(node, result)
         # Do some rotations
         for neighbour in self.adj[node]:
             # NB: should these be hermitian_conjugated?
@@ -229,7 +235,7 @@ class GraphState(object):
 
     def measure_z(self, node, result):
         """ Measure the graph in the Z-basis """
-        print "gZm{},{:d}".format(node, result),
+        print "gZm{},{:d}".format(node, result)
         # Disconnect
         for neighbour in tuple(self.adj[node]):
             self.del_edge(node, neighbour)

@@ -39,14 +39,14 @@ def test_multiqubit2():
                     a.act_local_rotation(0, str(rotation))
                     b.local_op(0, graphsim.LocCliffOp(rotation))
                     
-                    print "{} ------------------".format(rotation)
-                    print "pjs b4:", a.to_json()
-                    print "a&b b4:", b.to_json()
+                    #print "{} ------------------".format(rotation)
+                    #print "pjs b4:", a.to_json()
+                    #print "a&b b4:", b.to_json()
                     oa = a.measure(0, str(measurement), outcome)
                     ob = b.measure(0, m[measurement], None, outcome)
-                    assert oa == ob, (oa, ob)
-                    print "pjs af:", a.to_json()
-                    print "a&b af:", b.to_json()
-                    assert a == b, (measurement, outcome)
-                    print
+                    assert oa == ob, (oa, ob, rotation)
+                    #print "pjs af:", a.to_json()
+                    #print "a&b af:", b.to_json()
+                    assert a == b, (measurement, outcome, rotation)
+                    #print
                     
