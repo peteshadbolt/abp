@@ -25,26 +25,47 @@ class GraphState(object):
         self.add_nodes(nodes)
         self.deterministic = deterministic
 
-    def add_node(self, v, **kwargs):
-        """ Add a node """
-        assert not v in self.node
-        self.adj[v] = {}
-        self.node[v] = {"vop": clifford.by_name["hadamard"]}
-        self.node[v].update(kwargs)
+    def add_node(self, node, **kwargs):
+        """ Add a node 
+        
+        :param node: The name of the node, e.g. ``9``, ``start``
+        :type node: Any hashable type
+        """
+        assert not node in self.node, "Node {} already exists".format(v)
+        self.adj[node] = {}
+        self.node[node] = {"vop": clifford.by_name["hadamard"]}
+        self.node[node].update(kwargs)
 
     def add_nodes(self, nodes):
         """ Add a buncha nodes """
         for n in nodes:
             self.add_node(n)
 
+    def act_circuit(self, circuit):
+        """ Run many gates in one call
+
+        :param circuit: An iterable containing tuples of the form ``(node, operation)``. 
+        If ``operation`` is a name for a local operation (e.g. ``6``, ``hadamard``) then that operation is performed on ``node``.
+        If ``operation`` is ``"cz"`` then a CZ is performed on the two nodes in ``node.
+
+        For example::
+            
+            >>> g.act_circuit([(0, "hadamard"), (1, "hadamard"), ((0, 1), "cz")])
+
+        """
+        for node, operation in circuit:
+            if operation == "cz":
+                self.act_cz(*node)
+            else:
+                self.act_local_rotation(node, operation)
+
     def _add_edge(self, v1, v2, data={}):
-        """ Add an edge between two vertices  """
-        assert v1 != v2
+        """ Add an edge between two vertices """
         self.adj[v1][v2] = data
         self.adj[v2][v1] = data
 
     def _del_edge(self, v1, v2):
-        """ Delete an edge between two vertices  """
+        """ Delete an edge between two vertices """
         del self.adj[v1][v2]
         del self.adj[v2][v1]
 
@@ -312,9 +333,7 @@ class GraphState(object):
         return output
 
     def __eq__(self, other):
-        """ Check equality between graphs """
-        if str(type(other)) == "<class 'anders_briegel.graphsim.GraphRegister'>":
-            return self.to_json() == other.to_json()
+        """ Check equality between GraphStates """
         return self.adj == other.adj and self.node == other.node
 
 if __name__ == '__main__':

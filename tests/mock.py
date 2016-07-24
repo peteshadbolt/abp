@@ -5,6 +5,7 @@ Mock graphs used for testing
 import numpy as np
 from abp import GraphState, clifford
 from anders_briegel import graphsim
+from numpy import random
 
 # We always run with A&B's CZ table when we are testing
 clifford.use_old_cz()
@@ -18,82 +19,86 @@ class AndersWrapper(graphsim.GraphRegister):
         assert list(nodes) == range(len(nodes))
         super(AndersWrapper, self).__init__(len(nodes))
 
-    def act_local_rotation(qubit, operation):
-        super(AndersWrapper, self).local_op(
-            qubit, graphsim.LocCliffOp(operation))
+    def act_local_rotation(self, qubit, operation):
+        operation = clifford.by_name[str(operation)]
+        op = graphsim.LocCliffOp(operation)
+        super(AndersWrapper, self).local_op(qubit, op)
 
-    def act_cz(a, b):
+    def act_cz(self, a, b):
         super(AndersWrapper, self).cphase(a, b)
 
-    def measure(qubit, basis, force):
+    def measure(self, qubit, basis, force):
         basis = clifford.by_name[basis]
         basis = {1: graphsim.lco_X, 
                  2: graphsim.lco_Y, 
                  3: graphsim.lco_Z}[clifford.by_name[basis]]
         super(AndersWrapper, self).measure(qubit, basis, None, force)
 
-    def __str__(self):
-        return "A wrapped A&B state ({})".format(super(AndersWrapper, self).__str__())
+    def __eq__(self, other):
+        return self.to_json() == other.to_json()
 
-    def __repr__(self):
-        return self.__str__()
+    def act_circuit(self, circuit):
+        for node, operation in circuit:
+            if operation == "cz":
+                self.act_cz(*node)
+            else:
+                self.act_local_rotation(node, operation)
 
-class PeteWrapper(GraphState):
+
+class ABPWrapper(GraphState):
 
     """ A wrapper for abp, just to ensure determinism """
 
-def random_graph_state(N=10):
+    def __init__(self, nodes=[]):
+        super(ABPWrapper, self).__init__(nodes, deterministic = True)
+
+
+def random_pair(n):
+    """ Helper function to get random pairs"""
+    return tuple(random.choice(range(n), 2, replace=False))
+
+
+def random_graph_state(n=10):
     """ A random Graph state. """
-
-    for base in PeteWrapper, AndersWrapper:
-        g = base(range(N))
-
-        for i in range(N):
-            g.act_hadamard(i)
-
-        for i in range(10):
-            j, k = np.random.choice(range(N), 2, replace=False)
-            g.act_cz(j, k)
-
+    czs = [(random_pair(n), "cz") for i in range(n*2)]
+    for Base in AndersWrapper, ABPWrapper:
+        g = Base(range(n))
+        g.act_circuit((i, "hadamard") for i in range(n))
+        g.act_circuit(czs)
         yield g
 
+def random_stabilizer_state(n=10):
+    """ Generate a random stabilizer state, without any VOPs """
+    rotations = [(i, random.choice(range(24))) for i in range(n)]
+    for g in random_graph_state():
+        g.act_circuit(rotations)
+        yield g
 
-def random_stabilizer_state(N=10):
-    a, b = random_state()
-
-    for i in range(N):
-        j = np.random.choice(range(N))
-        k = np.random.choice(range(24))
-        a.act_local_rotation(j, k)
-        b.local_op(j, graphsim.LocCliffOp(k))
-
-    return a, b
-
-
-def bell():
-    a = GraphState(range(2))
-    b = graphsim.GraphRegister(2)
-    a.act_hadamard(0)
-    a.act_hadamard(1)
-    b.hadamard(0)
-    b.hadamard(1)
-    a.act_cz(0, 1)
-    b.cphase(0, 1)
-    return a, b
-
+def bell_pair():
+    for Base in AndersWrapper, ABPWrapper:
+        g = Base((0, 1))
+        g.act_circuit(((0, "hadamard"), (1, "hadamard"), ((0, 1), "cz")))
+        yield g
 
 def onequbit():
-    a = GraphState(range(1))
-    b = graphsim.GraphRegister(1)
-    return a, b
+    for Base in AndersWrapper, ABPWrapper:
+        g = Base((0,))
+        yield g
 
-
-def demograph():
-    """ A graph for testing with """
-    g = GraphState([0, 1, 2, 3, 100, 200])
-    g.add_edge(0, 1)
-    g.add_edge(1, 2)
-    g.add_edge(2, 0)
-    g.add_edge(0, 3)
-    g.add_edge(100, 200)
+def named_node_graph():
+    """ A graph with named nodes"""
+    edges = (0, 1), (1, 2), (2, 0), (0, 3), (100, 200), (200, "named")
+    g = ABPWrapper([0, 1, 2, 3, 100, 200, "named"])
+    g.act_circuit((i, "hadamard") for i in g.node)
+    g.act_circuit((edge, "cz") for edge in edges)
     return g
+
+if __name__ == '__main__':
+    a, b = random_graph_state()
+    assert a == b
+
+    a, b = random_stabilizer_state()
+    assert a == b
+
+    print named_node_graph()
+
