@@ -1,13 +1,14 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 from glob import glob
 from os import path
 
-STATIC = glob("static/*.*")+glob("static/img/*.*")+glob("static/scripts/*.*")
+STATIC = glob("abp/static/*.*")+glob("abp/static/img/*.*")+glob("abp/static/scripts/*.*")
+print STATIC
 
 setup(
     name = "abp",
-    version = "0.4.3",
-    packages = find_packages(),
+    version = "0.4.6",
+    packages = ["abp", "abp.static"],
     test_suite = "tests",
     author = "Pete Shadbolt",
     author_email = "hello@peteshadbolt.co.uk",
@@ -17,5 +18,6 @@ setup(
     setup_requires = ["numpy"],
     scripts = ["bin/abpserver"],
     install_requires = ["numpy", "networkx", "tqdm", "websocket-client", "websocket-server"],
-    package_data = {"abp.static": STATIC}
+    package_data = {"abp.static": STATIC},
+    include_package_data=True
 )
