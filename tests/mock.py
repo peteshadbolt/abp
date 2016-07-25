@@ -29,8 +29,8 @@ class AndersWrapper(graphsim.GraphRegister):
 
     def measure(self, qubit, basis, force):
         basis = clifford.by_name[basis]
-        basis = {1: graphsim.lco_X, 
-                 2: graphsim.lco_Y, 
+        basis = {1: graphsim.lco_X,
+                 2: graphsim.lco_Y,
                  3: graphsim.lco_Z}[clifford.by_name[basis]]
         super(AndersWrapper, self).measure(qubit, basis, None, force)
 
@@ -50,7 +50,7 @@ class ABPWrapper(GraphState):
     """ A wrapper for abp, just to ensure determinism """
 
     def __init__(self, nodes=[]):
-        super(ABPWrapper, self).__init__(nodes, deterministic = True)
+        super(ABPWrapper, self).__init__(nodes, deterministic=True)
 
 
 def random_pair(n):
@@ -60,12 +60,13 @@ def random_pair(n):
 
 def random_graph_state(n=10):
     """ A random Graph state. """
-    czs = [(random_pair(n), "cz") for i in range(n*2)]
+    czs = [(random_pair(n), "cz") for i in range(n * 2)]
     for Base in AndersWrapper, ABPWrapper:
         g = Base(range(n))
         g.act_circuit((i, "hadamard") for i in range(n))
         g.act_circuit(czs)
         yield g
+
 
 def random_stabilizer_state(n=10):
     """ Generate a random stabilizer state, without any VOPs """
@@ -74,16 +75,19 @@ def random_stabilizer_state(n=10):
         g.act_circuit(rotations)
         yield g
 
+
 def bell_pair():
     for Base in AndersWrapper, ABPWrapper:
         g = Base((0, 1))
         g.act_circuit(((0, "hadamard"), (1, "hadamard"), ((0, 1), "cz")))
         yield g
 
+
 def onequbit():
     for Base in AndersWrapper, ABPWrapper:
         g = Base((0,))
         yield g
+
 
 def named_node_graph():
     """ A graph with named nodes"""
@@ -93,6 +97,15 @@ def named_node_graph():
     g.act_circuit((edge, "cz") for edge in edges)
     return g
 
+def simple_graph():
+    """ A simple graph to test with"""
+    edges = (0, 1), (1, 2), (2, 0), (0, 3), (100, 200) 
+    g = ABPWrapper([0, 1, 2, 3, 100, 200])
+    g.act_circuit((i, "hadamard") for i in g.node)
+    g.act_circuit((edge, "cz") for edge in edges)
+    return g
+
+
 if __name__ == '__main__':
     a, b = random_graph_state()
     assert a == b
@@ -101,4 +114,3 @@ if __name__ == '__main__':
     assert a == b
 
     print named_node_graph()
-
