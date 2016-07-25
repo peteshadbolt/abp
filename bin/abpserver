@@ -1,4 +1,9 @@
 #!/usr/bin/python
+"""
+This is a simple websocket relay server that facilitates realtime visualization of GraphStates.
+It doesn't do much except echo websocket messages to all connected clients, and serve some static content over HTTP.
+"""
+
 from websocket_server import WebsocketServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from BaseHTTPServer import HTTPServer
@@ -10,7 +15,6 @@ import abp
 from pkg_resources import resource_filename
 
 clients = []
-
 
 def new_message(client, server, message):
     print "Received update from client {}.".format(client["id"])
@@ -29,7 +33,7 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = "ABP websocket server")
-    parser.add_argument("-v", action="store_false", help="Launch browser")
+    parser.add_argument("-v", action="store_true", help="Launch browser")
     args = parser.parse_args()
 
     # Change to the right working dir

@@ -13,9 +13,9 @@ The complete set of aliases for single-qubit Cliffords is as follows:
     Index   Aliases
     ======= =========================
     0       ``IA, identity, identity_h``
-    1       ``px, XA, px_h``
-    2       ``py, YA, py_h``
-    3       ``pz, ZA, pz_h``
+    1       ``XA, px, px_h``
+    2       ``YA, py, py_h``
+    3       ``ZA, pz, pz_h``
     4       ``IB``
     5       ``XB, sqz, msqz_h, phase_h``
     6       ``YB, msqz, sqz_h, phase``
@@ -61,7 +61,7 @@ def human_name(i):
     return choices[-1]
 
 def is_diagonal(v):
-    """ TODO: remove this. Checks if a VOP is diagonal or not """
+    """ Checks if a VOP is diagonal or not """
     return v in {0, 3, 5, 6}
 
 

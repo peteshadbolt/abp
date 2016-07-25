@@ -130,8 +130,9 @@ Now, in another terminal, use ``abp.fancy.GraphState`` to run a Clifford circuit
     >>> g = GraphState(range(10))
     >>> g.act_circuit([(i, "hadamard") for i in range(10)])
     >>> g.act_circuit([((i, i+1), "cz") for i in range(9)])
+    >>> g.update()
 
-And you should see a 3D visualization of the state.
+And you should see a 3D visualization of the state. You can call ``update()`` in a loop to see an animation.
 
 .. image:: ../examples/viz.png
 
