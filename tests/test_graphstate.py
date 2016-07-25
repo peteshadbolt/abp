@@ -103,18 +103,18 @@ def test_single_qubit():
         assert a.to_state_vector() == b
 
 
-def test_graphstate_multiqubit(n=6):
+def test_graph_state_multiqubit(n=6):
     """ A multi qubit test with Hadamards only"""
-    for repeat in tqdm(range(REPEATS), desc="Randomly testing multiqubit operations against circuit model"):
+    for repeat in tqdm(range(REPEATS), desc="Random graph states against the circuit model"):
         circuit = mock.random_graph_circuit(n)
         a = mock.circuit_to_state(mock.ABPWrapper, n, circuit)
         b = mock.circuit_to_state(mock.CircuitModelWrapper, n, circuit)
         assert a.to_state_vector() == b
 
 
-def test_stabilizerstate_multiqubit(n=6):
+def test_stabilizer_state_multiqubit(n=6):
     """ A multi qubit test with arbitrary local rotations """
-    for repeat in tqdm(range(REPEATS), desc="Randomly testing multiqubit operations against circuit model"):
+    for repeat in tqdm(range(REPEATS), desc="Random Clifford circuits against the circuit model"):
         circuit = mock.random_stabilizer_circuit(n)
         a = mock.circuit_to_state(mock.ABPWrapper, n, circuit)
         b = mock.circuit_to_state(mock.CircuitModelWrapper, n, circuit)
