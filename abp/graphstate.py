@@ -326,7 +326,8 @@ class GraphState(object):
         # TODO
 
     def to_state_vector(self):
-        """ Get the full state vector corresponding to this stabilizer state. Useful for debugging, interface with other simulators.
+        """ Get the full state vector corresponding to this stabilizer state. Useful for debugging, interface with other simulators. 
+            This method becomes very slow for more than about ten qubits!
 
         The output state is represented as a ``abp.qi.CircuitModel``::
         
@@ -334,8 +335,8 @@ class GraphState(object):
             |00000>: 0.18+0.00j
             |00001>: 0.18+0.00j ...
         
-        .. warning::
-            Obviously this method becomes very slow for more than about ten qubits!
+        .. todo::
+            Doesn't work with non-``int`` node labels
 
         """
         if len(self.node) > 15:

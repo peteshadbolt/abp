@@ -19,8 +19,6 @@ $ git clone https://github.com/peteshadbolt/abp.git
 $ python setup.py install --user
 ```
 
-
-
 ## Visualization
 
 `abp` comes with a tool to visualize graph states in a WebGL compatible web browser (Chrome, Firefox, Safari etc). It uses a client-server architecture.

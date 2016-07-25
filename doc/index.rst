@@ -71,8 +71,7 @@ It's pretty easy to build a graph state, act some gates, and do measurements::
 Working with GraphStates
 -------------------------
 
-The ``abp.GraphState`` class is your main interface to ``abp``.  
-Here follows complete documentation
+The ``abp.GraphState`` class is the main interface to ``abp``.  
 
 .. autoclass:: abp.GraphState
 

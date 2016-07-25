@@ -3,6 +3,7 @@ from abp.util import xyz
 import numpy as np
 import time
 import itertools
+import networkx as nx
 
 threedee_unit_cell = (
      (( 0, 0, 0),    (0, 1, 0)),
@@ -40,7 +41,7 @@ def lattice(unit_cell, size):
     nodes = set(itertools.chain(*edges))
     return nodes, edges
 
-nodes, edges = lattice(threedee_unit_cell, (4, 4, 4))
+nodes, edges = lattice(threedee_unit_cell, (1, 1, 1))
 
 psi = GraphState()
 for node in nodes:
@@ -49,6 +50,7 @@ for node in nodes:
 
 for edge in edges:
     psi.act_cz(str(edge[0]), str(edge[1]))
-    psi.update(0.1)
 
+nx.rename_no
+print psi.to_state_vector()
 
