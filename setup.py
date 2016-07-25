@@ -3,11 +3,10 @@ from glob import glob
 from os import path
 
 STATIC = glob("abp/static/*.*")+glob("abp/static/img/*.*")+glob("abp/static/scripts/*.*")
-print STATIC
 
 setup(
     name = "abp",
-    version = "0.4.6",
+    version = "0.4.7",
     packages = ["abp", "abp.static"],
     test_suite = "tests",
     author = "Pete Shadbolt",
