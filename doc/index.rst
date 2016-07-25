@@ -14,7 +14,6 @@ This is the documentation for ``abp``. It's a work in progress.
 
 ``abp`` is a Python port of Anders and Briegel' s `method <https://arxiv.org/abs/quant-ph/0504117>`_ for fast simulation of Clifford circuits. 
 That means that you can make quantum states of thousands of qubits, perform any sequence of Clifford operations, and measure in any of :math:`\{\sigma_x, \sigma_y, \sigma_z\}`.
-It should do thousands of qubits without much trouble.
 
 .. image:: ../examples/demo.gif
 
