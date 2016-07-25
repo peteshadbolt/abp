@@ -7,7 +7,7 @@
    :maxdepth: 2
 
 
-Welcome to ``abp``
+``abp``
 ===============================
 
 This is the documentation for ``abp``. It's a work in progress.
@@ -101,6 +101,8 @@ Here follows complete documentation
 
 The Clifford group
 ----------------------
+
+.. automodule:: abp.clifford
 
 Visualization
 ----------------------
