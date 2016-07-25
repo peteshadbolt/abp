@@ -10,7 +10,6 @@ from numpy import random
 # We always run with A&B's CZ table when we are testing
 clifford.use_old_cz()
 
-
 class AndersWrapper(graphsim.GraphRegister):
 
     """ A wrapper for A&B to make the interface identical and enable equality testing """
@@ -28,11 +27,10 @@ class AndersWrapper(graphsim.GraphRegister):
         super(AndersWrapper, self).cphase(a, b)
 
     def measure(self, qubit, basis, force):
-        basis = clifford.by_name[basis]
         basis = {1: graphsim.lco_X,
                  2: graphsim.lco_Y,
-                 3: graphsim.lco_Z}[clifford.by_name[basis]]
-        super(AndersWrapper, self).measure(qubit, basis, None, force)
+                 3: graphsim.lco_Z}[clifford.by_name[str(basis)]]
+        return super(AndersWrapper, self).measure(qubit, basis, None, force)
 
     def __eq__(self, other):
         return self.to_json() == other.to_json()
@@ -54,6 +52,7 @@ class ABPWrapper(GraphState):
 
     def __eq__(self, other):
         return self.to_json() == other.to_json()
+
 
 class CircuitModelWrapper(qi.CircuitModel):
 
@@ -85,7 +84,7 @@ def random_graph_circuit(n=10):
 def random_stabilizer_circuit(n=10):
     """ Generate a random stabilizer state, without any VOPs """
     return random_graph_circuit(n) + \
-           [(i, random.choice(range(24))) for i in range(n)]
+        [(i, random.choice(range(24))) for i in range(n)]
 
 
 def bell_pair():
@@ -110,16 +109,18 @@ def simple_graph():
     g.act_circuit((edge, "cz") for edge in edges)
     return g
 
+
 def circuit_to_state(Base, n, circuit):
     """ Convert a circuit to a state, given a base class """
     g = Base(range(n))
     g.act_circuit(circuit)
     return g
 
+
 def test_circuit(circuit, n):
     """ Check that two classes exhibit the same behaviour for a given circuit """
-    a = circuit_to_state(ABPWrapper, n, circuit) 
-    b = circuit_to_state(AndersWrapper, n, circuit) 
+    a = circuit_to_state(ABPWrapper, n, circuit)
+    b = circuit_to_state(AndersWrapper, n, circuit)
     assert a == b
 
 
@@ -127,4 +128,3 @@ if __name__ == '__main__':
     for i in range(1000):
         test_circuit(random_graph_circuit(10), 10)
         test_circuit(random_stabilizer_circuit(10), 10)
-
