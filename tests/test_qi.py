@@ -92,13 +92,9 @@ def test_dumbness():
     a = qi.CircuitModel(1)
     b = qi.CircuitModel(1)
     assert a == b
-
     a.act_local_rotation(0, qi.px)
-
     assert not (a == b)
-
     a.act_local_rotation(0, qi.px)
-
     assert (a == b)
 
 
@@ -111,3 +107,12 @@ def test_to_state_vector_single_qubit():
     g.act_local_rotation(1, "hadamard")
     g.act_cz(0, 1)
     assert np.allclose(g.to_state_vector().state, qi.bond)
+
+def test_normalize_global_phase():
+    """ We should be able to see that two states are equivalent up to a global phase """
+    for i in range(10):
+        u = qi.pz
+        phase = np.random.uniform(0, 2*np.pi)
+        m = np.exp(1j*phase) * u
+        normalized = qi.normalize_global_phase(m)
+        assert np.allclose(normalized, u)

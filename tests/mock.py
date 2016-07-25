@@ -97,9 +97,10 @@ def named_node_graph():
     g.act_circuit((edge, "cz") for edge in edges)
     return g
 
+
 def simple_graph():
     """ A simple graph to test with"""
-    edges = (0, 1), (1, 2), (2, 0), (0, 3), (100, 200) 
+    edges = (0, 1), (1, 2), (2, 0), (0, 3), (100, 200)
     g = ABPWrapper([0, 1, 2, 3, 100, 200])
     g.act_circuit((i, "hadamard") for i in g.node)
     g.act_circuit((edge, "cz") for edge in edges)
