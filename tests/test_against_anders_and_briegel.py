@@ -8,6 +8,7 @@ import mock
 
 REPEATS = 100
 DEPTH = 100
+PAULIS = ("px", "py", "pz")
 
 def test_hadamard():
     """ Test hadamards """
@@ -47,7 +48,7 @@ def test_cz_hadamard(n=10):
 
 
 def test_all(n=10):
-    """ Test everything"""
+    """ Test everything """
     for i in tqdm(range(REPEATS), desc="Testing CZ and Hadamard against A&B"):
         circuit = random.choice(["cz"] * 10 + range(24), DEPTH)
         circuit = [(mock.random_pair(n), gate) if gate == "cz"
@@ -57,8 +58,8 @@ def test_all(n=10):
 
 
 def test_single_qubit_measurement():
-    """ Check that single qubits work """
-    space = it.product(range(24), ("px", "py", "pz"), (0, 1))
+    """ Determinstic test of all single-qubit situations """
+    space = it.product(range(24), PAULIS, (0, 1))
     for rotation, measurement, outcome in tqdm(space, "Testing single qubit measurements"):
         a = mock.circuit_to_state(mock.ABPWrapper, 1, [(0, rotation)])
         b = mock.circuit_to_state(mock.AndersWrapper, 1, [(0, rotation)])
@@ -66,3 +67,37 @@ def test_single_qubit_measurement():
         result_b = b.measure(0, measurement, outcome)
         assert result_a == result_b
         assert a == b
+
+def test_two_qubit_measurement():
+    """ Various two-qubit measurements on a Bell state"""
+    for measurement, outcome in it.product(PAULIS, (0, 1)):
+        circuit = mock.bell_pair()
+        a = mock.circuit_to_state(mock.ABPWrapper, 2, circuit)
+        b = mock.circuit_to_state(mock.AndersWrapper, 2, circuit)
+        assert a.measure(0, measurement, outcome) == \
+               b.measure(0, measurement, outcome)
+        assert a == b
+                
+def test_graph_state_measurement(n = 10):
+    """ Measuring random graph states """
+    space = list(it.product(range(REPEATS), PAULIS, (0, 1)))
+    for i, measurement, outcome in tqdm(space, "Measuring random graph states"):
+        circuit = mock.random_graph_circuit(n, DEPTH)
+        a = mock.circuit_to_state(mock.ABPWrapper, n, circuit)
+        b = mock.circuit_to_state(mock.AndersWrapper, n, circuit)
+        a.measure(0, measurement, outcome)
+        b.measure(0, measurement, outcome)
+        assert a == b
+
+def test_stabilizer_state_measurement(n = 10):
+    """ Measuring random stabilizer states """
+    space = list(it.product(range(REPEATS), PAULIS, (0, 1)))
+    for i, measurement, outcome in tqdm(space, "Measuring random stabilizer states"):
+        circuit = mock.random_stabilizer_circuit(n, DEPTH)
+        a = mock.circuit_to_state(mock.ABPWrapper, n, circuit)
+        b = mock.circuit_to_state(mock.AndersWrapper, n, circuit)
+        a.measure(0, measurement, outcome)
+        b.measure(0, measurement, outcome)
+        assert a == b
+                    
+

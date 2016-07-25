@@ -75,15 +75,15 @@ def random_pair(n):
     return tuple(random.choice(range(n), 2, replace=False))
 
 
-def random_graph_circuit(n=10):
+def random_graph_circuit(n=10, depth=100):
     """ A random Graph state. """
-    return [(i, "hadamard") for i in range(n)] + \
-           [(random_pair(n), "cz") for i in range(n * 2)]
+    return [(i, "hadamard") for i in xrange(n)] + \
+           [(random_pair(n), "cz") for i in xrange(depth)]
 
 
-def random_stabilizer_circuit(n=10):
+def random_stabilizer_circuit(n=10, depth=100):
     """ Generate a random stabilizer state, without any VOPs """
-    return random_graph_circuit(n) + \
+    return random_graph_circuit(n, depth) + \
         [(i, random.choice(range(24))) for i in range(n)]
 
 
