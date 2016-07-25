@@ -104,9 +104,17 @@ class CircuitModel(object):
         output = np.zeros((self.d, 1), dtype=complex)
         for i, v in enumerate(self.state):
             q = int(i & where > 0)
-            output[i] += v * u[q, q]  # TODO this is probably wrong
+            output[i] += v * u[q, q]
             output[i ^ where] += v * u[int(not q), q]
         self.state = output
+
+    def act_circuit(self, circuit):
+        """ Act a sequence of gates """
+        for node, operation in circuit:
+            if operation == "cz":
+                self.act_cz(*node)
+            else:
+                self.act_local_rotation(node, operation)
 
     def __eq__(self, other):
         """ Check whether two quantum states are the same or not

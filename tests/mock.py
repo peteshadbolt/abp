@@ -3,7 +3,7 @@ Mock graphs used for testing
 """
 
 import numpy as np
-from abp import GraphState, clifford
+from abp import GraphState, clifford, qi
 from anders_briegel import graphsim
 from numpy import random
 
@@ -52,41 +52,45 @@ class ABPWrapper(GraphState):
     def __init__(self, nodes=[]):
         super(ABPWrapper, self).__init__(nodes, deterministic=True)
 
+    def __eq__(self, other):
+        return self.to_json() == other.to_json()
+
+class CircuitModelWrapper(qi.CircuitModel):
+
+    def __init__(self, nodes=[]):
+        assert list(nodes) == range(len(nodes))
+        super(CircuitModelWrapper, self).__init__(len(nodes))
+
+    def act_circuit(self, circuit):
+        """ Act a sequence of gates """
+        for node, operation in circuit:
+            if operation == "cz":
+                self.act_cz(*node)
+            else:
+                u = clifford.unitaries[clifford.by_name[str(operation)]]
+                self.act_local_rotation(node, u)
+
 
 def random_pair(n):
     """ Helper function to get random pairs"""
     return tuple(random.choice(range(n), 2, replace=False))
 
 
-def random_graph_state(n=10):
+def random_graph_circuit(n=10):
     """ A random Graph state. """
-    czs = [(random_pair(n), "cz") for i in range(n * 2)]
-    for Base in AndersWrapper, ABPWrapper:
-        g = Base(range(n))
-        g.act_circuit((i, "hadamard") for i in range(n))
-        g.act_circuit(czs)
-        yield g
+    return [(i, "hadamard") for i in range(n)] + \
+           [(random_pair(n), "cz") for i in range(n * 2)]
 
 
-def random_stabilizer_state(n=10):
+def random_stabilizer_circuit(n=10):
     """ Generate a random stabilizer state, without any VOPs """
-    rotations = [(i, random.choice(range(24))) for i in range(n)]
-    for g in random_graph_state():
-        g.act_circuit(rotations)
-        yield g
+    return random_graph_circuit(n) + \
+           [(i, random.choice(range(24))) for i in range(n)]
 
 
 def bell_pair():
-    for Base in AndersWrapper, ABPWrapper:
-        g = Base((0, 1))
-        g.act_circuit(((0, "hadamard"), (1, "hadamard"), ((0, 1), "cz")))
-        yield g
-
-
-def onequbit():
-    for Base in AndersWrapper, ABPWrapper:
-        g = Base((0,))
-        yield g
+    """ Generate a bell pair circuit """
+    return [(0, "hadamard"), (1, "hadamard"), ((0, 1), "cz")]
 
 
 def named_node_graph():
@@ -106,12 +110,21 @@ def simple_graph():
     g.act_circuit((edge, "cz") for edge in edges)
     return g
 
+def circuit_to_state(Base, n, circuit):
+    """ Convert a circuit to a state, given a base class """
+    g = Base(range(n))
+    g.act_circuit(circuit)
+    return g
+
+def test_circuit(circuit):
+    """ Check that two classes exhibit the same behaviour for a given circuit """
+    a = circuit_to_state(ABPWrapper, 10, circuit) 
+    b = circuit_to_state(AndersWrapper, 10, circuit) 
+    assert a == b
+
 
 if __name__ == '__main__':
-    a, b = random_graph_state()
-    assert a == b
+    for i in range(1000):
+        test_circuit(random_graph_circuit(10))
+        test_circuit(random_stabilizer_circuit(10))
 
-    a, b = random_stabilizer_state()
-    assert a == b
-
-    print named_node_graph()
