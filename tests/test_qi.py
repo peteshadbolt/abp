@@ -1,7 +1,8 @@
 import numpy as np
-from abp import qi
-from abp import GraphState
+from abp import qi, GraphState
+from tqdm import tqdm
 
+DEPTH = 1000
 
 def test_init():
     """ Can you initialize some qubits """
@@ -108,11 +109,55 @@ def test_to_state_vector_single_qubit():
     g.act_cz(0, 1)
     assert np.allclose(g.to_state_vector().state, qi.bond)
 
+
 def test_normalize_global_phase():
     """ We should be able to see that two states are equivalent up to a global phase """
     for i in range(10):
         u = qi.pz
-        phase = np.random.uniform(0, 2*np.pi)
-        m = np.exp(1j*phase) * u
+        phase = np.random.uniform(0, 2 * np.pi)
+        m = np.exp(1j * phase) * u
         normalized = qi.normalize_global_phase(m)
         assert np.allclose(normalized, u)
+
+
+def test_against_chp(n=5):
+    """ Test against CHP if it is installed """
+    try:
+        import chp
+    except ImportError:
+        print "Not testing against CHP -- not installed"
+        return
+
+    def get_chp_state():
+        """ Helper to convert CHP to CircuitModel """
+        output = qi.CircuitModel(n)
+        ket = chp.get_ket()
+        nonzero = np.sqrt(len(ket))
+        output.state[0, 0] = 0
+        for key, phase in ket.items():
+            output.state[key] = np.exp(1j * phase * np.pi / 2) / nonzero
+        return output
+
+    # Run a simple circuit
+    chp.init(n)
+    chp.act_hadamard(0)
+    chp.act_cnot(0, 1)
+    psi = qi.CircuitModel(n)
+    psi.act_hadamard(0)
+    psi.act_cnot(0, 1)
+    assert psi == get_chp_state()
+
+    # Run a random circuit
+    chp.init(n)
+    psi = qi.CircuitModel(n)
+    for i in tqdm(range(DEPTH), "Testing CircuitModel against CHP"):
+        if np.random.rand() > .5:
+            a = np.random.randint(0, n - 1)
+            chp.act_hadamard(a)
+            psi.act_hadamard(a)
+        else:
+            a, b = np.random.randint(0, n - 1, 2)
+            if a != b:
+                chp.act_cnot(a, b)
+                psi.act_cnot(a, b)
+        assert psi == get_chp_state()

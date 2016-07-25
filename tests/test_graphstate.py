@@ -96,7 +96,7 @@ def test_local_complementation():
 
 def test_single_qubit():
     """ A multi qubit test with Hadamards only"""
-    for repeat in tqdm(range(REPEATS), desc="Randomly testing single qubit operations against circuit model"):
+    for repeat in tqdm(range(REPEATS), desc="Single qubit rotations against CircuitModel"):
         circuit = [(0, random.choice(range(24))) for i in range(DEPTH)]
         a = mock.circuit_to_state(mock.ABPWrapper, 1, circuit)
         b = mock.circuit_to_state(mock.CircuitModelWrapper, 1, circuit)
@@ -105,7 +105,7 @@ def test_single_qubit():
 
 def test_graph_state_multiqubit(n=6):
     """ A multi qubit test with Hadamards only"""
-    for repeat in tqdm(range(REPEATS), desc="Random graph states against the circuit model"):
+    for repeat in tqdm(range(REPEATS), desc="Random graph states against the CircuitModel"):
         circuit = mock.random_graph_circuit(n)
         a = mock.circuit_to_state(mock.ABPWrapper, n, circuit)
         b = mock.circuit_to_state(mock.CircuitModelWrapper, n, circuit)
@@ -114,7 +114,7 @@ def test_graph_state_multiqubit(n=6):
 
 def test_stabilizer_state_multiqubit(n=6):
     """ A multi qubit test with arbitrary local rotations """
-    for repeat in tqdm(range(REPEATS), desc="Random Clifford circuits against the circuit model"):
+    for repeat in tqdm(range(REPEATS), desc="Random Clifford circuits against the CircuitModel"):
         circuit = mock.random_stabilizer_circuit(n)
         a = mock.circuit_to_state(mock.ABPWrapper, n, circuit)
         b = mock.circuit_to_state(mock.CircuitModelWrapper, n, circuit)
