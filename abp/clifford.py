@@ -47,7 +47,7 @@ def conjugate(operator, unitary):
     return measurement_table[operator, unitary]
 
 def use_old_cz():
-    """ Use the CZ table from A&B's code """
+    """ Use the CZ lookup table from A&B's code, rather than our own. Useful for testing. """
     global cz_table
     from anders_cz import cz_table
 

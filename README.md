@@ -2,6 +2,8 @@
 
 Python port of Anders and Briegel' s [method](https://arxiv.org/abs/quant-ph/0504117) for fast simulation of Clifford circuits. Should do thousands of qubits without much trouble.
 
+**You can read the full documentation [here](https://peteshadbolt.co.uk/abp/)**.
+
 ![demo](examples/demo.gif)
 
 ## Installation
@@ -19,9 +21,6 @@ $ git clone https://github.com/peteshadbolt/abp.git
 $ python setup.py install --user
 ```
 
-# Documentation
-
-You can read the documentation [here](https://peteshadbolt.co.uk/abp/).
 
 
 ## Visualization
@@ -65,4 +64,4 @@ $ nosetests
 53 tests run in 39.5 seconds (53 tests passed)
 ```
 
-Currently I use some reference implementations of `CHP` and `graphsim` which you won't have installed, hence some tests will fail with `ImportErrors`. You can ignore those :feelsgood:.
+Currently I use some reference implementations of `CHP` and `graphsim` which you won't have installed, hence some tests will fail with `ImportErrors`. You can ignore those.

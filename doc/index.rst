@@ -104,6 +104,13 @@ The Clifford group
 
 .. automodule:: abp.clifford
 
+|
+
+The ``clifford`` module provides a few useful functions:
+
+.. autofunction:: abp.clifford.use_old_cz
+    :noindex:
+
 Visualization
 ----------------------
 
@@ -121,17 +128,9 @@ Then browse to ``http://localhost:5001/`` (in some circumstances ``abp`` will au
 Now, in another terminal, use ``abp.fancy.GraphState`` to run a Clifford circuit::
 
     >>> from abp.fancy import GraphState
-    >>> g = GraphState(10)
     >>> g = GraphState(range(10))
-    >>> for i in range(10):
-    ...     g.act_hadamard(i)
-    ... 
-    >>> g.update()
-    >>> for i in range(9):
-    ...     g.act_cz(i, i+1)
-    ... 
-    >>> g.update()
-    ```
+    >>> g.act_circuit([(i, "hadamard") for i in range(10)])
+    >>> g.act_circuit([((i, i+1), "cz") for i in range(9)])
 
 And you should see a 3D visualization of the state.
 
