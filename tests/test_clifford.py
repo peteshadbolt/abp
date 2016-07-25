@@ -113,3 +113,4 @@ def test_cz_table():
         table_output = state_table[bondp, c1p, c2p]
 
         assert np.allclose(computed_output, table_output)
+

@@ -116,15 +116,15 @@ def circuit_to_state(Base, n, circuit):
     g.act_circuit(circuit)
     return g
 
-def test_circuit(circuit):
+def test_circuit(circuit, n):
     """ Check that two classes exhibit the same behaviour for a given circuit """
-    a = circuit_to_state(ABPWrapper, 10, circuit) 
-    b = circuit_to_state(AndersWrapper, 10, circuit) 
+    a = circuit_to_state(ABPWrapper, n, circuit) 
+    b = circuit_to_state(AndersWrapper, n, circuit) 
     assert a == b
 
 
 if __name__ == '__main__':
     for i in range(1000):
-        test_circuit(random_graph_circuit(10))
-        test_circuit(random_stabilizer_circuit(10))
+        test_circuit(random_graph_circuit(10), 10)
+        test_circuit(random_stabilizer_circuit(10), 10)
 
