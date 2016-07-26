@@ -20,10 +20,5 @@ def test_mercedes_example_1():
     print g.node
     
 
-
-
-
-
-
 if __name__ == '__main__':
     test_mercedes_example_1()
