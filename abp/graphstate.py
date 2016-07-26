@@ -342,12 +342,13 @@ class GraphState(object):
         if len(self.node) > 15:
             raise ValueError("Cannot build state vector: too many qubits")
         state = qi.CircuitModel(len(self.node))
-        for i in range(len(self.node)):
-            state.act_hadamard(i)
+        mapping = {node: i for i, node in enumerate(sorted(self.node))}
+        for n in self.node:
+            state.act_hadamard(mapping[n])
         for i, j in self.edgelist():
-            state.act_cz(i, j)
+            state.act_cz(mapping[i], mapping[j])
         for i, n in self.node.items():
-            state.act_local_rotation(i, clifford.unitaries[n["vop"]])
+            state.act_local_rotation(mapping[i], clifford.unitaries[n["vop"]])
         return state
 
     def to_stabilizer(self):
