@@ -35,7 +35,6 @@ Now, in another terminal, use `abp.fancy.GraphState` to run a Clifford circuit:
 
 ```python
 >>> from abp.fancy import GraphState
->>> g = GraphState(10)
 >>> g = GraphState(range(10))
 >>> for i in range(10):
 ...     g.act_hadamard(i)
