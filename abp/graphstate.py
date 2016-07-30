@@ -401,21 +401,6 @@ class GraphState(object):
             state.act_local_rotation(mapping[i], clifford.unitaries[n["vop"]])
         return state
 
-    def to_stabilizer(self):
-        """ Get the stabilizer tableau.  Work in progress!
-        """
-        return
-        output = {a: {} for a in self.node}
-        for a, b in it.product(self.node, self.node):
-            if a == b:
-                output[a][b] = "X"
-            elif a in self.adj[b]:
-                output[a][b] = "Z"
-            else:
-                output[a][b] = "I"
-        # TODO: signs
-        return output
-
     def __eq__(self, other):
         """ Check equality between GraphStates """
         return self.adj == other.adj and self.node == other.node
