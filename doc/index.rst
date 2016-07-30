@@ -97,6 +97,17 @@ The ``abp.GraphState`` class is the main interface to ``abp``.
 
     .. automethod:: abp.GraphState.to_stabilizer
 
+    .. automethod:: abp.GraphState.remove_vop
+
+    .. automethod:: abp.GraphState.measure_x
+
+    .. automethod:: abp.GraphState.measure_y
+    
+    .. automethod:: abp.GraphState.measure_z
+
+
+.. _clifford:
+
 The Clifford group
 ----------------------
 

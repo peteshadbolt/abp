@@ -1,7 +1,7 @@
 var materials = {};
 
 var curveProperties = {
-    splineDensity: 10,
+    splineDensity: 1,
     curvature: 20
 };
 

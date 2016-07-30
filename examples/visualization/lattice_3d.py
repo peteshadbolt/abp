@@ -41,7 +41,7 @@ def lattice(unit_cell, size):
     nodes = set(itertools.chain(*edges))
     return nodes, edges
 
-nodes, edges = lattice(threedee_unit_cell, (1, 1, 1))
+nodes, edges = lattice(threedee_unit_cell, (6, 6, 6))
 
 psi = GraphState()
 for node in nodes:
@@ -51,6 +51,5 @@ for node in nodes:
 for edge in edges:
     psi.act_cz(str(edge[0]), str(edge[1]))
 
-nx.rename_no
-print psi.to_state_vector()
+#print psi.to_state_vector()
 

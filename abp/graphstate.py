@@ -27,17 +27,17 @@ class GraphState(object):
 
     def add_node(self, node, **kwargs):
         """ Add a node.
-        
+
         :param node: The name of the node, e.g. ``9``, ``start``
         :type node: Any hashable type
         :param kwargs: Any extra node attributes
-            
+
         Example of using node attributes ::
 
             >>> g.add_node(0, label="fred", position=(1,2,3))
             >>> g.node[0]["label"]
             fred
-            
+
         """
         assert not node in self.node, "Node {} already exists".format(v)
         self.adj[node] = {}
@@ -55,7 +55,7 @@ class GraphState(object):
         :param circuit: An iterable containing tuples of the form ``(node, operation)``.  If ``operation`` is a name for a local operation (e.g. ``6``, ``hadamard``) then that operation is performed on ``node``.  If ``operation`` is ``cz`` then a CZ is performed on the two nodes in ``node``.
 
         Example (makes a Bell pair)::
-            
+
             >>> g.act_circuit([(0, "hadamard"), (1, "hadamard"), ((0, 1), "cz")])
 
         """
@@ -93,17 +93,22 @@ class GraphState(object):
                     for n in v)
         return tuple(edges)
 
-    def remove_vop(self, a, avoid):
-        """ Reduces VOP[a] to the identity """
-        others = set(self.adj[a]) - {avoid}
+    def remove_vop(self, node, avoid):
+        """ Attempts to remove the vertex operator on a particular qubit.
+
+        :param node: The node whose vertex operator should be reduced to the identity.
+        :param avoid: We will try to leave this node alone during the process (if possible).
+
+        """
+        others = set(self.adj[node]) - {avoid}
         if self.deterministic:
             swap_qubit = min(others) if others else avoid
         else:
             swap_qubit = others.pop() if others else avoid
 
-        for v in reversed(clifford.decompositions[self.node[a]["vop"]]):
+        for v in reversed(clifford.decompositions[self.node[node]["vop"]]):
             if v == "x":
-                self.local_complementation(a, "U ->")
+                self.local_complementation(node, "U ->")
             else:
                 self.local_complementation(swap_qubit, "V ->")
 
@@ -122,7 +127,7 @@ class GraphState(object):
         """ Act a local rotation on a qubit
 
         :param node: The index of the node to act on
-        :param operation: The Clifford-group operation to perform.
+        :param operation: The Clifford-group operation to perform. You can use any of the names in the :ref:`Clifford group alias table <clifford>`.
         """
         rotation = clifford.by_name[str(operation)]
         self.node[node]["vop"] = clifford.times_table[
@@ -165,15 +170,17 @@ class GraphState(object):
         if new_edge != edge:
             self._toggle_edge(a, b)
 
-    def measure(self, node, basis, force=None):
-        """ Measure in an arbitrary basis 
+    def measure(self, node, basis, force=None, detail=False):
+        """ Measure in an arbitrary basis
 
         :param node: The name of the qubit to measure.
         :param basis: The basis in which to measure.
         :type basis: :math:`\in` ``{"px", "py", "pz"}``
         :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``.
         :type force: boolean
-        
+        :param detail: Provide detailed information
+        :type detail: boolean
+
         """
         basis = clifford.by_name[basis]
         ha = clifford.conjugation_table[self.node[node]["vop"]]
@@ -186,11 +193,11 @@ class GraphState(object):
             result = not result
 
         if basis == clifford.by_name["px"]:
-            result = self._measure_x(node, result)
+            result, determinate = self._measure_graph_x(node, result)
         elif basis == clifford.by_name["py"]:
-            result = self._measure_y(node, result)
+            result, determinate = self._measure_graph_y(node, result)
         elif basis == clifford.by_name["pz"]:
-            result = self._measure_z(node, result)
+            result, determinate = self._measure_graph_z(node, result)
         else:
             raise ValueError("You can only measure in {X,Y,Z}")
 
@@ -198,7 +205,51 @@ class GraphState(object):
         if phase == -1:
             result = not result
 
-        return result
+        if detail:
+            return {"result": int(result), 
+                    "determinate": (determinate or force!=None),
+                    "conjugated_basis": basis,
+                    "phase": phase,
+                    "node": node,
+                    "force": force}
+        else:
+            return int(result)
+
+    def measure_x(self, node, force=None, detail=False):
+        """ Measure in the X basis
+
+        :param node: The name of the qubit to measure.
+        :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``.
+        :type force: boolean
+        :param detail: Provide detailed information
+        :type detail: boolean
+
+        """
+        return self.measure(node, "px", force, detail)
+
+    def measure_y(self, node, force=None, detail=False):
+        """ Measure in the Y basis
+
+        :param node: The name of the qubit to measure.
+        :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``.
+        :type force: boolean
+        :param detail: Provide detailed information
+        :type detail: boolean
+
+        """
+        return self.measure(node, "py", force, detail)
+
+    def measure_z(self, node, force=None, detail=False):
+        """ Measure in the Z basis
+
+        :param node: The name of the qubit to measure.
+        :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``.
+        :type force: boolean
+        :param detail: Provide detailed information
+        :type detail: boolean
+
+        """
+        return self.measure(node, "pz", force, detail)
 
     def _toggle_edges(self, a, b):
         """ Toggle edges between vertex sets a and b """
@@ -211,10 +262,10 @@ class GraphState(object):
                 done.add((j, i))
                 self._toggle_edge(i, j)
 
-    def _measure_x(self, node, result):
-        """ Measure the graph in the X-basis """
+    def _measure_graph_x(self, node, result):
+        """ Measure the bare graph in the X-basis """
         if len(self.adj[node]) == 0:
-            return 0
+            return 0, True
 
         # Pick a vertex
         if self.deterministic:
@@ -247,10 +298,10 @@ class GraphState(object):
         for n in a - {friend}:
             self._toggle_edge(friend, n)
 
-        return result
+        return result, False
 
-    def _measure_y(self, node, result):
-        """ Measure the graph in the Y-basis """
+    def _measure_graph_y(self, node, result):
+        """ Measure the bare graph in the Y-basis """
         # Do some rotations
         for neighbour in self.adj[node]:
             self._update_vop(neighbour, "sqz" if result else "msqz")
@@ -260,13 +311,12 @@ class GraphState(object):
         for i, j in it.combinations(vngbh, 2):
             self._toggle_edge(i, j)
 
+        # TODO: naming: # lcoS.herm_adjoint() if result else lcoS
         self._update_vop(node, 5 if result else 6)
-                         # TODO: naming: # lcoS.herm_adjoint() if result else
-                         # lcoS
-        return result
+        return result, False
 
-    def _measure_z(self, node, result):
-        """ Measure the graph in the Z-basis """
+    def _measure_graph_z(self, node, result):
+        """ Measure the bare graph in the Z-basis """
         # Disconnect
         for neighbour in tuple(self.adj[node]):
             self._del_edge(node, neighbour)
@@ -280,7 +330,7 @@ class GraphState(object):
         else:
             self._update_vop(node, "hadamard")
 
-        return result
+        return result, False
 
     def order(self):
         """ Get the number of qubits """
@@ -302,11 +352,11 @@ class GraphState(object):
 
     def to_json(self, stringify=False):
         """ Convert the graph to JSON-like form.
-        
+
         :param stringify: JSON keys must be strings, But sometimes it is useful to have a JSON-like object whose keys are tuples.
 
         If you want to dump a graph do disk, do something like this::
-            
+
             >>> import json
             >>> with open("graph.json") as f:
                     json.dump(graph.to_json(True), f)
@@ -326,15 +376,15 @@ class GraphState(object):
         # TODO
 
     def to_state_vector(self):
-        """ Get the full state vector corresponding to this stabilizer state. Useful for debugging, interface with other simulators. 
+        """ Get the full state vector corresponding to this stabilizer state. Useful for debugging, interface with other simulators.
             This method becomes very slow for more than about ten qubits!
 
         The output state is represented as a ``abp.qi.CircuitModel``::
-        
+
             >>> print g.to_state_vector()
             |00000>: 0.18+0.00j
             |00001>: 0.18+0.00j ...
-        
+
         .. todo::
             Doesn't work with non-``int`` node labels
 
@@ -369,6 +419,14 @@ class GraphState(object):
     def __eq__(self, other):
         """ Check equality between GraphStates """
         return self.adj == other.adj and self.node == other.node
+
+    def copy(self):
+        """ Make a copy of this graphstate """
+        g = GraphState()
+        g.node = self.node.copy()
+        g.adj = self.adj.copy()
+        g.deterministic = self.deterministic
+        return g
 
 if __name__ == '__main__':
     g = GraphState()
