@@ -4,7 +4,7 @@ from abp import qi, clifford
 from anders_briegel import graphsim
 from tqdm import tqdm
 import random
-from config import *
+import itertools as it
 
 def test_single_qubit_measurements():
     """ Various simple tests of measurements """
@@ -25,6 +25,17 @@ def test_single_qubit_measurements():
     assert g.measure(0, "px") == 0, "Measuring |+> in X gives 0"
     g.act_local_rotation(0, "pz")
     assert g.measure(0, "px") == 1, "Measuring |-> in X gives 1"
+
+def test_type():
+    """ Test that the output is always an int """
+    for r, m, f in it.product(range(24), ("px", "py", "pz"), (0, 1)):
+        g = GraphState([0])
+        g.act_local_rotation(0, r)
+        assert str(g.measure(0, m)) in "01"
+        assert str(g.measure(0, m, f)) in "01"
+        assert g.measure(0, m, f, detail=True)["determinate"] == True
+
+
 
 def test_random_outcomes():
     """ Testing random behaviour """

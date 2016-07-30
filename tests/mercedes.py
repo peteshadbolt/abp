@@ -42,7 +42,6 @@ def test_single_qubit_measurements():
     # Test something else
     assert g.measure_y(0, force=0) == 0
 
-
 def test_is_determinate():
     """ Test whether asking if an outcome was random or determinate works """
     g = GraphState([0])
