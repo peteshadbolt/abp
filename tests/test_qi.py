@@ -1,6 +1,7 @@
 import numpy as np
 from abp import qi, GraphState
 from tqdm import tqdm
+import mock
 
 DEPTH = 1000
 
@@ -161,3 +162,11 @@ def test_against_chp(n=5):
                 chp.act_cnot(a, b)
                 psi.act_cnot(a, b)
         assert psi == get_chp_state()
+
+def test_sqrt_notation(n=2):
+    """ Test that SQRT notation looks nice """
+    c = mock.random_stabilizer_circuit(n)
+    g = GraphState(range(n))
+    g.act_circuit(c)
+    print g.to_state_vector()
+

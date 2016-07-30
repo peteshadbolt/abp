@@ -8,7 +8,7 @@ And a circuit-model simulator
 
 import numpy as np
 import itertools as it
-
+from fractions import Fraction
 
 def hermitian_conjugate(u):
     """ Shortcut to the Hermitian conjugate """
@@ -128,5 +128,11 @@ class CircuitModel(object):
         for i in range(self.d):
             label = bin(i)[2:].rjust(self.nqubits, "0")
             if abs(self.state[i, 0]) > 0.00001:
-                s += "|{}>: {:.2f}\n".format(label, self.state[i, 0])
+                term = self.state[i, 0]
+                real_sign = " " if term.real>=0 else "-"
+                real_frac = Fraction(str(term.real**2)).limit_denominator()
+                imag_sign = "+" if term.imag>=0 else "-"
+                imag_frac = Fraction(str(term.imag**2)).limit_denominator()
+                s += "|{}>: \t{}√{}\t{} i √{}\n".format(
+                        label, real_sign, real_frac, imag_sign, imag_frac)
         return s
