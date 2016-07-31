@@ -50,6 +50,9 @@ class ABPWrapper(GraphState):
     def __init__(self, nodes=[]):
         super(ABPWrapper, self).__init__(nodes, deterministic=True)
 
+    def print_stabilizer(self):
+        print self.to_stabilizer()
+
     def __eq__(self, other):
         return self.to_json() == other.to_json()
 

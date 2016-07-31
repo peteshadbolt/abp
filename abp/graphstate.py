@@ -5,7 +5,7 @@ This module implements Anders and Briegel's method for fast simulation of Cliffo
 import itertools as it
 import json, random
 import qi, clifford, util
-
+from stabilizer import Stabilizer
 
 class GraphState(object):
 
@@ -361,6 +361,9 @@ class GraphState(object):
             >>> with open("graph.json") as f:
                     json.dump(graph.to_json(True), f)
 
+        .. todo::
+            Implement ``from_json()``!
+
         """
         if stringify:
             node = {str(key): value for key, value in self.node.items()}
@@ -369,11 +372,6 @@ class GraphState(object):
             return {"node": node, "adj": adj}
         else:
             return {"node": self.node, "adj": self.adj}
-
-    def from_json(self, data):
-        """ Reconstruct from JSON """
-        self.__init__([])
-        # TODO
 
     def to_state_vector(self):
         """ Get the full state vector corresponding to this stabilizer state. Useful for debugging, interface with other simulators.
@@ -400,6 +398,10 @@ class GraphState(object):
         for i, n in self.node.items():
             state.act_local_rotation(mapping[i], clifford.unitaries[n["vop"]])
         return state
+
+    def to_stabilizer(self):
+        """ Get the stabilizer representation of the state. """
+        return Stabilizer(self)
 
     def __eq__(self, other):
         """ Check equality between GraphStates """

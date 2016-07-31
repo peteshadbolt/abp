@@ -74,13 +74,6 @@ def test_cz():
     assert g.has_edge(0, 1)
 
 
-def test_stabilizer():
-    """ Test that we can generate stabilizers okay """
-    g = mock.simple_graph()
-    stab = g.to_stabilizer()
-    # TODO
-
-
 def test_local_complementation():
     """ Test that local complementation works okay """
     pairs = (0, 1), (0, 3), (1, 3), (1, 2), 
