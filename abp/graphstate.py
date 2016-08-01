@@ -1,4 +1,4 @@
-, "Stabilizer representation VS A&B""""
+"""
 This module implements Anders and Briegel's method for fast simulation of Clifford circuits.
 """
 
@@ -400,7 +400,8 @@ class GraphState(object):
         return state
 
     def to_stabilizer(self):
-        """ Get the stabilizer representation of the state::
+        """ 
+        Get the stabilizer representation of the state::
 
             >>> print g.to_stabilizer()
              - X I I I I
@@ -409,7 +410,7 @@ class GraphState(object):
                I I I Z I
                I I I I Z
 
-            """
+        """
         return Stabilizer(self)
 
     def __eq__(self, other):
@@ -424,10 +425,3 @@ class GraphState(object):
         g.deterministic = self.deterministic
         return g
 
-if __name__ == '__main__':
-    g = GraphState()
-    g.add_nodes(range(10))
-    g._add_edge(0, 5)
-    g.act_local_rotation(6, 10)
-    print g
-    print g.to_state_vector()
