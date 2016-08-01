@@ -45,7 +45,7 @@ nodes, edges = lattice(threedee_unit_cell, (3, 3, 3))
 
 psi = GraphState()
 for node in nodes:
-    psi.add_node(str(node), position=xyz(*node))
+    psi.add_node(str(node))
     psi.act_hadamard(str(node))
 
 for edge in edges:

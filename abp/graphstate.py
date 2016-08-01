@@ -383,9 +383,6 @@ class GraphState(object):
             |00000>: 0.18+0.00j
             |00001>: 0.18+0.00j ...
 
-        .. todo::
-            Doesn't work with non-``int`` node labels
-
         """
         if len(self.node) > 15:
             raise ValueError("Cannot build state vector: too many qubits")
