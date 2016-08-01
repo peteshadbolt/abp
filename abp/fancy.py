@@ -50,7 +50,7 @@ class GraphState(graphstate.GraphState, networkx.Graph):
 
     def layout(self):
         """ Automatically lay out the graph """
-        pos = networkx.spring_layout(self, 3, scale=np.sqrt(self.order()))
+        pos = networkx.spring_layout(self, dim=3, scale=np.sqrt(self.order()))
         middle = np.average(pos.values(), axis=0)
         pos = {key: value - middle for key, value in pos.items()}
         for key, (x, y, z) in pos.items():
