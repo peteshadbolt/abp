@@ -176,10 +176,21 @@ class GraphState(object):
         :param node: The name of the qubit to measure.
         :param basis: The basis in which to measure.
         :type basis: :math:`\in` ``{"px", "py", "pz"}``
-        :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``.
+        :param force: Forces the measurement outcome.
         :type force: boolean
-        :param detail: Provide detailed information
+        :param detail: Get detailed information. 
         :type detail: boolean
+        
+        Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome :math:`\in\{0, 1\}`, use ``force``.
+
+        You can get more information by setting ``detail=True``, in which case ``measure()`` returns a dictionary with the following keys:
+
+        - ``outcome``: the measurement outcome. 
+        - ``determinate``: indicates whether the outcome was determinate or random. For example, measuring :math:`|0\\rangle`  in :math:`\sigma_x` always gives a deterministic outcome. ``determinate`` is overridden by ``force`` -- forced outcomes are always determinate.
+        - ``conjugated_basis``: The index of the measurement operator, rotated by the vertex operator of the measured node, i.e. :math:`U_\\text{vop} \sigma_m U_\\text{vop}^\dagger`.
+        - ``phase``: The phase of the cojugated basis, :math:`\pm 1`.
+        - ``node``: The name of the measured node.
+        - ``force``: The value of ``force``.
 
         """
         basis = clifford.by_name[basis]
@@ -206,7 +217,7 @@ class GraphState(object):
             result = not result
 
         if detail:
-            return {"result": int(result), 
+            return {"outcome": int(result), 
                     "determinate": (determinate or force!=None),
                     "conjugated_basis": basis,
                     "phase": phase,
