@@ -1,4 +1,4 @@
- #!/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """
@@ -75,7 +75,7 @@ class CircuitModel(object):
         self.state[0, 0] = 1
 
     def act_cz(self, control, target):
-        """ Act a CU somewhere """
+        """ Act a CU somewhere. """
         control = 1 << control
         target = 1 << target
         for i in xrange(self.d):
@@ -83,13 +83,13 @@ class CircuitModel(object):
                 self.state[i, 0] *= -1
 
     def act_cnot(self, control, target):
-        """ Act a CNOT """
+        """ Act a CNOT. """
         self.act_hadamard(target)
         self.act_cz(control, target)
         self.act_hadamard(target)
 
     def act_hadamard(self, qubit):
-        """ Act a hadamard somewhere """
+        """ Act a hadamard somewhere. """
         where = 1 << qubit
         output = np.zeros((self.d, 1), dtype=complex)
         for i, v in enumerate(self.state):
@@ -99,7 +99,7 @@ class CircuitModel(object):
         self.state = output
 
     def act_local_rotation(self, qubit, u):
-        """ Act a local unitary somwhere """
+        """ Act a local unitary somwhere. """
         where = 1 << qubit
         output = np.zeros((self.d, 1), dtype=complex)
         for i, v in enumerate(self.state):
@@ -109,7 +109,7 @@ class CircuitModel(object):
         self.state = output
 
     def act_circuit(self, circuit):
-        """ Act a sequence of gates """
+        """ Act a sequence of gates. """
         for node, operation in circuit:
             if operation == "cz":
                 self.act_cz(*node)
@@ -117,8 +117,8 @@ class CircuitModel(object):
                 self.act_local_rotation(node, operation)
 
     def __eq__(self, other):
-        """ Check whether two quantum states are the same or not
-            UP TO A GLOBAL PHASE """
+        """ Check whether two quantum states are the same or not,
+            up to a global phase. """
         a = normalize_global_phase(self.state)
         b = normalize_global_phase(other.state)
         return np.allclose(a, b)
@@ -133,6 +133,6 @@ class CircuitModel(object):
                 real_frac = Fraction(str(term.real**2)).limit_denominator()
                 imag_sign = "+" if term.imag>=0 else "-"
                 imag_frac = Fraction(str(term.imag**2)).limit_denominator()
-                s += "|{}>: \t{}√{}\t{} i √{}\n".format(
+                s += "|{}❭: \t{}√{}\t{} i √{}\n".format(
                         label, real_sign, real_frac, imag_sign, imag_frac)
         return s

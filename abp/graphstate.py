@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
 This module implements Anders and Briegel's method for fast simulation of Clifford circuits.
 """
@@ -391,8 +393,8 @@ class GraphState(object):
         The output state is represented as a ``abp.qi.CircuitModel``::
 
             >>> print g.to_state_vector()
-            |00000>: 0.18+0.00j
-            |00001>: 0.18+0.00j ...
+            |00000❭: 0.18+0.00j
+            |00001❭: 0.18+0.00j ...
 
         """
         if len(self.node) > 15:
@@ -412,11 +414,14 @@ class GraphState(object):
         Get the stabilizer representation of the state::
 
             >>> print g.to_stabilizer()
-             - X I I I I
-               I Z I I I
-               I I Z I I
-               I I I Z I
-               I I I I Z
+               0    1    2    3    100  200
+              ------------------------------
+               X    Z    Z    X    I    I  
+               Z    X    Z    I    I    I  
+               Z    Z    X    I    I    I  
+             - Z    I    I    Z    I    I  
+               I    I    I    I    X    Z  
+               I    I    I    I    Z    X
 
         """
         return Stabilizer(self)

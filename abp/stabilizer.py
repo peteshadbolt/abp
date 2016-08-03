@@ -35,13 +35,17 @@ class Stabilizer(object):
 
     def __str__(self):
         """ Represent as a string """
-        s = ""
+        keys = map(str, self.tableau.keys())
+        w = max(len(k) for k in keys)
+        keys = [k.ljust(w) for k in keys]
+        s = "   {}\n".format("  ".join(map(str, keys)))
+        s += "  " + "-"*len(keys)*(w+2) + "\n"
         for i in sorted(self.phases):
             sign = self.phases[i]
             sign = {1: "  ", -1: " -", 1j: " i", -1j: "-i"}[sign]
             row = (self.tableau[i][j] for j in sorted(self.phases))
-            row = ("IXYZ"[i] for i in row)
-            row = " ".join(row)
+            row = ("IXYZ"[i].ljust(w) for i in row)
+            row = "  ".join(row)
             s += "{} {}\n".format(sign, row)
         return s
 
