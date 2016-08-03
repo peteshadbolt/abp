@@ -416,12 +416,12 @@ class GraphState(object):
             >>> print g.to_stabilizer()
                0    1    2    3    100  200
               ------------------------------
-               X    Z    Z    X    I    I  
-               Z    X    Z    I    I    I  
-               Z    Z    X    I    I    I  
-             - Z    I    I    Z    I    I  
-               I    I    I    I    X    Z  
-               I    I    I    I    Z    X
+               X    Z    Z    X            
+               Z    X    Z                 
+               Z    Z    X                 
+             - Z              Z            
+                                   X    Z  
+                                   Z    X
 
         """
         return Stabilizer(self)

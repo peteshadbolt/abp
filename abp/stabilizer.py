@@ -44,7 +44,7 @@ class Stabilizer(object):
             sign = self.phases[i]
             sign = {1: "  ", -1: " -", 1j: " i", -1j: "-i"}[sign]
             row = (self.tableau[i][j] for j in sorted(self.phases))
-            row = ("IXYZ"[i].ljust(w) for i in row)
+            row = (" XYZ"[i].ljust(w) for i in row)
             row = "  ".join(row)
             s += "{} {}\n".format(sign, row)
         return s
