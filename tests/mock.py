@@ -4,8 +4,12 @@ Mock graphs used for testing
 
 import numpy as np
 from abp import GraphState, clifford, qi
-from anders_briegel import graphsim
 from numpy import random
+import nose
+try:
+    from anders_briegel import graphsim
+except ImportError:
+    raise nose.SkipTest("Original C++ is not available, skipping test")
 
 # We always run with A&B's CZ table when we are testing
 clifford.use_old_cz()

@@ -1,5 +1,4 @@
 from abp import GraphState, CircuitModel, clifford
-from anders_briegel import graphsim
 import numpy as np
 from numpy import random
 from tqdm import tqdm

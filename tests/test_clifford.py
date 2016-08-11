@@ -4,8 +4,8 @@ import itertools as it
 from abp import clifford
 from abp import build_tables
 from abp import qi
+import nose
 from nose.tools import raises
-from anders_briegel import graphsim
 
 
 def identify_pauli(m):
@@ -79,6 +79,12 @@ def test_commuters():
 
 def test_conjugation():
     """ Test that clifford.conugate() agrees with graphsim.LocCliffOp.conjugate """
+    try:
+        from anders_briegel import graphsim
+    except ImportError:
+        raise nose.SkipTest("Original C++ is not available, skipping test")
+        
+
     for operation_index, transform_index in it.product(range(4), range(24)):
         transform = graphsim.LocCliffOp(transform_index)
         operation = graphsim.LocCliffOp(operation_index)

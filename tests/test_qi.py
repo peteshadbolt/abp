@@ -2,6 +2,7 @@ import numpy as np
 from abp import qi, GraphState
 from tqdm import tqdm
 import mock
+import nose
 
 DEPTH = 1000
 
@@ -126,8 +127,7 @@ def test_against_chp(n=5):
     try:
         import chp
     except ImportError:
-        print "Not testing against CHP -- not installed"
-        return
+        raise nose.SkipTest("CHP is not installed")
 
     def get_chp_state():
         """ Helper to convert CHP to CircuitModel """
