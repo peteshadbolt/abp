@@ -23,7 +23,7 @@ $ python setup.py develop --user --prefix=  # Might be required on OSX
 
 ## Visualization
 
-`abp` comes with a tool to visualize graph states in a WebGL compatible web browser (Chrome, Firefox, Safari etc). It uses a client-server architecture.
+`abp` comes with a tool to visualize graph states in a web browser. It uses a client-server architecture.
 
 First, run `abpserver` in a terminal:
 
@@ -31,7 +31,7 @@ First, run `abpserver` in a terminal:
 $ abpserver
 Listening on port 5000 for clients..
 ```
-Then browse to `http://localhost:5001/` (in some circumstances `abp` will automatically pop a browser window).
+Then browse to `http://localhost:5001/`. Alternatively, `abpserver -v` will automatically pop a browser window.
 
 Now, in another terminal, use `abp.fancy.GraphState` to run a Clifford circuit:
 
@@ -61,4 +61,4 @@ $ nosetests
 53 tests run in 39.5 seconds (53 tests passed)
 ```
 
-Currently I use some reference implementations of `CHP` and `graphsim` which you won't have installed, so a bunch of tests will be skipped. That's expected.
+Currently I use some reference implementations of `chp` and `graphsim` which you won't have installed, so some tests will be skipped. That's expected.
