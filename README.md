@@ -6,17 +6,18 @@ Python port of Anders and Briegel' s [method](https://arxiv.org/abs/quant-ph/050
 
 ## Installation
 
-Install with `pip`:
+It's easiest to install with `pip`:
 
 ```shell
 $ pip install --user abp
 ```
 
-Or clone and install:
+Or clone and install in `develop` mode:
 
 ```shell
 $ git clone https://github.com/peteshadbolt/abp.git
-$ python setup.py install --user
+$ python setup.py develop --user
+$ python setup.py develop --user --prefix=  # Might be required on OSX
 ```
 
 ## Visualization
@@ -59,4 +60,4 @@ $ nosetests
 53 tests run in 39.5 seconds (53 tests passed)
 ```
 
-Currently I use some reference implementations of `CHP` and `graphsim` which you won't have installed, hence some tests will fail with `ImportErrors`. You can ignore those.
+Currently I use some reference implementations of `CHP` and `graphsim` which you won't have installed, so a bunch of tests will be skipped. That's expected.
