@@ -16,6 +16,7 @@ Or clone and install in `develop` mode:
 
 ```shell
 $ git clone https://github.com/peteshadbolt/abp.git
+$ cd abp
 $ python setup.py develop --user
 $ python setup.py develop --user --prefix=  # Might be required on OSX
 ```
