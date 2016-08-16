@@ -7,6 +7,14 @@ from tqdm import tqdm
 REPEATS = 100
 DEPTH = 100
 
+def test_initialization():
+    g = GraphState("abc")
+    assert g.node["a"]["vop"] == clifford.by_name["identity"]
+    g = GraphState("abc", vop="hadamard")
+    assert g.node["c"]["vop"] == clifford.by_name["hadamard"]
+    g = GraphState(5)
+    assert len(g.node) == 5
+
 
 def test_graph_basic():
     """ Test that we can construct graphs, delete edges, whatever """
@@ -56,7 +64,7 @@ def test_edgelist():
 def test_stress(n=int(1e5)):
     """ Testing that making a graph of ten thousand qubits takes less than half a second"""
     import time
-    g = GraphState(range(n + 1))
+    g = GraphState(range(n + 1), vop="hadamard")
     t = time.clock()
     for i in xrange(n):
         g._add_edge(i, i + 1)
@@ -65,7 +73,7 @@ def test_stress(n=int(1e5)):
 
 def test_cz():
     """ Test CZ gate """
-    g = GraphState([0, 1])
+    g = GraphState([0, 1], vop="hadamard")
     g.act_local_rotation(0, clifford.by_name["hadamard"])
     g.act_local_rotation(1, clifford.by_name["hadamard"])
     g.act_local_rotation(1, clifford.by_name["py"])
@@ -77,7 +85,7 @@ def test_cz():
 def test_local_complementation():
     """ Test that local complementation works okay """
     pairs = (0, 1), (0, 3), (1, 3), (1, 2), 
-    psi = GraphState(range(4))
+    psi = GraphState(range(4), vop="hadamard")
     psi.act_circuit([(i, "hadamard") for i in psi.node])
     psi.act_circuit([(pair, "cz") for pair in pairs])
     old_edges = psi.edgelist()

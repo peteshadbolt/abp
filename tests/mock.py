@@ -52,7 +52,7 @@ class ABPWrapper(GraphState):
     """ A wrapper for abp, just to ensure determinism """
 
     def __init__(self, nodes=[]):
-        super(ABPWrapper, self).__init__(nodes, deterministic=True)
+        super(ABPWrapper, self).__init__(nodes, deterministic=True, vop="hadamard")
 
     def print_stabilizer(self):
         print self.to_stabilizer()
