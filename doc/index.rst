@@ -81,9 +81,7 @@ The ``abp.GraphState`` class is the main interface to ``abp``.
 
     .. automethod:: abp.GraphState.__init__
 
-    .. automethod:: abp.GraphState.add_node
-
-    .. automethod:: abp.GraphState.add_nodes
+    .. automethod:: abp.GraphState.add_qubit
 
     .. automethod:: abp.GraphState.act_local_rotation
 

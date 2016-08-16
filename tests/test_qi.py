@@ -104,8 +104,8 @@ def test_dumbness():
 def test_to_state_vector_single_qubit():
     """ Test some single-qubit stuff """
     g = GraphState()
-    g.add_node(0)
-    g.add_node(1)
+    g.add_qubit(0)
+    g.add_qubit(1)
     g.act_local_rotation(0, "hadamard")
     g.act_local_rotation(1, "hadamard")
     g.act_cz(0, 1)

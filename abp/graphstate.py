@@ -16,19 +16,25 @@ class GraphState(object):
     Internally it uses the same dictionary-of-dictionaries data structure as ``networkx``.
     """
 
-    def __init__(self, nodes=[], deterministic=False):
+    def __init__(self, nodes=[], deterministic=False, vop="identity"):
         """ Construct a ``GraphState``
 
-        :param nodes: An iterable of nodes used to construct the graph.
+        :param nodes: An iterable of nodes used to construct the graph, or an integer -- the number of nodes.
         :param deterministic: If ``True``, the behaviour of the graph is deterministic up to but not including the choice of measurement outcome. This is slightly less efficient, but useful for testing. If ``False``, the specific graph representation will sometimes be random -- of course, all possible representations still map to the same state vector.
+        :param vop: The default VOP for new qubits. Setting ``vop="identity"`` initializes qubits in :math:`|+\\rangle`. Setting ``vop="hadamard"`` initializes qubits in :math:`|0\\rangle`.
         """
 
-        self.adj, self.node = {}, {}
-        self.add_nodes(nodes)
         self.deterministic = deterministic
+        self.adj, self.node = {}, {}
+        try:
+            for n in nodes:
+                self._add_node(n, vop=vop)
+        except TypeError:
+            for n in range(nodes):
+                self._add_node(n, vop=vop)
 
-    def add_node(self, node, **kwargs):
-        """ Add a node.
+    def _add_node(self, node, **kwargs):
+        """ Add a node. By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
 
         :param node: The name of the node, e.g. ``9``, ``start``
         :type node: Any hashable type
@@ -42,14 +48,23 @@ class GraphState(object):
 
         """
         assert not node in self.node, "Node {} already exists".format(v)
+        default = kwargs.get("default", "identity")
         self.adj[node] = {}
-        self.node[node] = {"vop": clifford.by_name["hadamard"]}
+        self.node[node] = {}
+        kwargs["vop"] = clifford.by_name[str(kwargs.get("vop", "identity"))] #TODO: ugly
         self.node[node].update(kwargs)
 
-    def add_nodes(self, nodes):
-        """ Add many nodes in one shot. """
-        for n in nodes:
-            self.add_node(n)
+    def add_qubit(self, name, **kwargs):
+        """ Add a qubit to the state. 
+
+        :param name: The name of the node, e.g. ``9``, ``start``.
+        :type name: Any hashable type
+        :param kwargs: Any extra node attributes
+
+        By default, qubits are initialized in the :math:`|0\\rangle` state. Provide the optional ``vop`` argument to set the initial state. 
+        """
+        kwargs["vop"] = clifford.by_name[str(kwargs.get("vop", "hadamard"))] #TODO: ugly
+        self._add_node(name, **kwargs)
 
     def act_circuit(self, circuit):
         """ Run many gates in one call.
