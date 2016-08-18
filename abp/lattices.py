@@ -1,7 +1,7 @@
 import networkx as nx
 from abp.fancy import GraphState
 
-def fast_union(graphs):
+def union(*graphs):
     """ Assumes that all graphs are completely independent and uniquely labelled """
     output = nx.Graph()
     output.node = dict(i for g in graphs for i in g.node.items())
@@ -12,9 +12,8 @@ def relabel(g, label):
     """ Shorthand relabel """
     return nx.relabel_nodes(g, lambda x: (label, x))
 
-def fuse(a, b, na, nb):
+def fuse(psi, na, nb):
     """ Deterministic fusion for testing purposes """
-    psi = fast_union((a, b))
     neighbors_a, neighbors_b = psi.neighbors(na), psi.neighbors(nb)
     new_edges = ((i, j) for i in neighbors_a for j in neighbors_b if i != j)
     psi.add_edges_from(new_edges)
@@ -28,17 +27,25 @@ def ghz(label):
 
 def microcluster(label):
     """ A microcluster """
-    psi = fuse(ghz(0), ghz(1), (0, 1), (1, 0))
-    psi = fuse(psi, ghz(2), (1, 2), (2, 1))
+    psi = union(ghz(0), ghz(1), ghz(2))
+    psi = fuse(psi, (0, 1), (1, 0))
+    psi = fuse(psi, (1, 2), (2, 1))
     return relabel(psi, label)
 
-if __name__ == '__main__':
-    print ghz(0).nodes()
-    print ghz(1).nodes()
-    print fuse(ghz(0), ghz(1), (0, 2), (1, 0)).adj
-    print microcluster("pete").nodes()
+def unit_cell(label):
+    """ A simple ring-like unit cell """
+    psi = union(microcluster(0), microcluster(1), microcluster(2), microcluster(3))
+    psi = fuse(psi, (0, (0, 2)), (1, (2, 2)))
+    psi = fuse(psi, (1, (0, 2)), (2, (2, 2)))
+    psi = fuse(psi, (2, (0, 2)), (3, (2, 2)))
+    psi = fuse(psi, (3, (0, 2)), (0, (2, 2)))
+    return psi
 
+if __name__ == '__main__':
+    #print ghz(0).nodes()
+    #print ghz(1).nodes()
+    #print fuse(ghz(0), ghz(1), (0, 2), (1, 0)).adj
+    #print microcluster("pete").nodes()
     g = GraphState()
-    g.from_nx(microcluster("pete"))
-    print g.to_stabilizer()
+    g.from_nx(unit_cell("pete"))
 
