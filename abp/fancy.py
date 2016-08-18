@@ -43,7 +43,6 @@ class GraphState(graphstate.GraphState, networkx.Graph):
             return
 
         # Automatically perform layout if position is not provided
-        print self.node.values()
         if not all(("position" in node) for node in self.node.values()):
             self.layout()
 
