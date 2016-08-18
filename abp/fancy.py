@@ -21,6 +21,15 @@ class GraphState(graphstate.GraphState, networkx.Graph):
         except: #TODO: bad practice
             self.ws = None
 
+    def from_nx(self, g):
+        """ Clone from a networkx graph. Hacky af """
+        self.adj = g.adj.copy()
+        self.node = g.node.copy()
+        # TODO: hacky af
+        for key, value in self.node.items():
+            self.node[key]["vop"] = clifford.by_name["identity"]
+
+
     def shutdown(self):
         """ Close the connection to the websocket """
         if not self.ws:
@@ -34,6 +43,7 @@ class GraphState(graphstate.GraphState, networkx.Graph):
             return
 
         # Automatically perform layout if position is not provided
+        print self.node.values()
         if not all(("position" in node) for node in self.node.values()):
             self.layout()
 
