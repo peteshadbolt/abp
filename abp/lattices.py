@@ -1,3 +1,7 @@
+"""
+This is a sketch of a consistent language for defining resource states and lattices.
+"""
+
 import networkx as nx
 from abp.fancy import GraphState
 
@@ -39,13 +43,19 @@ def unit_cell(label):
     psi = fuse(psi, (1, (0, 2)), (2, (2, 2)))
     psi = fuse(psi, (2, (0, 2)), (3, (2, 2)))
     psi = fuse(psi, (3, (0, 2)), (0, (2, 2)))
-    return psi
+    return relabel(psi, label)
+
+def position(node):
+    print node
+    return {}
+
+def annotate(g, f):
+    """ Annotate a graph """
+    for node in g.nodes():
+        g.node[node].update(f(node))
 
 if __name__ == '__main__':
-    #print ghz(0).nodes()
-    #print ghz(1).nodes()
-    #print fuse(ghz(0), ghz(1), (0, 2), (1, 0)).adj
-    #print microcluster("pete").nodes()
-    g = GraphState()
-    g.from_nx(unit_cell("pete"))
+    psi = union(unit_cell((0, 0)), unit_cell((2, 0)))
+    annotate(psi, position)
+    g = GraphState(psi)
 
