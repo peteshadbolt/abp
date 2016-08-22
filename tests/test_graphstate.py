@@ -3,6 +3,7 @@ import mock
 import random
 import numpy as np
 from tqdm import tqdm
+import networkx as nx
 
 REPEATS = 100
 DEPTH = 100
@@ -120,4 +121,13 @@ def test_stabilizer_state_multiqubit(n=6):
         a = mock.circuit_to_state(mock.ABPWrapper, n, circuit)
         b = mock.circuit_to_state(mock.CircuitModelWrapper, n, circuit)
         assert a.to_state_vector() == b
+
+
+def test_from_nx():
+    """ Creating from a networkx graph """
+    g = nx.random_geometric_graph(100, 2)
+    psi = GraphState(g)
+    assert len(psi.node) == 100
+
+    psi = GraphState(nx.Graph(((0, 1),)))
 

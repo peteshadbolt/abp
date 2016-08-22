@@ -10,11 +10,7 @@ import util
 
 class GraphState(graphstate.GraphState, nx.Graph):
     def __init__(self, *args, **kwargs):
-        if args and type(args[0]) == nx.Graph:
-            graphstate.GraphState.__init__(self)
-            self.from_nx(args[0])
-        else:
-            graphstate.GraphState.__init__(self, *args, **kwargs)
+        graphstate.GraphState.__init__(self, *args, **kwargs)
         self.connect_to_server()
 
     def connect_to_server(self, uri = "ws://localhost:5000"):
@@ -24,15 +20,6 @@ class GraphState(graphstate.GraphState, nx.Graph):
             atexit.register(self.shutdown)
         except: #TODO: bad practice
             self.ws = None
-
-    def from_nx(self, g):
-        """ Clone from a networkx graph. Hacky af """
-        self.adj = g.adj.copy()
-        self.node = g.node.copy()
-        # TODO: hacky af
-        for key, value in self.node.items():
-            self.node[key]["vop"] = clifford.by_name["identity"]
-
 
     def shutdown(self):
         """ Close the connection to the websocket """

@@ -41,3 +41,5 @@ def test_from_nx():
     assert psi.node[0]["vop"] == 0
     assert len(psi.edges()) > 0
     psi.measure(0, "px", detail=True)
+
+    psi = fancy.GraphState(nx.Graph(((0, 1),)))
