@@ -60,6 +60,6 @@ class GraphState(graphstate.GraphState, nx.Graph):
         """ Automatically add vops if they're not present """
         for key in self.node:
             if not "vop" in self.node[key]:
-                self.node[key]["vop"] = clifford.by_name["identity"]
+                self.node[key]["vop"] = clifford.identity
 
         

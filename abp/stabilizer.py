@@ -5,9 +5,9 @@ Implements a simple Stabilizer object.
 import itertools as it
 from abp import clifford
 
-I = clifford.by_name["identity"]
-X = clifford.by_name["px"]
-Z = clifford.by_name["pz"]
+I = clifford.identity
+X = clifford.px
+Z = clifford.pz
 
 class Stabilizer(object):
     def __init__(self, g):

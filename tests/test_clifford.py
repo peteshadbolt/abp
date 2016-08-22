@@ -65,7 +65,7 @@ def test_conjugation_table():
 
 def test_cz_table_makes_sense():
     """ Test the CZ table is symmetric """
-    hadamard = clifford.by_name["hadamard"]
+    hadamard = clifford.hadamard
     assert all(clifford.cz_table[0, 0, 0] == [1, 0, 0])
     assert all(clifford.cz_table[1, 0, 0] == [0, 0, 0])
     assert all(
