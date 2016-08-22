@@ -42,6 +42,15 @@ The complete set of aliases for single-qubit Cliffords is as follows:
 
 from tables import *
 
+# Aliases
+identity = by_name["identity"]
+hadamard = by_name["hadamard"]
+px = by_name["px"]
+py = by_name["py"]
+pz = by_name["pz"]
+msqx_h = by_name["msqx_h"]
+sqz_h = by_name["sqz_h"]
+
 def conjugate(operator, unitary):
     """ Returns transform * vop * transform^dagger and a phase in {+1, -1} """
     return measurement_table[operator, unitary]

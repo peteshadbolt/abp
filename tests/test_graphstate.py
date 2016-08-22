@@ -10,9 +10,9 @@ DEPTH = 100
 
 def test_initialization():
     g = GraphState("abc")
-    assert g.node["a"]["vop"] == clifford.by_name["identity"]
+    assert g.node["a"]["vop"] == clifford.identity
     g = GraphState("abc", vop="hadamard")
-    assert g.node["c"]["vop"] == clifford.by_name["hadamard"]
+    assert g.node["c"]["vop"] == clifford.hadamard
     g = GraphState(5)
     assert len(g.node) == 5
 
@@ -44,13 +44,13 @@ def test_remove_vop():
     """ Test that removing VOPs really works """
     g = mock.simple_graph()
     g.remove_vop(0, 1)
-    assert g.node[0]["vop"] == clifford.by_name["identity"]
+    assert g.node[0]["vop"] == clifford.identity
     g.remove_vop(1, 1)
-    assert g.node[1]["vop"] == clifford.by_name["identity"]
+    assert g.node[1]["vop"] == clifford.identity
     g.remove_vop(2, 1)
-    assert g.node[2]["vop"] == clifford.by_name["identity"]
+    assert g.node[2]["vop"] == clifford.identity
     g.remove_vop(0, 1)
-    assert g.node[0]["vop"] == clifford.by_name["identity"]
+    assert g.node[0]["vop"] == clifford.identity
 
 
 def test_edgelist():
@@ -75,9 +75,9 @@ def test_stress(n=int(1e5)):
 def test_cz():
     """ Test CZ gate """
     g = GraphState([0, 1], vop="hadamard")
-    g.act_local_rotation(0, clifford.by_name["hadamard"])
-    g.act_local_rotation(1, clifford.by_name["hadamard"])
-    g.act_local_rotation(1, clifford.by_name["py"])
+    g.act_local_rotation(0, clifford.hadamard)
+    g.act_local_rotation(1, clifford.hadamard)
+    g.act_local_rotation(1, clifford.py)
     assert not g.has_edge(0, 1)
     g.act_cz(0, 1)
     assert g.has_edge(0, 1)

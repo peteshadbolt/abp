@@ -31,7 +31,7 @@ class GraphState(object):
             self.adj = data.adj.copy()
             self.node = data.node.copy()
             for key, value in self.node.items():
-                self.node[key]["vop"] = data.node[key].get("vop", clifford.by_name["identity"])
+                self.node[key]["vop"] = data.node[key].get("vop", clifford.identity)
         except AttributeError:
             try: 
                 # Provided with a list of node names?
@@ -144,10 +144,10 @@ class GraphState(object):
             self._toggle_edge(i, j)
 
         self.node[v]["vop"] = clifford.times_table[
-            self.node[v]["vop"], clifford.by_name["msqx_h"]]
+            self.node[v]["vop"], clifford.msqx_h]
         for i in self.adj[v]:
             self.node[i]["vop"] = clifford.times_table[
-                self.node[i]["vop"], clifford.by_name["sqz_h"]]
+                self.node[i]["vop"], clifford.sqz_h]
 
     def act_local_rotation(self, node, operation):
         """ Act a local rotation on a qubit
@@ -229,11 +229,11 @@ class GraphState(object):
         if phase == -1:
             result = not result
 
-        if basis == clifford.by_name["px"]:
+        if basis == clifford.px:
             result, determinate = self._measure_graph_x(node, result)
-        elif basis == clifford.by_name["py"]:
+        elif basis == clifford.py:
             result, determinate = self._measure_graph_y(node, result)
-        elif basis == clifford.by_name["pz"]:
+        elif basis == clifford.pz:
             result, determinate = self._measure_graph_z(node, result)
         else:
             raise ValueError("You can only measure in {X,Y,Z}")
