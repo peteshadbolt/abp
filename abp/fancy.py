@@ -10,7 +10,8 @@ import util
 
 class GraphState(graphstate.GraphState, nx.Graph):
     def __init__(self, *args, **kwargs):
-        if type(args[0])==nx.Graph:
+        if args and type(args[0]) == nx.Graph:
+            graphstate.GraphState.__init__(self)
             self.from_nx(args[0])
         else:
             graphstate.GraphState.__init__(self, *args, **kwargs)
