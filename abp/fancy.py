@@ -1,6 +1,6 @@
 import time, atexit, json
 import sys
-import networkx
+import networkx as nx
 import numpy as np
 import websocket
 from socket import error as socket_error
@@ -8,7 +8,7 @@ import graphstate
 import clifford
 import util
 
-class GraphState(graphstate.GraphState, networkx.Graph):
+class GraphState(graphstate.GraphState, nx.Graph):
     def __init__(self, *args, **kwargs):
         graphstate.GraphState.__init__(self, *args, **kwargs)
         self.connect_to_server()
@@ -50,7 +50,7 @@ class GraphState(graphstate.GraphState, networkx.Graph):
 
     def layout(self):
         """ Automatically lay out the graph """
-        pos = networkx.spring_layout(self, dim=3, scale=np.sqrt(self.order()))
+        pos = nx.spring_layout(self, dim=3, scale=np.sqrt(self.order()))
         middle = np.average(pos.values(), axis=0)
         pos = {key: value - middle for key, value in pos.items()}
         for key, (x, y, z) in pos.items():

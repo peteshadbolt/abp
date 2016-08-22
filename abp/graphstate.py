@@ -16,10 +16,10 @@ class GraphState(object):
     Internally it uses the same dictionary-of-dictionaries data structure as ``networkx``.
     """
 
-    def __init__(self, nodes=[], deterministic=False, vop="identity"):
+    def __init__(self, data=(), deterministic=False, vop="identity"):
         """ Construct a ``GraphState``
 
-        :param nodes: An iterable of nodes used to construct the graph, or an integer -- the number of nodes.
+        :param data: An iterable of nodes used to construct the graph, or an integer -- the number of nodes, or a ``nx.Graph``.
         :param deterministic: If ``True``, the behaviour of the graph is deterministic up to but not including the choice of measurement outcome. This is slightly less efficient, but useful for testing. If ``False``, the specific graph representation will sometimes be random -- of course, all possible representations still map to the same state vector.
         :param vop: The default VOP for new qubits. Setting ``vop="identity"`` initializes qubits in :math:`|+\\rangle`. Setting ``vop="hadamard"`` initializes qubits in :math:`|0\\rangle`.
         """
@@ -27,11 +27,20 @@ class GraphState(object):
         self.deterministic = deterministic
         self.adj, self.node = {}, {}
         try:
-            for n in nodes:
-                self._add_node(n, vop=vop)
-        except TypeError:
-            for n in range(nodes):
-                self._add_node(n, vop=vop)
+            # Cloning from a networkx graph
+            self.adj = data.adj.copy()
+            self.node = data.node.copy()
+            for key, value in self.node.items():
+                self.node[key]["vop"] = data.node[key].get("vop", clifford.by_name["identity"])
+        except AttributeError:
+            try: 
+                # Provided with a list of node names?
+                for n in data:
+                    self._add_node(n, vop=vop)
+            except TypeError:
+                # Provided with an integer?
+                for n in range(data):
+                    self._add_node(n, vop=vop)
 
     def _add_node(self, node, **kwargs):
         """ Add a node. By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
