@@ -78,35 +78,8 @@ Working with GraphStates
 The ``abp.GraphState`` class is the main interface to ``abp``.  
 
 .. autoclass:: abp.GraphState
-
-    .. automethod:: abp.GraphState.__init__
-
-    .. automethod:: abp.GraphState.add_qubit
-
-    .. automethod:: abp.GraphState.act_local_rotation
-
-    .. automethod:: abp.GraphState.act_hadamard
-
-    .. automethod:: abp.GraphState.act_cz
-
-    .. automethod:: abp.GraphState.act_circuit
-
-    .. automethod:: abp.GraphState.measure
-
-    .. automethod:: abp.GraphState.to_json
-
-    .. automethod:: abp.GraphState.to_state_vector
-
-    .. automethod:: abp.GraphState.to_stabilizer
-
-    .. automethod:: abp.GraphState.remove_vop
-
-    .. automethod:: abp.GraphState.measure_x
-
-    .. automethod:: abp.GraphState.measure_y
-    
-    .. automethod:: abp.GraphState.measure_z
-
+    :special-members: __init__
+    :members:
 
 .. _clifford:
 
