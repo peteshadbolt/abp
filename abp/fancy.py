@@ -25,7 +25,6 @@ class GraphState(graphstate.GraphState, nx.Graph):
         """ Close the connection to the websocket """
         if not self.ws:
             return
-        self.update()
         self.ws.close()
 
     def update(self, delay = 0.5):
