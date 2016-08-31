@@ -196,11 +196,13 @@ class GraphState(object):
         if new_edge != edge:
             self._toggle_edge(a, b)
 
-    def measure(self, node, basis, force=None, detail=False):
+    def measure(self, node, basis, force=None, detail=False, friend=None):
         """ Measure in an arbitrary basis
 
         :param node: The name of the qubit to measure.
         :param basis: The basis in which to measure.
+        :param friend: Specify a node to toggle about when performing an :math:`X` measurement.
+        :type friend: Any neighbour of ``node``.
         :type basis: :math:`\in` ``{"px", "py", "pz"}``
         :param force: Forces the measurement outcome.
         :type force: boolean
@@ -230,7 +232,7 @@ class GraphState(object):
             result = not result
 
         if basis == clifford.px:
-            result, determinate = self._measure_graph_x(node, result)
+            result, determinate = self._measure_graph_x(node, result, friend)
         elif basis == clifford.py:
             result, determinate = self._measure_graph_y(node, result)
         elif basis == clifford.pz:
@@ -252,7 +254,7 @@ class GraphState(object):
         else:
             return int(result)
 
-    def measure_x(self, node, force=None, detail=False):
+    def measure_x(self, node, force=None, detail=False, friend=None):
         """ Measure in the X basis
 
         :param node: The name of the qubit to measure.
@@ -260,9 +262,11 @@ class GraphState(object):
         :type force: boolean
         :param detail: Provide detailed information
         :type detail: boolean
+        :param friend: Specify a node to toggle about
+        :type friend: Any neighbour of ``node``.
 
         """
-        return self.measure(node, "px", force, detail)
+        return self.measure(node, "px", force, detail, friend)
 
     def measure_y(self, node, force=None, detail=False):
         """ Measure in the Y basis
@@ -299,16 +303,19 @@ class GraphState(object):
                 done.add((j, i))
                 self._toggle_edge(i, j)
 
-    def _measure_graph_x(self, node, result):
+    def _measure_graph_x(self, node, result, friend=None):
         """ Measure the bare graph in the X-basis """
         if len(self.adj[node]) == 0:
             return 0, True
 
-        # Pick a vertex
-        if self.deterministic:
-            friend = sorted(self.adj[node].keys())[0]
+        # Pick a friend vertex
+        if friend == None:
+            if self.deterministic:
+                friend = sorted(self.adj[node].keys())[0]
+            else:
+                friend = next(self.adj[node].iterkeys())
         else:
-            friend = next(self.adj[node].iterkeys())
+            assert friend in self.adj[node].keys() # TODO: unnecessary assert
 
         # Update the VOPs. TODO: pretty ugly
         if result:
