@@ -134,11 +134,11 @@ class GraphState(object):
 
         for v in reversed(clifford.decompositions[self.node[node]["vop"]]):
             if v == "x":
-                self.local_complementation(node, "U ->")
+                self.local_complementation(node)
             else:
-                self.local_complementation(swap_qubit, "V ->")
+                self.local_complementation(swap_qubit)
 
-    def local_complementation(self, v, prefix=""):
+    def local_complementation(self, v):
         """ As defined in LISTING 1 of Anders & Briegel """
         for i, j in it.combinations(self.adj[v], 2):
             self._toggle_edge(i, j)
