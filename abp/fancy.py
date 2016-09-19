@@ -43,7 +43,7 @@ class GraphState(graphstate.GraphState, nx.Graph):
             time.sleep(delay)
         except websocket._exceptions.WebSocketTimeoutException:
             print "Timed out ... you might be pushing a bit hard"
-            sys.exit(0)
+            time.sleep(delay)
             #self.ws.close()
             #self.connect_to_server()
 
