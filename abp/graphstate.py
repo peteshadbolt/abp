@@ -292,6 +292,27 @@ class GraphState(object):
         """
         return self.measure(node, "pz", force, detail)
 
+    def measure_sequence(self, measurements, forces=None, detail=False):
+        """ Measures a sequence of Paulis
+        
+        :param measurements: The sequence of measurements to be made, in the form [(node, basis), ...]
+        :type force: list of tuples
+        :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``. List outcome force values in same order as measurements
+        :type force: list
+        :param detail: Provide detailed information
+        :type detail: boolean
+        
+        """
+        forces = forces if forces != None else [random.choice([0, 1]) for i in range(len(measurements))]
+        measurements = zip(measurements, forces)
+        print measurements
+        results = []
+        for (node, basis), force in measurements:
+            result = self.measure(node, basis, force, detail)
+            print result
+            results += [result]
+        return results
+        
     def _toggle_edges(self, a, b):
         """ Toggle edges between vertex sets a and b """
         # TODO: i'm pretty sure this is just a single-line it.combinations or
