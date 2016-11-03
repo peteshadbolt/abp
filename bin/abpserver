@@ -26,6 +26,9 @@ def new_message(client, server, message):
         print edit
     else:
         print "Received update from python {}.".format(client["id"])
+        print message
+        local_state.from_json(json.loads(message))
+        print local_state
         server.send_message_to_all(message)
 
 def new_client(client, server):

@@ -42,6 +42,11 @@ class GraphState(object):
                 for n in range(data):
                     self._add_node(n, vop=vop)
 
+    def add_node(self, *args, **kwargs):
+        """ Add a node """
+        self._add_node(self, *args, **kwargs)
+
+
     def _add_node(self, node, **kwargs):
         """ Add a node. By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
 
