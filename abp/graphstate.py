@@ -305,11 +305,9 @@ class GraphState(object):
         """
         forces = forces if forces != None else [random.choice([0, 1]) for i in range(len(measurements))]
         measurements = zip(measurements, forces)
-        print measurements
         results = []
         for (node, basis), force in measurements:
             result = self.measure(node, basis, force, detail)
-            print result
             results += [result]
         return results
         
