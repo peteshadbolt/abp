@@ -26,3 +26,7 @@ websocket.connect = function(update) {
         gui.serverMessage("No connection to server. <a href='#' onclick='javascript:websocket.connect()'>Reconnect</a>.", true);
     };
 };
+
+websocket.edit = function (data) {
+    websocket.ws.send("edit:"+JSON.stringify(data));
+};

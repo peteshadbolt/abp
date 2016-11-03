@@ -48,18 +48,7 @@ editor.addQubitAtPoint = function(point) {
     }
     point.round();
 
-    // Check for clashes
-    for (var node in abj.node) {
-        var delta = new THREE.Vector3();
-        delta.subVectors(abj.node[node].position, point);
-        if (delta.length()<0.1){ return; }
-    }
-
-    // TODO: This SUCKS
-    var new_node = point.x + "." + point.y + "." + point.z;
-    abj.add_node(new_node, { position: point, vop:0 });
-    editor.focus(new_node);
-    graph.update();
+    websocket.edit({test:"test"});
     gui.serverMessage("Created node " + new_node +".");
 };
 

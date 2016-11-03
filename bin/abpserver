@@ -18,7 +18,8 @@ from pkg_resources import resource_filename
 clients = []
 
 def new_message(client, server, message):
-    if message.startswith("edit"):
+    if message.startswith("edit:"):
+        print message[5:]
         edit = json.loads(message[5:])
         print "Received update from javascript."
         print edit
