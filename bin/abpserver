@@ -12,13 +12,19 @@ import os, sys, threading
 import webbrowser
 import argparse
 import abp
+import json
 from pkg_resources import resource_filename
 
 clients = []
 
 def new_message(client, server, message):
-    print "Received update from client {}.".format(client["id"])
-    server.send_message_to_all(message)
+    if message.startswith("edit"):
+        edit = json.loads(message[5:])
+        print "Received update from javascript."
+        print edit
+    else:
+        print "Received update from python {}.".format(client["id"])
+        server.send_message_to_all(message)
 
 def new_client(client, server):
     print "Client {} connected.".format(client["id"])
