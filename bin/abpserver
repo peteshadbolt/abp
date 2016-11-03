@@ -16,6 +16,7 @@ import json
 from pkg_resources import resource_filename
 
 clients = []
+local_state = abp.GraphState()
 
 def new_message(client, server, message):
     if message.startswith("edit:"):

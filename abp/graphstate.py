@@ -405,9 +405,6 @@ class GraphState(object):
             >>> with open("graph.json") as f:
                     json.dump(graph.to_json(True), f)
 
-        .. todo::
-            Implement ``from_json()``!
-
         """
         if stringify:
             node = {str(key): value for key, value in self.node.items()}
@@ -416,6 +413,13 @@ class GraphState(object):
             return {"node": node, "adj": adj}
         else:
             return {"node": self.node, "adj": self.adj}
+
+    def from_json(self, data):
+        """ Construct the graph from JSON data 
+        :param data: JSON data to be read.
+        """
+        self.node = data["node"]
+        self.adj = data["adj"]
 
     def to_state_vector(self):
         """ Get the full state vector corresponding to this stabilizer state. Useful for debugging, interface with other simulators.
