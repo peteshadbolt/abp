@@ -47,8 +47,8 @@ editor.addQubitAtPoint = function(point) {
         return;
     }
     point.round();
-
-    websocket.edit({test:"test"});
+    var new_node = Math.floor(point.x*1000000 + point.y*1000 + point.z);
+    websocket.edit({action:"create", name:new_node, position: point});
     gui.serverMessage("Created node " + new_node +".");
 };
 
