@@ -47,8 +47,9 @@ editor.addQubitAtPoint = function(point) {
         return;
     }
     point.round();
-    var new_node = Math.floor(point.x*1000000 + point.y*1000 + point.z);
+    var new_node = Math.floor(point.x) + "," + Math.floor(point.y) + "," + Math.floor(point.z);
     websocket.edit({action:"create", name:new_node, position: point});
+    editor.focus(new_node);
     gui.serverMessage("Created node " + new_node +".");
 };
 
@@ -69,7 +70,8 @@ editor.onShiftClick = function() {
     if (found === undefined){ return; }
     if (editor.selection === undefined){ return; }
     if (found === editor.selection){ return; }
-    abj.act_cz(found, editor.selection);
+    //abj.act_cz(found, editor.selection);
+    websocket.edit({action:"cz", start:found, end:editor.selection});
     editor.focus(found);
     gui.serverMessage("Acted CZ between " + found + " & " + editor.selection + ".");
     graph.update();

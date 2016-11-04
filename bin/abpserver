@@ -20,9 +20,19 @@ local_state = abp.GraphState()
 
 def process_edit(edit, server):
     action = edit["action"]
+
+    print edit
+
+    print local_state.node.keys()
+
     if action == "create":
-        local_state.add_qubit(edit["name"], position=edit["position"])
-        server.send_message_to_all(json.dumps(local_state.to_json()))
+        print type(edit["name"])
+        local_state.add_qubit(edit["name"], position=edit["position"], vop=0)
+    if action == "cz":
+        local_state.act_cz(edit["start"], edit["end"])
+
+    server.send_message_to_all(json.dumps(local_state.to_json()))
+
 
 
 def new_message(client, server, message):
