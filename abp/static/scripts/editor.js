@@ -32,14 +32,9 @@ editor.onFreeMove = function() {
 };
 
 editor.focus = function(node) {
-    editor.grid.position.copy(abj.node[node].position);
-    gui.controls.target.copy(abj.node[node].position);
     gui.hideNodeMessage();
     editor.selection = node;
     gui.serverMessage("Selected node " + node + ".");
-    node_name.innerHTML = "Node " + node;
-    node_data.className = "visible";
-    node_vop.innerHTML = "VOP: " + abj.node[node].vop;
 };
 
 editor.addQubitAtPoint = function(point) {
@@ -135,6 +130,7 @@ editor.findNodeOnRay = function(ray) {
     }
     return undefined;
 };
+
 
 editor.deleteNode = function() {
     if (editor.selection === undefined){ return; }

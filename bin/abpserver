@@ -25,11 +25,14 @@ def process_edit(edit, server):
 
     print local_state.node.keys()
 
-    if action == "create":
-        print type(edit["name"])
-        local_state.add_qubit(edit["name"], position=edit["position"], vop=0)
-    if action == "cz":
-        local_state.act_cz(edit["start"], edit["end"])
+    try:
+        if action == "create":
+            print type(edit["name"])
+            local_state.add_qubit(edit["name"], position=edit["position"], vop=0)
+        if action == "cz":
+            local_state.act_cz(edit["start"], edit["end"])
+    except Exception as e:
+        print e
 
     server.send_message_to_all(json.dumps(local_state.to_json()))
 
