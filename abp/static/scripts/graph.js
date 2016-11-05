@@ -48,6 +48,7 @@ graph.update = function(newState) {
     }
 
     if (editor.selection) {
+        console.log(editor.selection);
         var node = editor.selection;
         editor.grid.position.copy(abj.node[node].position);
         gui.controls.target.copy(abj.node[node].position);

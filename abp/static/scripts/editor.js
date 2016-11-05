@@ -34,7 +34,8 @@ editor.onFreeMove = function() {
 editor.focus = function(node) {
     gui.hideNodeMessage();
     editor.selection = node;
-    gui.serverMessage("Selected node " + node + ".");
+
+    //gui.serverMessage("Selected node " + node + ".");
 };
 
 editor.addQubitAtPoint = function(point) {
@@ -52,6 +53,12 @@ editor.onClick = function() {
     var found = editor.findNodeOnRay(mouse.ray);
     if (found) {
         editor.focus(found);
+        var node=found;
+        editor.grid.position.copy(abj.node[node].position);
+        gui.controls.target.copy(abj.node[node].position);
+        node_name.innerHTML = "Node " + node;
+        node_data.className = "visible";
+        node_vop.innerHTML = "VOP: " + abj.node[node].vop;
     } else {
         var intersection = mouse.ray.intersectPlane(editor.plane);
         if (intersection !== null) {
@@ -67,8 +74,8 @@ editor.onShiftClick = function() {
     if (found === editor.selection){ return; }
     //abj.act_cz(found, editor.selection);
     websocket.edit({action:"cz", start:found, end:editor.selection});
-    editor.focus(found);
     gui.serverMessage("Acted CZ between " + found + " & " + editor.selection + ".");
+    editor.focus(found);
     graph.update();
 };
 
