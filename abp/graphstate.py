@@ -47,6 +47,16 @@ class GraphState(object):
         self._add_node(self, *args, **kwargs)
 
 
+    def _del_node(self, node):
+        """ Remove a node. TODO: this is a hack right now! """
+        if not node in self.node:
+            return
+        del self.node[node]
+        for k in self.adj[node]:
+            del self.adj[k][node]
+        del self.adj[node]
+
+
     def _add_node(self, node, **kwargs):
         """ Add a node. By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
 

@@ -77,7 +77,7 @@ editor.onCtrlClick = function() {
     if (found === undefined){ return; }
     if (editor.selection === undefined){ return; }
     editor.focus(found);
-    abj.act_hadamard(found);
+    websocket.edit({action:"hadamard", node:found});
     gui.serverMessage("Acted H on node " + found + ".");
     graph.update();
 };
@@ -134,7 +134,7 @@ editor.findNodeOnRay = function(ray) {
 
 editor.deleteNode = function() {
     if (editor.selection === undefined){ return; }
-    abj.del_node(editor.selection);
+    websocket.edit({action:"delete", node:editor.selection});
     graph.update();
     gui.serverMessage("Deleted node " + editor.selection + ".");
     editor.selection = undefined;

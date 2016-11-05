@@ -18,32 +18,28 @@ from pkg_resources import resource_filename
 clients = []
 local_state = abp.GraphState()
 
-def process_edit(edit, server):
+def process_edit(edit, client, server):
     action = edit["action"]
 
     print edit
 
-    print local_state.node.keys()
+    if action == "create":
+        local_state.add_qubit(edit["name"], position=edit["position"], vop=0)
+    if action == "cz":
+        local_state.act_cz(edit["start"], edit["end"])
+    if action == "hadamard":
+        local_state.act_cz(edit["start"], edit["end"])
+    if action == "delete":
+        local_state._del_node(edit["node"])
 
-    try:
-        if action == "create":
-            print type(edit["name"])
-            local_state.add_qubit(edit["name"], position=edit["position"], vop=0)
-        if action == "cz":
-            local_state.act_cz(edit["start"], edit["end"])
-    except Exception as e:
-        print e
-
-    server.send_message_to_all(json.dumps(local_state.to_json()))
-
-
+    server.send_message(client, json.dumps(local_state.to_json()))
 
 def new_message(client, server, message):
     if message.startswith("edit:"):
         print message[5:]
         edit = json.loads(message[5:])
         print "Received update from javascript."
-        process_edit(edit, server)
+        process_edit(edit, client, server)
     else:
         print "Received update from python {}.".format(client["id"])
         print message
@@ -54,6 +50,8 @@ def new_message(client, server, message):
 def new_client(client, server):
     print "Client {} connected.".format(client["id"])
     clients.append(client)
+    print "Sent state of {} nodes to client {}".format(local_state.order(), client["id"])
+    server.send_message(client, json.dumps(local_state.to_json()))
 
 def client_left(client, server):
     print "Client {} disconnected.".format(client["id"])
