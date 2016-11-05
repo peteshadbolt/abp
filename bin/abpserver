@@ -25,12 +25,20 @@ def process_edit(edit, client, server):
 
     if action == "create":
         local_state.add_qubit(edit["name"], position=edit["position"], vop=0)
-    if action == "cz":
+    elif action == "cz":
         local_state.act_cz(edit["start"], edit["end"])
-    if action == "hadamard":
-        local_state.act_cz(edit["start"], edit["end"])
-    if action == "delete":
+    elif action == "hadamard":
+        local_state.act_hadamard(edit["node"])
+    elif action == "phase":
+        local_state.act_local_rotation(edit["node"], "phase")
+    elif action == "delete":
         local_state._del_node(edit["node"])
+    elif action == "localcomplementation":
+        local_state.local_complementation(edit["node"])
+    elif action == "measure":
+        local_state.measure(edit["node"], "p"+edit["basis"])
+    else:
+        pass
 
     server.send_message(client, json.dumps(local_state.to_json()))
 

@@ -29,16 +29,14 @@
 <div id=node_name></div>
 <ul>
     <li id=node_vop></li>
-    <!--<li><a href="#">Measure in X</a></li>-->
-    <!--<li><a href="#">Measure in Y</a></li>-->
-    <!--<li><a href="#">Measure in Z</a></li>-->
-    <!--<li><a href="#">Act Hadamard</a></li>-->
-    <!--<li><a href="#">Act Phase</a></li>-->
-    <!--<li><a href="#" onclick="editor.localComplementation()">Invert neighbourhood</a></li>-->
-    <!--<li>-->
-    <!--<a href="#">IA</a>-->
-    <!--<a href="#">IB</a>-->
-    <!--</li>-->
+    <li>Measure in 
+    <a href="#" onclick="editor.measureX()">X</a> / 
+    <a href="#" onclick="editor.measureY()">Y</a> / 
+    <a href="#" onclick="editor.measureZ()">Z</a></li>
+    <li>Act 
+    <a href="#" onclick="editor.hadamard()">Hadamard</a> / 
+    <a href="#" onclick="editor.phase()">Phase</a></li>
+    <li><a href="#" onclick="editor.localComplementation()">Invert neighbourhood</a></li>
     <li><a href="#" onclick="editor.deleteNode()">Delete</a></li>
 </ul>
 </div>

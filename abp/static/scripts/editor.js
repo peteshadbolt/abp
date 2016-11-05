@@ -76,7 +76,6 @@ editor.onShiftClick = function() {
     websocket.edit({action:"cz", start:found, end:editor.selection});
     gui.serverMessage("Acted CZ between " + found + " & " + editor.selection + ".");
     editor.focus(found);
-    graph.update();
 };
 
 editor.onCtrlClick = function() {
@@ -86,7 +85,6 @@ editor.onCtrlClick = function() {
     editor.focus(found);
     websocket.edit({action:"hadamard", node:found});
     gui.serverMessage("Acted H on node " + found + ".");
-    graph.update();
 };
 
 
@@ -138,19 +136,49 @@ editor.findNodeOnRay = function(ray) {
     return undefined;
 };
 
-
 editor.deleteNode = function() {
     if (editor.selection === undefined){ return; }
     websocket.edit({action:"delete", node:editor.selection});
-    graph.update();
     gui.serverMessage("Deleted node " + editor.selection + ".");
     editor.selection = undefined;
     node_data.className = "hidden";
 };
 
+//TODO: loadsa space for DRY here
+
+editor.hadamard = function() {
+    if (editor.selection === undefined){ return; }
+    websocket.edit({action:"hadamard", node:editor.selection});
+    gui.serverMessage("Acted Hadamard on node " + editor.selection + ".");
+};
+
+editor.phase = function() {
+    if (editor.selection === undefined){ return; }
+    websocket.edit({action:"phase", node:editor.selection});
+    gui.serverMessage("Acted phase on node " + editor.selection + ".");
+};
+
+editor.measureX = function() {
+    if (editor.selection === undefined){ return; }
+    websocket.edit({action:"measure", node:editor.selection, basis:"x"});
+    gui.serverMessage("Measured node " + editor.selection + " in X.");
+};
+
+editor.measureY = function() {
+    if (editor.selection === undefined){ return; }
+    websocket.edit({action:"measure", node:editor.selection, basis:"y"});
+    gui.serverMessage("Measured node " + editor.selection + " in Y.");
+};
+
+editor.measureZ = function() {
+    if (editor.selection === undefined){ return; }
+    websocket.edit({action:"measure", node:editor.selection, basis:"z"});
+    gui.serverMessage("Measured node " + editor.selection + " in z.");
+};
+
 editor.localComplementation = function() {
     if (editor.selection === undefined){ return; }
+    websocket.edit({action:"localcomplementation", node:editor.selection});
     abj.local_complementation(editor.selection);
-    graph.update();
     gui.serverMessage("Inverted neighbourhood of " + editor.selection + ".");
 };
