@@ -1,7 +1,11 @@
 var websocket = {};
+websocket.update = undefined;
 
 websocket.connect = function(update) {
     websocket.ws = new WebSocket("ws://localhost:5000");
+    if (update){
+        websocket.update = update;
+    }
     websocket.ws.onopen = function(evt) {
         gui.serverMessage("Connected to server.");
     };
@@ -19,7 +23,7 @@ websocket.connect = function(update) {
                 json.node[i].vop = 0;
             }
         }
-        update(json);
+        websocket.update(json);
     };
 
     websocket.ws.onclose = function(evt) {
