@@ -44,6 +44,10 @@ editor.addQubitAtPoint = function(point) {
     }
     point.round();
     var new_node = Math.floor(point.x) + "," + Math.floor(point.y) + "," + Math.floor(point.z);
+    if (Object.prototype.hasOwnProperty.call(abj.node, new_node)) {
+        gui.serverMessage("Node " + new_node +" already exists.");
+        return;
+    }
     websocket.edit({action:"create", name:new_node, position: point});
     editor.focus(new_node);
     gui.serverMessage("Created node " + new_node +".");
