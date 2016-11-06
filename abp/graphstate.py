@@ -71,7 +71,10 @@ class GraphState(object):
             fred
 
         """
-        assert not node in self.node, "Node {} already exists".format(v)
+        if node in self.node:
+            print "Warning: node {} already exists".format(node)
+            return
+
         default = kwargs.get("default", "identity")
         self.adj[node] = {}
         self.node[node] = {}
