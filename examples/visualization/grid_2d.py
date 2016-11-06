@@ -2,13 +2,22 @@ from abp.fancy import GraphState
 from abp.util import xyz
 import itertools
 
-psi = GraphState()
-grid = itertools.product(range(10), range(10))
-for i, (x, y) in enumerate(grid):
-    psi.add_qubit(i, position=xyz(x, y, 0), vop=0)
+def grid_2d(width, height):
+    """ Make a 2D grid """
+    psi = GraphState()
+    grid = list(itertools.product(range(width), range(height)))
 
-for i in range(50):
-    psi.act_cz(i, i+1)
+    for x, y in grid:
+        psi.add_qubit((x, y), position=xyz(x, y, 0), vop=0)
 
-psi.update()
+    for x, y in grid:
+        if x<width-1: psi.act_cz((x, y), (x+1, y))
+        if y<height-1: psi.act_cz((x, y), (x, y+1))
+
+    return psi
+
+
+if __name__ == '__main__':
+    psi = grid_2d(5, 5)
+    psi.update()
 

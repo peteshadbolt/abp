@@ -34,10 +34,11 @@ nodes, edges = lattice(square_unit_cell, (10, 10))
 
 psi = GraphState()
 for node in nodes:
-    psi.add_node(str(node), position=xyz(node[0], node[1]))
+    psi.add_qubit(str(node), position=xyz(node[0], node[1]))
     psi.act_hadamard(str(node))
     psi.update(0.1)
 
 for edge in edges:
     psi.act_cz(str(edge[0]), str(edge[1]))
+psi.update(0.1)
 

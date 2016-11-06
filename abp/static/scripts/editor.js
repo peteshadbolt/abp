@@ -32,14 +32,10 @@ editor.onFreeMove = function() {
 };
 
 editor.focus = function(node) {
-    editor.grid.position.copy(abj.node[node].position);
-    gui.controls.target.copy(abj.node[node].position);
     gui.hideNodeMessage();
     editor.selection = node;
-    gui.serverMessage("Selected node " + node + ".");
-    node_name.innerHTML = "Node " + node;
-    node_data.className = "visible";
-    node_vop.innerHTML = "VOP: " + abj.node[node].vop;
+
+    //gui.serverMessage("Selected node " + node + ".");
 };
 
 editor.addQubitAtPoint = function(point) {
@@ -47,19 +43,13 @@ editor.addQubitAtPoint = function(point) {
         return;
     }
     point.round();
-
-    // Check for clashes
-    for (var node in abj.node) {
-        var delta = new THREE.Vector3();
-        delta.subVectors(abj.node[node].position, point);
-        if (delta.length()<0.1){ return; }
+    var new_node = Math.floor(point.x) + "," + Math.floor(point.y) + "," + Math.floor(point.z);
+    if (Object.prototype.hasOwnProperty.call(abj.node, new_node)) {
+        gui.serverMessage("Node " + new_node +" already exists.");
+        return;
     }
-
-    // TODO: This SUCKS
-    var new_node = point.x + "." + point.y + "." + point.z;
-    abj.add_node(new_node, { position: point, vop:0 });
+    websocket.edit({action:"create", name:new_node, position: point});
     editor.focus(new_node);
-    graph.update();
     gui.serverMessage("Created node " + new_node +".");
 };
 
@@ -67,6 +57,12 @@ editor.onClick = function() {
     var found = editor.findNodeOnRay(mouse.ray);
     if (found) {
         editor.focus(found);
+        var node=found;
+        editor.grid.position.copy(abj.node[node].position);
+        gui.controls.target.copy(abj.node[node].position);
+        node_name.innerHTML = "Node " + node;
+        node_data.className = "visible";
+        node_vop.innerHTML = "VOP: " + abj.node[node].vop;
     } else {
         var intersection = mouse.ray.intersectPlane(editor.plane);
         if (intersection !== null) {
@@ -80,10 +76,10 @@ editor.onShiftClick = function() {
     if (found === undefined){ return; }
     if (editor.selection === undefined){ return; }
     if (found === editor.selection){ return; }
-    abj.act_cz(found, editor.selection);
-    editor.focus(found);
+    //abj.act_cz(found, editor.selection);
+    websocket.edit({action:"cz", start:found, end:editor.selection});
     gui.serverMessage("Acted CZ between " + found + " & " + editor.selection + ".");
-    graph.update();
+    editor.focus(found);
 };
 
 editor.onCtrlClick = function() {
@@ -91,9 +87,8 @@ editor.onCtrlClick = function() {
     if (found === undefined){ return; }
     if (editor.selection === undefined){ return; }
     editor.focus(found);
-    abj.act_hadamard(found);
+    websocket.edit({action:"hadamard", node:found});
     gui.serverMessage("Acted H on node " + found + ".");
-    graph.update();
 };
 
 
@@ -147,16 +142,47 @@ editor.findNodeOnRay = function(ray) {
 
 editor.deleteNode = function() {
     if (editor.selection === undefined){ return; }
-    abj.del_node(editor.selection);
-    graph.update();
+    websocket.edit({action:"delete", node:editor.selection});
     gui.serverMessage("Deleted node " + editor.selection + ".");
     editor.selection = undefined;
     node_data.className = "hidden";
 };
 
+//TODO: loadsa space for DRY here
+
+editor.hadamard = function() {
+    if (editor.selection === undefined){ return; }
+    websocket.edit({action:"hadamard", node:editor.selection});
+    gui.serverMessage("Acted Hadamard on node " + editor.selection + ".");
+};
+
+editor.phase = function() {
+    if (editor.selection === undefined){ return; }
+    websocket.edit({action:"phase", node:editor.selection});
+    gui.serverMessage("Acted phase on node " + editor.selection + ".");
+};
+
+editor.measureX = function() {
+    if (editor.selection === undefined){ return; }
+    websocket.edit({action:"measure", node:editor.selection, basis:"x"});
+    gui.serverMessage("Measured node " + editor.selection + " in X.");
+};
+
+editor.measureY = function() {
+    if (editor.selection === undefined){ return; }
+    websocket.edit({action:"measure", node:editor.selection, basis:"y"});
+    gui.serverMessage("Measured node " + editor.selection + " in Y.");
+};
+
+editor.measureZ = function() {
+    if (editor.selection === undefined){ return; }
+    websocket.edit({action:"measure", node:editor.selection, basis:"z"});
+    gui.serverMessage("Measured node " + editor.selection + " in z.");
+};
+
 editor.localComplementation = function() {
     if (editor.selection === undefined){ return; }
+    websocket.edit({action:"localcomplementation", node:editor.selection});
     abj.local_complementation(editor.selection);
-    graph.update();
     gui.serverMessage("Inverted neighbourhood of " + editor.selection + ".");
 };

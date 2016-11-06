@@ -26,6 +26,9 @@ html, body { margin: 0; padding: 0; overflow: hidden; font-size:  10pt; font-fam
     font-size: 9pt;
 }
 
+#node_name {
+    font-size: 12pt;
+}
 
 #node_data {
     background-color: black;

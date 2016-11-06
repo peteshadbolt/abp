@@ -47,6 +47,23 @@ graph.update = function(newState) {
         edges.add(newEdge);
     }
 
+    if (editor.selection) {
+        console.log(editor.selection);
+        var node = editor.selection;
+        if (Object.prototype.hasOwnProperty.call(abj.node, node)) {
+            editor.grid.position.copy(abj.node[node].position);
+            gui.controls.target.copy(abj.node[node].position);
+            node_name.innerHTML = "Node " + node;
+            node_data.className = "visible";
+            node_vop.innerHTML = "VOP: " + abj.node[node].vop;
+        } else {
+            editor.selection = undefined;
+            node_data.className = "hidden";
+        }
+    } else {
+        node_data.className = "hidden";
+    } 
+
     var particles = new THREE.Points(geometry, materials.qubit);
     var object = new THREE.Object3D();
     object.name = "graphstate";
@@ -54,5 +71,6 @@ graph.update = function(newState) {
     object.add(edges);
     gui.scene.add(object);
     gui.render();
+
 };
 

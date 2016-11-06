@@ -12,17 +12,55 @@ import os, sys, threading
 import webbrowser
 import argparse
 import abp
+import json
 from pkg_resources import resource_filename
+from pprint import pprint
+import time
 
 clients = []
+local_state = abp.GraphState()
+
+def process_edit(edit, client, server):
+    action = edit["action"]
+
+    pprint(edit)
+
+    if action == "create":
+        local_state.add_qubit(edit["name"], position=edit["position"], vop=0)
+    elif action == "cz":
+        local_state.act_cz(edit["start"], edit["end"])
+    elif action == "hadamard":
+        local_state.act_hadamard(edit["node"])
+    elif action == "phase":
+        local_state.act_local_rotation(edit["node"], "phase")
+    elif action == "delete":
+        local_state._del_node(edit["node"])
+    elif action == "localcomplementation":
+        local_state.local_complementation(edit["node"])
+    elif action == "measure":
+        local_state.measure(edit["node"], "p"+edit["basis"])
+    else:
+        pass
+
+    #server.send_message(client, json.dumps(local_state.to_json()))
+    server.send_message_to_all(json.dumps(local_state.to_json()))
 
 def new_message(client, server, message):
-    print "Received update from client {}.".format(client["id"])
-    server.send_message_to_all(message)
+    if message.startswith("edit:"):
+        edit = json.loads(message[5:])
+        process_edit(edit, client, server)
+    else:
+        print "Received update from python {}.".format(client["id"])
+        print message
+        local_state.from_json(json.loads(message))
+        print local_state
+        server.send_message_to_all(message)
 
 def new_client(client, server):
     print "Client {} connected.".format(client["id"])
     clients.append(client)
+    print "Sent state of {} nodes to client {}".format(local_state.order(), client["id"])
+    server.send_message(client, json.dumps(local_state.to_json()))
 
 def client_left(client, server):
     print "Client {} disconnected.".format(client["id"])

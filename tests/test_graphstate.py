@@ -131,3 +131,10 @@ def test_from_nx():
 
     psi = GraphState(nx.Graph(((0, 1),)))
 
+def test_del_node():
+    """ Test deleting nodes """
+    g = GraphState(10)
+    g.act_circuit(mock.random_stabilizer_circuit())
+    g._del_node(0)
+    assert g.order() == 9
+

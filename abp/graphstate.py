@@ -42,6 +42,21 @@ class GraphState(object):
                 for n in range(data):
                     self._add_node(n, vop=vop)
 
+    def add_node(self, *args, **kwargs):
+        """ Add a node """
+        self._add_node(self, *args, **kwargs)
+
+
+    def _del_node(self, node):
+        """ Remove a node. TODO: this is a hack right now! """
+        if not node in self.node:
+            return
+        del self.node[node]
+        for k in self.adj[node]:
+            del self.adj[k][node]
+        del self.adj[node]
+
+
     def _add_node(self, node, **kwargs):
         """ Add a node. By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
 
@@ -56,7 +71,10 @@ class GraphState(object):
             fred
 
         """
-        assert not node in self.node, "Node {} already exists".format(v)
+        if node in self.node:
+            print "Warning: node {} already exists".format(node)
+            return
+
         default = kwargs.get("default", "identity")
         self.adj[node] = {}
         self.node[node] = {}
@@ -405,9 +423,6 @@ class GraphState(object):
             >>> with open("graph.json") as f:
                     json.dump(graph.to_json(True), f)
 
-        .. todo::
-            Implement ``from_json()``!
-
         """
         if stringify:
             node = {str(key): value for key, value in self.node.items()}
@@ -416,6 +431,13 @@ class GraphState(object):
             return {"node": node, "adj": adj}
         else:
             return {"node": self.node, "adj": self.adj}
+
+    def from_json(self, data):
+        """ Construct the graph from JSON data 
+        :param data: JSON data to be read.
+        """
+        self.node = data["node"]
+        self.adj = data["adj"]
 
     def to_state_vector(self):
         """ Get the full state vector corresponding to this stabilizer state. Useful for debugging, interface with other simulators.
