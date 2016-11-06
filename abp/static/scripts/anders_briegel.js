@@ -56,4 +56,18 @@ abj.order = function(){
     return Object.keys(abj.node).length;
 };
 
+abj.edgelist = function() {
+    var seen = {};
+    var output = [];
+    for (var i in abj.adj) {
+        for (var j in abj.adj[i]) {
+            if (!Object.prototype.hasOwnProperty.call(seen, j)) {
+                output.push([i, j]);
+            }
+        }
+        seen[i] = true;
+    }
+    return output;
+};
+
 
