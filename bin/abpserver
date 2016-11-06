@@ -42,7 +42,8 @@ def process_edit(edit, client, server):
     else:
         pass
 
-    server.send_message(client, json.dumps(local_state.to_json()))
+    #server.send_message(client, json.dumps(local_state.to_json()))
+    server.send_message_to_all(json.dumps(local_state.to_json()))
 
 def new_message(client, server, message):
     if message.startswith("edit:"):
