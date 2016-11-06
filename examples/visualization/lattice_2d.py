@@ -40,4 +40,5 @@ for node in nodes:
 
 for edge in edges:
     psi.act_cz(str(edge[0]), str(edge[1]))
+psi.update(0.1)
 
