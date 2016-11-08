@@ -59,3 +59,13 @@ def test_projection():
     g.act_local_rotation(0, "hadamard")
     g.measure(0, "pz", 1)
     assert np.allclose(g.to_state_vector().state, qi.one)
+
+def test_measure_sequence():
+    """ Simple test of measurement sequences """
+    g = GraphState(2, vop="identity")
+    g.act_cz(0, 1)
+    assert g.measure_sequence(((0, "px"), (1, "px")), forces=(0, 1)) == [0, 1]
+    assert len(g.edgelist()) == 0
+    assert g.node[1]["vop"] == clifford.pz
+
+
