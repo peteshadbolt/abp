@@ -76,6 +76,7 @@ if __name__ == '__main__':
 
     # Change to the right working dir
     where = os.path.abspath(resource_filename("abp.static", ""))
+    print where
     os.chdir(where)
 
     # Start the HTTP server
