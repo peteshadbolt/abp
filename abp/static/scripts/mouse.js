@@ -1,6 +1,7 @@
 var mouse = {};
 mouse.wasClick = true;
 mouse.pressed = false;
+mouse.leniency = 4;
 
 mouse.raycaster = new THREE.Raycaster();
 
@@ -30,6 +31,8 @@ mouse.prepare = function() {
 mouse.onDown = function(event) {
     mouse.wasClick = true;
     mouse.pressed = true;
+    mouse.startX = event.clientX;
+    mouse.startY = event.clientY;
 };
 
 mouse.onUp = function(event) {
@@ -48,7 +51,9 @@ mouse.onUp = function(event) {
 
 mouse.onMove = function(event) {
     // TODO: wasclick sux
-    mouse.wasClick = false;
+    if (Math.abs(event.clientX - mouse.startX)>mouse.leniency || Math.abs(event.clientY - mouse.startY)>mouse.leniency){
+        mouse.wasClick = false;
+    }
     mouse.position_absolute = {
         x: event.clientX,
         y: event.clientY
