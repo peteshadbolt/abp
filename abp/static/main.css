@@ -41,6 +41,17 @@ html, body { margin: 0; padding: 0; overflow: hidden; font-size:  10pt; font-fam
     font-size: 9pt;
 }
 
+#version {
+    color:black;
+    padding: 10px;
+    font-family:"courier new";
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    font-size: 9pt;
+}
+
+
 
 ul {
     list-style-type: none;
