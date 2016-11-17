@@ -9,6 +9,7 @@ import json, random
 import qi, clifford, util
 from stabilizer import Stabilizer
 
+
 class GraphState(object):
 
     """
@@ -31,9 +32,10 @@ class GraphState(object):
             self.adj = data.adj.copy()
             self.node = data.node.copy()
             for key, value in self.node.items():
-                self.node[key]["vop"] = data.node[key].get("vop", clifford.identity)
+                self.node[key]["vop"] = data.node[
+                    key].get("vop", clifford.identity)
         except AttributeError:
-            try: 
+            try:
                 # Provided with a list of node names?
                 for n in data:
                     self._add_node(n, vop=vop)
@@ -46,7 +48,6 @@ class GraphState(object):
         """ Add a node """
         self._add_node(self, *args, **kwargs)
 
-
     def _del_node(self, node):
         """ Remove a node. TODO: this is a hack right now! """
         if not node in self.node:
@@ -55,7 +56,6 @@ class GraphState(object):
         for k in self.adj[node]:
             del self.adj[k][node]
         del self.adj[node]
-
 
     def _add_node(self, node, **kwargs):
         """ Add a node. By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
@@ -78,19 +78,21 @@ class GraphState(object):
         default = kwargs.get("default", "identity")
         self.adj[node] = {}
         self.node[node] = {}
-        kwargs["vop"] = clifford.by_name[str(kwargs.get("vop", "identity"))] #TODO: ugly
+        kwargs["vop"] = clifford.by_name[
+            str(kwargs.get("vop", "identity"))]  # TODO: ugly
         self.node[node].update(kwargs)
 
     def add_qubit(self, name, **kwargs):
-        """ Add a qubit to the state. 
+        """ Add a qubit to the state.
 
         :param name: The name of the node, e.g. ``9``, ``start``.
         :type name: Any hashable type
         :param kwargs: Any extra node attributes
 
-        By default, qubits are initialized in the :math:`|0\\rangle` state. Provide the optional ``vop`` argument to set the initial state. 
+        By default, qubits are initialized in the :math:`|0\\rangle` state. Provide the optional ``vop`` argument to set the initial state.
         """
-        kwargs["vop"] = clifford.by_name[str(kwargs.get("vop", "hadamard"))] #TODO: ugly
+        kwargs["vop"] = clifford.by_name[
+            str(kwargs.get("vop", "hadamard"))]  # TODO: ugly
         self._add_node(name, **kwargs)
 
     def act_circuit(self, circuit):
@@ -224,14 +226,14 @@ class GraphState(object):
         :type basis: :math:`\in` ``{"px", "py", "pz"}``
         :param force: Forces the measurement outcome.
         :type force: boolean
-        :param detail: Get detailed information. 
+        :param detail: Get detailed information.
         :type detail: boolean
-        
+
         Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome :math:`\in\{0, 1\}`, use ``force``.
 
         You can get more information by setting ``detail=True``, in which case ``measure()`` returns a dictionary with the following keys:
 
-        - ``outcome``: the measurement outcome. 
+        - ``outcome``: the measurement outcome.
         - ``determinate``: indicates whether the outcome was determinate or random. For example, measuring :math:`|0\\rangle`  in :math:`\sigma_x` always gives a deterministic outcome. ``determinate`` is overridden by ``force`` -- forced outcomes are always determinate.
         - ``conjugated_basis``: The index of the measurement operator, rotated by the vertex operator of the measured node, i.e. :math:`U_\\text{vop} \sigma_m U_\\text{vop}^\dagger`.
         - ``phase``: The phase of the cojugated basis, :math:`\pm 1`.
@@ -263,8 +265,8 @@ class GraphState(object):
             result = not result
 
         if detail:
-            return {"outcome": int(result), 
-                    "determinate": (determinate or force!=None),
+            return {"outcome": int(result),
+                    "determinate": (determinate or force != None),
                     "conjugated_basis": basis,
                     "phase": phase,
                     "node": node,
@@ -310,6 +312,26 @@ class GraphState(object):
         """
         return self.measure(node, "pz", force, detail)
 
+    def measure_sequence(self, measurements, forces=None, detail=False):
+        """ Measures a sequence of Paulis
+
+        :param measurements: The sequence of measurements to be made, in the form [(node, basis), ...]
+        :type force: list of tuples
+        :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``. List outcome force values in same order as measurements
+        :type force: list
+        :param detail: Provide detailed information
+        :type detail: boolean
+
+        """
+        forces = forces if forces != None else [
+            random.choice([0, 1]) for i in range(len(measurements))]
+        measurements = zip(measurements, forces)
+        results = []
+        for (node, basis), force in measurements:
+            result = self.measure(node, basis, force, detail)
+            results += [result]
+        return results
+
     def _toggle_edges(self, a, b):
         """ Toggle edges between vertex sets a and b """
         # TODO: i'm pretty sure this is just a single-line it.combinations or
@@ -333,7 +355,7 @@ class GraphState(object):
             else:
                 friend = next(self.adj[node].iterkeys())
         else:
-            assert friend in self.adj[node].keys() # TODO: unnecessary assert
+            assert friend in self.adj[node].keys()  # TODO: unnecessary assert
 
         # Update the VOPs. TODO: pretty ugly
         if result:
@@ -433,7 +455,7 @@ class GraphState(object):
             return {"node": self.node, "adj": self.adj}
 
     def from_json(self, data):
-        """ Construct the graph from JSON data 
+        """ Construct the graph from JSON data
         :param data: JSON data to be read.
         """
         self.node = data["node"]
@@ -463,17 +485,17 @@ class GraphState(object):
         return state
 
     def to_stabilizer(self):
-        """ 
+        """
         Get the stabilizer representation of the state::
 
             >>> print g.to_stabilizer()
                0    1    2    3    100  200
               ------------------------------
-               X    Z    Z    X            
-               Z    X    Z                 
-               Z    Z    X                 
-             - Z              Z            
-                                   X    Z  
+               X    Z    Z    X
+               Z    X    Z
+               Z    Z    X
+             - Z              Z
+                                   X    Z
                                    Z    X
 
         """
@@ -490,4 +512,3 @@ class GraphState(object):
         g.adj = self.adj.copy()
         g.deterministic = self.deterministic
         return g
-
