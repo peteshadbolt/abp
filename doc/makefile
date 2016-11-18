@@ -192,5 +192,5 @@ pseudoxml:
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
 
 deploy:
-	scp -r ./_build/html/* rpi:abp/
+	rsync -uav ./_build/html/* rpi:abp/
 
