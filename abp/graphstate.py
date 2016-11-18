@@ -7,6 +7,7 @@ This module implements Anders and Briegel's method for fast simulation of Cliffo
 import itertools as it
 import json, random
 import qi, clifford, util
+import abp
 from stabilizer import Stabilizer
 
 
@@ -17,15 +18,13 @@ class GraphState(object):
     Internally it uses the same dictionary-of-dictionaries data structure as ``networkx``.
     """
 
-    def __init__(self, data=(), deterministic=False, vop="identity"):
+    def __init__(self, data=(), vop="identity"):
         """ Construct a ``GraphState``
 
         :param data: An iterable of nodes used to construct the graph, or an integer -- the number of nodes, or a ``nx.Graph``.
-        :param deterministic: If ``True``, the behaviour of the graph is deterministic up to but not including the choice of measurement outcome. This is slightly less efficient, but useful for testing. If ``False``, the specific graph representation will sometimes be random -- of course, all possible representations still map to the same state vector.
         :param vop: The default VOP for new qubits. Setting ``vop="identity"`` initializes qubits in :math:`|+\\rangle`. Setting ``vop="hadamard"`` initializes qubits in :math:`|0\\rangle`.
         """
 
-        self.deterministic = deterministic
         self.adj, self.node = {}, {}
         try:
             # Cloning from a networkx graph
@@ -149,7 +148,7 @@ class GraphState(object):
 
         """
         others = set(self.adj[node]) - {avoid}
-        if self.deterministic:
+        if abp.DETERMINISTIC:
             swap_qubit = min(others) if others else avoid
         else:
             swap_qubit = others.pop() if others else avoid
@@ -352,7 +351,7 @@ class GraphState(object):
 
         # Pick a friend vertex
         if friend == None:
-            if self.deterministic:
+            if abp.DETERMINISTIC:
                 friend = sorted(self.adj[node].keys())[0]
             else:
                 friend = next(self.adj[node].iterkeys())
@@ -511,5 +510,4 @@ class GraphState(object):
         g = GraphState()
         g.node = self.node.copy()
         g.adj = self.adj.copy()
-        g.deterministic = self.deterministic
         return g

@@ -3,6 +3,7 @@ Mock graphs used for testing
 """
 
 import numpy as np
+import abp
 from abp import GraphState, clifford, qi
 from numpy import random
 import nose
@@ -13,6 +14,7 @@ except ImportError:
 
 # We always run with A&B's CZ table when we are testing
 clifford.use_old_cz()
+
 
 class AndersWrapper(graphsim.GraphRegister):
 
@@ -52,7 +54,8 @@ class ABPWrapper(GraphState):
     """ A wrapper for abp, just to ensure determinism """
 
     def __init__(self, nodes=[]):
-        super(ABPWrapper, self).__init__(nodes, deterministic=True, vop="hadamard")
+        abp.DETERMINISTIC = True
+        super(ABPWrapper, self).__init__(nodes, vop="hadamard")
 
     def print_stabilizer(self):
         print self.to_stabilizer()
