@@ -168,5 +168,4 @@ def test_sqrt_notation(n=2):
     c = mock.random_stabilizer_circuit(n)
     g = GraphState(range(n))
     g.act_circuit(c)
-    print g.to_state_vector()
 

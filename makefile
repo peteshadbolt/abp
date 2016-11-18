@@ -10,4 +10,4 @@ sdist:
 
 deploy: sdist doc
 	$(MAKE) -C $(DOC_DIR) deploy
-	python setup.py sdist register upload
+	python setup.py sdist upload
