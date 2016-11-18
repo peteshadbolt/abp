@@ -1,4 +1,4 @@
-# abp
+# abp 0.4.18
 
 Python port of Anders and Briegel' s [method](https://arxiv.org/abs/quant-ph/0504117) for fast simulation of Clifford circuits. You can read the full documentation [here](https://peteshadbolt.co.uk/abp/).
 
@@ -7,7 +7,7 @@ Python port of Anders and Briegel' s [method](https://arxiv.org/abs/quant-ph/050
 It's easiest to install with `pip`:
 
 ```shell
-$ pip install --user abp
+$ pip install --user abp==0.4.18
 ```
 
 Or clone and install in `develop` mode:
