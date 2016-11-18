@@ -62,18 +62,9 @@ class GraphState(object):
         self._del_node(node)
 
     def _add_node(self, node, **kwargs):
-        """ Add a node. By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
-
-        :param node: The name of the node, e.g. ``9``, ``start``
-        :type node: Any hashable type
-        :param kwargs: Any extra node attributes
-
-        Example of using node attributes ::
-
-            >>> g.add_node(0, label="fred", position=(1,2,3))
-            >>> g.node[0]["label"]
-            fred
-
+        """ Add a node. 
+        
+        By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
         """
         if node in self.node:
             print "Warning: node {} already exists".format(node)
@@ -94,6 +85,13 @@ class GraphState(object):
         :param kwargs: Any extra node attributes
 
         By default, qubits are initialized in the :math:`|0\\rangle` state. Provide the optional ``vop`` argument to set the initial state.
+
+        Example of using node attributes ::
+
+            >>> g._add_node(0, label="fred", position=(1,2,3))
+            >>> g.node[0]["label"]
+            fred 
+
         """
         kwargs["vop"] = clifford.by_name[
             str(kwargs.get("vop", "hadamard"))]  # TODO: ugly
