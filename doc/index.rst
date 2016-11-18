@@ -48,7 +48,7 @@ Quickstart
 It's pretty easy to build a graph state, act some gates, and do measurements::
 
     >>> from abp import GraphState
-    >>> g = GraphState(range(5))
+    >>> g = GraphState(5)
     >>> for i in range(5):
     ...     g.act_hadamard(i)
     ... 
@@ -110,7 +110,7 @@ Then browse to ``http://localhost:5001/`` (in some circumstances ``abp`` will au
 Now, in another terminal, use ``abp.fancy.GraphState`` to run a Clifford circuit::
 
     >>> from abp.fancy import GraphState
-    >>> g = GraphState(range(10))
+    >>> g = GraphState(10)
     >>> g.act_circuit([(i, "hadamard") for i in range(10)])
     >>> g.act_circuit([((i, i+1), "cz") for i in range(9)])
     >>> g.update()
