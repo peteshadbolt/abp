@@ -17,17 +17,6 @@ DECOMPOSITIONS = (
                   "xxxzx", "xzz", "zzx", "xxx", "x", "zzzx", "xxzx", "zx", "zxxx", "xxxz", "xzzz", "xz", "xzxx")
 
 
-JS_TEMPLATE = """\
-var tables = {{
-    decompositions : {decompositions},
-    conjugation_table : {conjugation_table},
-    times_table : {times_table},
-    cz_table : {cz_table},
-    clifford : {by_name},
-    measurement_table: {measurement_table}
-}};
-"""
-
 PY_TEMPLATE = """\
 import numpy as np
 
@@ -222,17 +211,8 @@ def write_python(data):
         f.write(content)
 
 
-def write_javascript(data):
-    """ Write the tables to javascript files for consumption in the browser """
-    path = join(split(dirname(__file__))[0], "static/scripts/tables.js")
-    content = JS_TEMPLATE.format(**data)
-    with open(path, "w") as f:
-        f.write(content)
-
-
 if __name__ == '__main__':
     get_display_table(get_unitaries())
-    #data = compute_everything()
-    #data = human_readable(data)
-    # write_python(data)
-    # write_javascript(data)
+    data = compute_everything()
+    data = human_readable(data)
+    write_python(data)

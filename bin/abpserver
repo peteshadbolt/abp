@@ -17,6 +17,7 @@ from pkg_resources import resource_filename
 from pprint import pprint
 import time
 
+abp.DETERMINISTIC = True
 clients = []
 local_state = abp.GraphState()
 
