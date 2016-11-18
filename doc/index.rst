@@ -45,32 +45,84 @@ If you want to modify and test ``abp`` without having to re-install, switch into
 Quickstart
 ----------------------------
 
-It's pretty easy to build a graph state, act some gates, and do measurements::
+Let's make a new ``GraphState`` object with a register of three qubits:
 
     >>> from abp import GraphState
-    >>> g = GraphState(5)
-    >>> for i in range(5):
-    ...     g.act_hadamard(i)
-    ... 
-    >>> for i in range(4):
-    ...     g.act_cz(i, i+1)
-    ... 
-    >>> print g 
-    0:  IA	(1,)
-    1:  IA	(0,2)
-    2:  IA	(1,3)
-    3:  IA	(2,4)
-    4:  IA	(3,)
-    >>> g.measure(2, "px")
-    0
-    >>> print g
-    0:  IA	(3,)
-    1:  ZC	(3,)
-    2:  IA	-
-    3:  ZA	(0,1,4)
-    4:  IA	(3,)
+    >>> g = GraphState(3)
 
-Working with GraphStates
+All the qubits are initialized by default in the :math:`|+\rangle` state:
+
+    >>> print g.to_state_vector()
+    |000❭: 	 √1/8	+ i √0
+    |100❭: 	 √1/8	+ i √0
+    |010❭: 	 √1/8	+ i √0
+    |110❭: 	 √1/8	+ i √0
+    |001❭: 	 √1/8	+ i √0
+    |101❭: 	 √1/8	+ i √0
+    |011❭: 	 √1/8	+ i √0
+    |111❭: 	 √1/8	+ i √0
+
+We can also check the stabilizer tableau:
+
+    >>> print g.to_stabilizer()
+     0  1  2
+    ---------
+     X      
+        X   
+           X
+
+Or look directly at the vertex operators and neighbour lists:
+
+    >>> print g
+    0:  IA	-
+    1:  IA	-
+    2:  IA	-
+
+This representation might be unfamiliar. Each row shows the index of the qubit, then the _vertex operator_, then a list of neighbouring qubits. To understand vertex operators, read the original paper by Anders and Briegel.
+
+Let's act a Hadamard gate on the zeroth qubit -- this will evolve qubit ``0`` to the :math:`H|+\rangle = |1\rangle` state:
+
+    >>> g.act_hadamard(0)
+    >>> print g.to_state_vector()
+    |000❭: 	 √1/4	+ i √0
+    |010❭: 	 √1/4	+ i √0
+    |001❭: 	 √1/4	+ i √0
+    |011❭: 	 √1/4	+ i √0
+    
+    >>> print g
+    0:  YC	-
+    1:  IA	-
+    2:  IA	-
+
+And now run some CZ gates:
+
+    >>> g.act_cz(0,1)
+    >>> g.act_cz(1,2)
+    >>> print g
+    0:  YC	-
+    1:  IA	(2,)
+    2:  IA	(1,)
+
+    >>> print g.to_state_vector()
+    |000❭: 	 √1/4	+ i √0
+    |010❭: 	 √1/4	+ i √0
+    |001❭: 	 √1/4	+ i √0
+    |011❭: 	-√1/4	+ i √0
+
+Tidy up a bit:
+
+    >>> g.del_node(0)
+    >>> g.act_hadamard(0)
+    >>> print g.to_state_vector()
+    |00❭: 	 √1/2	+ i √0
+    |11❭: 	 √1/2	+ i √0
+
+Cool, we made a Bell state. Incidentally, those those state vectors and stabilizers are real objects with methods, not just string-like representations of the state:
+
+
+
+
+GraphState API
 -------------------------
 
 The ``abp.GraphState`` class is the main interface to ``abp``.  

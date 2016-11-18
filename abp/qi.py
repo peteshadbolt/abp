@@ -123,10 +123,18 @@ class CircuitModel(object):
         b = normalize_global_phase(other.state)
         return np.allclose(a, b)
 
+    def __setitem__(self, key, value):
+        """ Set a matrix element """
+        self.state[key] = value
+
+    def __getitem__(self, key):
+        """ Get a matrix element """
+        return self.state[key]
+
     def __str__(self):
         s = ""
         for i in range(self.d):
-            label = bin(i)[2:].rjust(self.nqubits, "0")
+            label = bin(i)[2:].rjust(self.nqubits, "0")[::-1]
             if abs(self.state[i, 0]) > 0.00001:
                 term = self.state[i, 0]
                 real_sign = " " if term.real>=0 else "-"

@@ -169,3 +169,10 @@ def test_sqrt_notation(n=2):
     g = GraphState(range(n))
     g.act_circuit(c)
 
+def test_indexint():
+    """ Test that we can index into state vectors """
+    psi = qi.CircuitModel(0)
+    assert psi[0] == 1+0j
+    psi[0] = 42
+    assert psi[0] == 42
+
