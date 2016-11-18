@@ -440,7 +440,7 @@ class GraphState(object):
 
         :param stringify: JSON keys must be strings, But sometimes it is useful to have a JSON-like object whose keys are tuples.
 
-        If you want to dump a graph do disk, do something like this::
+        If you want to dump a graph to disk, do something like this::
 
             >>> import json
             >>> with open("graph.json") as f:
