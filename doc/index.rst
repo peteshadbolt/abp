@@ -78,7 +78,7 @@ Or look directly at the vertex operators and neighbour lists:
     1:  IA	-
     2:  IA	-
 
-This representation might be unfamiliar. Each row shows the index of the qubit, then the _vertex operator_, then a list of neighbouring qubits. To understand vertex operators, read the original paper by Anders and Briegel.
+This representation might be unfamiliar. Each row shows the index of the qubit, then the **vertex operator**, then a list of neighbouring qubits. To understand vertex operators, read the original paper by Anders and Briegel.
 
 Let's act a Hadamard gate on the zeroth qubit -- this will evolve qubit ``0`` to the :math:`H|+\rangle = |1\rangle` state:
 
@@ -88,7 +88,6 @@ Let's act a Hadamard gate on the zeroth qubit -- this will evolve qubit ``0`` to
     |010❭: 	 √1/4	+ i √0
     |001❭: 	 √1/4	+ i √0
     |011❭: 	 √1/4	+ i √0
-    
     >>> print g
     0:  YC	-
     1:  IA	-
@@ -102,7 +101,6 @@ And now run some CZ gates:
     0:  YC	-
     1:  IA	(2,)
     2:  IA	(1,)
-
     >>> print g.to_state_vector()
     |000❭: 	 √1/4	+ i √0
     |010❭: 	 √1/4	+ i √0
@@ -117,9 +115,35 @@ Tidy up a bit:
     |00❭: 	 √1/2	+ i √0
     |11❭: 	 √1/2	+ i √0
 
-Cool, we made a Bell state. Incidentally, those those state vectors and stabilizers are real objects with methods, not just string-like representations of the state:
+Cool, we made a Bell state. Incidentally, those those state vectors and stabilizers are genuine Python objects, not just stringy representations of the state:
 
+    >>> g = abp.GraphState(2)
+    >>> g.act_cz(0, 1)
+    >>> g.act_hadamard(0)
+    >>> psi = g.to_state_vector()
+    >>> print psi
+    |00❭: 	 √1/2	+ i √0
+    |11❭: 	 √1/2	+ i √0
 
+``psi`` is a state vector -- i.e. it is an exponentially large vector of complex numbers. We can still run gates on it:
+
+    >>> psi.act_cnot(0, 1)  
+    >>> psi.act_hadamard(0)
+    >>> print psi
+    |00❭: 	 √1	+ i √0
+
+But these operations will be very slow. Let's have a look at the stabilizer tableau:
+
+    >>> tab = g.to_stabilizer()
+    >>> print tab
+     0  1
+     ------
+     Z  Z
+     X  X
+    >>> print tab.tableau
+    {0: {0: 3, 1: 3}, 1: {0: 1, 1: 1}}
+    >>> print tab[0, 0]
+    3
 
 
 GraphState API

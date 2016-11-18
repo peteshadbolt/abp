@@ -19,3 +19,6 @@ def test_stabilizers_against_anders_and_briegel(n=10):
 
         assert da == db
 
+def test_stabilizer_access():
+    g = GraphState(3)
+    print g.to_stabilizer()[0, 0]

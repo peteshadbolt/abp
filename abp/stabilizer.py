@@ -33,6 +33,10 @@ class Stabilizer(object):
         return {"paulis": self.tableau,
                 "phases": {key: m[value] for key, value in self.phases.items()}}
 
+    def __getitem__(self, (i, j)):
+        """" Pass straight through to the dictionary """
+        return self.tableau[i][j]
+
     def __str__(self):
         """ Represent as a string """
         keys = map(str, self.tableau.keys())
