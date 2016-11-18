@@ -19,8 +19,6 @@ This is the documentation for ``abp``. It's a work in progress.
 ``abp`` is a Python port of Anders and Briegel' s `method <https://arxiv.org/abs/quant-ph/0504117>`_ for fast simulation of Clifford circuits. 
 That means that you can make quantum states of thousands of qubits, perform any sequence of Clifford operations, and measure in any of :math:`\{\sigma_x, \sigma_y, \sigma_z\}`.
 
-.. image:: ../examples/demo.gif
-
 Installing
 ----------------------------
 
@@ -118,8 +116,6 @@ Now, in another terminal, use ``abp.fancy.GraphState`` to run a Clifford circuit
     >>> g.update()
 
 And you should see a 3D visualization of the state. You can call ``update()`` in a loop to see an animation.
-
-.. image:: ../examples/viz.png
 
 Reference
 ----------------------------

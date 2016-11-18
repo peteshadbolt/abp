@@ -2,8 +2,6 @@
 
 Python port of Anders and Briegel' s [method](https://arxiv.org/abs/quant-ph/0504117) for fast simulation of Clifford circuits. You can read the full documentation [here](https://peteshadbolt.co.uk/abp/).
 
-![demo](examples/demo.gif)
-
 ## Installation
 
 It's easiest to install with `pip`:
@@ -48,9 +46,7 @@ Now, in another terminal, use `abp.fancy.GraphState` to run a Clifford circuit:
 >>> g.update()
 ```
 
-And you should see a visualization of the state:
-
-![demo](examples/viz.png)
+And you should see a visualization of the state.
 
 ## Testing
 
