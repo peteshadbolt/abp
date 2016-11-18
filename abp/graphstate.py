@@ -62,7 +62,7 @@ class GraphState(object):
 
     def _add_node(self, node, **kwargs):
         """ Add a node. 
-        
+
         By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
         """
         if node in self.node:
@@ -425,7 +425,8 @@ class GraphState(object):
         """ Represent as a string for quick debugging """
         s = ""
         for key in sorted(self.node.keys()):
-            s += "{}:  {}\t".format(key, clifford.get_name(self.node[key]["vop"]))
+            s += "{}:  {}\t".format(key,
+                                    clifford.get_name(self.node[key]["vop"]))
             if self.adj[key]:
                 s += str(tuple(self.adj[key].keys())).replace(" ", "")
             else:
