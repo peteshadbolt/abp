@@ -91,7 +91,8 @@ def get_by_name(unitaries, conjugation_table):
     """ Get a lookup table of cliffords by name """
     a = {name: find_clifford(u, unitaries)
          for name, u in qi.by_name.items()}
-    a.update({key+"_h": conjugation_table[value] for key, value in a.items()})
+    a.update({key + "_h": conjugation_table[value]
+              for key, value in a.items()})
     a.update({clifford.get_name(i): i for i in range(24)})
     a.update({i: i for i in range(24)})
     return a
@@ -130,7 +131,7 @@ def get_measurement_entry(operator, unitary):
     unitary = reduce(np.dot, matrices, np.eye(2, dtype=complex))
     operator = qi.operators[operator]
     new_operator = reduce(np.dot,
-                         (unitary, operator, qi.hermitian_conjugate(unitary)))
+                          (unitary, operator, qi.hermitian_conjugate(unitary)))
 
     for i, o in enumerate(qi.operators):
         if np.allclose(o, new_operator):
@@ -169,13 +170,14 @@ def get_cz_table(unitaries):
     cz_table = np.zeros((2, 24, 24, 3), dtype=int)
     rows = list(
         it.product([0, 1], it.combinations_with_replacement(range(24), 2)))
-                # CZ is symmetric so we only need combinations
+    # CZ is symmetric so we only need combinations
     for bond, (c1, c2) in tqdm(rows, desc="Building CZ table"):
         newbond, c1p, c2p = find_cz(
             bond, c1, c2, commuters, state_table)
         cz_table[bond, c1, c2] = [newbond, c1p, c2p]
         cz_table[bond, c2, c1] = [newbond, c2p, c1p]
     return cz_table
+
 
 def get_display_table(unitaries):
     """ Used to display VOPs in a human readable style """
@@ -232,5 +234,5 @@ if __name__ == '__main__':
     get_display_table(get_unitaries())
     #data = compute_everything()
     #data = human_readable(data)
-    #write_python(data)
-    #write_javascript(data)
+    # write_python(data)
+    # write_javascript(data)
