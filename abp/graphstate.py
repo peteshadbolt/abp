@@ -276,41 +276,15 @@ class GraphState(object):
             return int(result)
 
     def measure_x(self, node, force=None, detail=False, friend=None):
-        """ Measure in the X basis
-
-        :param node: The name of the qubit to measure.
-        :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``.
-        :type force: boolean
-        :param detail: Provide detailed information
-        :type detail: boolean
-        :param friend: Specify a node to toggle about
-        :type friend: Any neighbour of ``node``.
-
-        """
+        """ Measure in the X basis """
         return self.measure(node, "px", force, detail, friend)
 
     def measure_y(self, node, force=None, detail=False):
-        """ Measure in the Y basis
-
-        :param node: The name of the qubit to measure.
-        :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``.
-        :type force: boolean
-        :param detail: Provide detailed information
-        :type detail: boolean
-
-        """
+        """ Measure in the Y basis """
         return self.measure(node, "py", force, detail)
 
     def measure_z(self, node, force=None, detail=False):
-        """ Measure in the Z basis
-
-        :param node: The name of the qubit to measure.
-        :param force: Measurements in quantum mechanics are probabilistic. If you want to force a particular outcome, use the ``force``.
-        :type force: boolean
-        :param detail: Provide detailed information
-        :type detail: boolean
-
-        """
+        """ Measure in the Z basis """
         return self.measure(node, "pz", force, detail)
 
     def measure_sequence(self, measurements, forces=None, detail=False):
@@ -512,3 +486,4 @@ class GraphState(object):
         g.node = self.node.copy()
         g.adj = self.adj.copy()
         return g
+

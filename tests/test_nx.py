@@ -1,6 +1,6 @@
 import json
 import networkx as nx
-from abp import GraphState, fancy
+from abp import GraphState, NXGraphState
 from abp import clifford
 from abp.util import xyz
 from mock import simple_graph
@@ -16,7 +16,7 @@ def test_json_basic():
 
 def test_tuple_keys():
     """ Test that we can use tuple-ish keys """
-    g = fancy.GraphState()
+    g = NXGraphState()
     g.add_qubit("string")
     g.add_qubit((1, 2, 3))
     g.add_edge((1, 2, 3), "string")
@@ -24,8 +24,8 @@ def test_tuple_keys():
 
 
 def networkx_test():
-    """ Test that fancy graph states really behave like networkx graphs """
-    g = fancy.GraphState()
+    """ Test that NXGraphStates really behave like networkx graphs """
+    g = NXGraphState()
     g.add_qubit(0, position=xyz(10, 0, 0))
     g.add_qubit(1, position=xyz(1, 0, 0))
     g.act_hadamard(0)
@@ -37,9 +37,9 @@ def networkx_test():
 def test_from_nx():
     """ Test that making graphs from networkx objects goes smoothly """
     g = nx.random_geometric_graph(100, 2)
-    psi = fancy.GraphState(g)
+    psi = NXGraphState(g)
     assert psi.node[0]["vop"] == 0
     assert len(psi.edges()) > 0
     psi.measure(0, "px", detail=True)
 
-    psi = fancy.GraphState(nx.Graph(((0, 1),)))
+    psi = NXGraphState(nx.Graph(((0, 1),)))

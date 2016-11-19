@@ -35,10 +35,10 @@ abp.clifford module
     :undoc-members:
     :show-inheritance:
 
-abp.fancy module
+abp.nxgraphstate module
 ----------------
 
-.. automodule:: abp.fancy
+.. automodule:: abp.nxgraphstate
     :members:
     :undoc-members:
     :show-inheritance:

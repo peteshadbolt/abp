@@ -31,8 +31,8 @@ def lattice(unit_cell, size):
 
 nodes, edges = lattice(threedee_unit_cell, (4, 4, 4))
 
+psi = GraphState()
 while True:
-    psi = GraphState()
     for node in nodes:
         psi.add_qubit(str(node), position=xyz(node[0], node[1], node[2]), vop="identity")
     psi.update(0.1)
