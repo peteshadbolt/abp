@@ -50,7 +50,7 @@ Let's make a new ``GraphState`` object with a register of three qubits:
     >>> from abp import GraphState
     >>> g = GraphState(3)
 
-All the qubits are initialized by default in the :math:`|+\rangle` state:
+All the qubits are initialized by default in the :math:`|+\rangle` state::
 
     >>> print g.to_state_vector()
     |000❭: 	 √1/8	+ i √0
@@ -62,7 +62,7 @@ All the qubits are initialized by default in the :math:`|+\rangle` state:
     |011❭: 	 √1/8	+ i √0
     |111❭: 	 √1/8	+ i √0
 
-We can also check the stabilizer tableau:
+We can also check the stabilizer tableau::
 
     >>> print g.to_stabilizer()
      0  1  2
@@ -71,7 +71,7 @@ We can also check the stabilizer tableau:
         X   
            X
 
-Or look directly at the vertex operators and neighbour lists:
+Or look directly at the vertex operators and neighbour lists::
 
     >>> print g
     0:  IA	-
@@ -80,7 +80,7 @@ Or look directly at the vertex operators and neighbour lists:
 
 This representation might be unfamiliar. Each row shows the index of the qubit, then the **vertex operator**, then a list of neighbouring qubits. To understand vertex operators, read the original paper by Anders and Briegel.
 
-Let's act a Hadamard gate on the zeroth qubit -- this will evolve qubit ``0`` to the :math:`H|+\rangle = |1\rangle` state:
+Let's act a Hadamard gate on the zeroth qubit -- this will evolve qubit ``0`` to the :math:`H|+\rangle = |1\rangle` state::
 
     >>> g.act_hadamard(0)
     >>> print g.to_state_vector()
@@ -93,7 +93,7 @@ Let's act a Hadamard gate on the zeroth qubit -- this will evolve qubit ``0`` to
     1:  IA	-
     2:  IA	-
 
-And now run some CZ gates:
+And now run some CZ gates::
 
     >>> g.act_cz(0,1)
     >>> g.act_cz(1,2)
@@ -107,7 +107,7 @@ And now run some CZ gates:
     |001❭: 	 √1/4	+ i √0
     |011❭: 	-√1/4	+ i √0
 
-Tidy up a bit:
+Tidy up a bit::
 
     >>> g.del_node(0)
     >>> g.act_hadamard(0)
@@ -115,7 +115,7 @@ Tidy up a bit:
     |00❭: 	 √1/2	+ i √0
     |11❭: 	 √1/2	+ i √0
 
-Cool, we made a Bell state. Incidentally, those those state vectors and stabilizers are genuine Python objects, not just stringy representations of the state:
+Cool, we made a Bell state. Incidentally, those those state vectors and stabilizers are genuine Python objects, not just stringy representations of the state::
 
     >>> g = abp.GraphState(2)
     >>> g.act_cz(0, 1)
@@ -125,14 +125,14 @@ Cool, we made a Bell state. Incidentally, those those state vectors and stabiliz
     |00❭: 	 √1/2	+ i √0
     |11❭: 	 √1/2	+ i √0
 
-``psi`` is a state vector -- i.e. it is an exponentially large vector of complex numbers. We can still run gates on it:
+``psi`` is a state vector -- i.e. it is an exponentially large vector of complex numbers. We can still run gates on it::
 
     >>> psi.act_cnot(0, 1)  
     >>> psi.act_hadamard(0)
     >>> print psi
     |00❭: 	 √1	+ i √0
 
-But these operations will be very slow. Let's have a look at the stabilizer tableau:
+But these operations will be very slow. Let's have a look at the stabilizer tableau::
 
     >>> tab = g.to_stabilizer()
     >>> print tab
