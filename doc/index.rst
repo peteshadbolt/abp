@@ -207,9 +207,10 @@ The ``clifford`` module provides a few useful functions:
 Testing
 ----------------------
 
-``abp`` has a bunch of tests. You can run them all with `nose`::
+``abp`` has a bunch of tests. It tests against all sorts of things, including the circuit model, Anders & Briegels' original code, Scott Aaronson's  ``chp``, and common sense. You can run all the tests using ``nose``::
 
     $ nosetests
+    ...
     53 tests run in 39.5 seconds (53 tests passed)
 
 Currently I use some reference implementations of ``chp`` and ``graphsim`` which you won't have installed, so some tests will be skipped. That's expected.
