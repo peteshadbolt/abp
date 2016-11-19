@@ -24,7 +24,11 @@ local_state = abp.GraphState()
 def process_edit(edit, client, server):
     action = edit["action"]
 
-    pprint(edit)
+    print action.upper()
+    for key, value in edit.items():
+        if key!="action":
+            print " {}: {}".format(key, value)
+    print
 
     if action == "create":
         local_state.add_qubit(edit["name"], position=edit["position"], vop=0)
