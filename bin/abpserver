@@ -52,9 +52,9 @@ def new_message(client, server, message):
         process_edit(edit, client, server)
     else:
         print "Received update from python {}.".format(client["id"])
-        print message
+        # print message
         local_state.from_json(json.loads(message))
-        print local_state
+        # print local_state
         server.send_message_to_all(message)
 
 def new_client(client, server):
