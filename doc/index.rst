@@ -145,6 +145,11 @@ But these operations will be very slow. Let's have a look at the stabilizer tabl
     >>> print tab[0, 0]
     3
 
+Quantum mechanics is nondeterminstic. However, it's often useful to get determinstic behaviour for testing purposes. You can force ``abp`` to behave determinstically by setting::
+
+    >>> abp.DETERMINSTIC = True
+
+
 Visualization
 ----------------------
 
