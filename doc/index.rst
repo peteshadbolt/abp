@@ -145,6 +145,41 @@ But these operations will be very slow. Let's have a look at the stabilizer tabl
     >>> print tab[0, 0]
     3
 
+Visualization
+----------------------
+
+``abp`` comes with a tool to visualize graph states in a WebGL compatible web browser (Chrome, Firefox, Safari etc). It uses a client-server architecture.
+
+First, run ``abpserver -v`` in a terminal:
+
+.. code-block:: bash
+
+    $ abpserver -v
+    Listening on port 5000 for clients..
+
+This ought to pop open a browser window at ``http://localhost:5001/``. You can run ``abpserver --help`` for help.  Now, in another terminal, use ``abp.fancy.GraphState`` to run a Clifford circuit::
+
+    >>> from abp.fancy import GraphState
+    >>> g = GraphState(10)
+    >>> g.act_circuit([(i, "hadamard") for i in range(10)])
+    >>> g.act_circuit([((i, i+1), "cz") for i in range(9)])
+    >>> g.update()
+
+And you should see a 3D visualization of the state. You can call ``update()`` in a loop to see an animation.
+
+By default, the graph is automatically laid out in 3D using the Fruchterman-Reingold force-directed algorithm (i.e. springs). If you want to specify geometry, give each node a position attribute::
+    
+    >>> g.add_qubit(0, position={"x": 0, "y":0, "z":0}, vop="identity")
+    >>> g.add_qubit(0, position={"x": 1, "y":0, "z":0}, vop="identity")
+
+There's a utility function in ``abp.util`` to construct those dictionaries::
+
+    >>> from abp.util import xyz
+    >>> g.add_qubit(0, position=xyz(0, 0, 0), vop="identity")
+    >>> g.add_qubit(1, position=xyz(0, 0, 1), vop="identity")
+
+Note that if **any** nodes are missing a ``position`` attribute, ``abp`` will revert to automatic layout for **all** qubits.
+
 
 GraphState API
 -------------------------
@@ -168,30 +203,6 @@ The ``clifford`` module provides a few useful functions:
 
 .. autofunction:: abp.clifford.use_old_cz
     :noindex:
-
-Visualization
-----------------------
-
-``abp`` comes with a tool to visualize graph states in a WebGL compatible web browser (Chrome, Firefox, Safari etc). It uses a client-server architecture.
-
-First, run ``abpserver`` in a terminal:
-
-.. code-block:: bash
-
-    $ abpserver
-    Listening on port 5000 for clients..
-
-Then browse to ``http://localhost:5001/`` (in some circumstances ``abp`` will automatically pop a browser window).
-
-Now, in another terminal, use ``abp.fancy.GraphState`` to run a Clifford circuit::
-
-    >>> from abp.fancy import GraphState
-    >>> g = GraphState(10)
-    >>> g.act_circuit([(i, "hadamard") for i in range(10)])
-    >>> g.act_circuit([((i, i+1), "cz") for i in range(9)])
-    >>> g.update()
-
-And you should see a 3D visualization of the state. You can call ``update()`` in a loop to see an animation.
 
 Reference
 ----------------------------
