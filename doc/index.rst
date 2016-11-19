@@ -204,6 +204,16 @@ The ``clifford`` module provides a few useful functions:
 .. autofunction:: abp.clifford.use_old_cz
     :noindex:
 
+Testing
+----------------------
+
+``abp`` has a bunch of tests. You can run them all with `nose`::
+
+    $ nosetests
+    53 tests run in 39.5 seconds (53 tests passed)
+
+Currently I use some reference implementations of ``chp`` and ``graphsim`` which you won't have installed, so some tests will be skipped. That's expected.
+
 Reference
 ----------------------------
 
