@@ -1,6 +1,8 @@
 import networkx as nx
+import numpy as np
 import graphstate
 import clifford
+import util
 
 class NXGraphState(graphstate.GraphState, nx.Graph):
     """ This is GraphState with NetworkX-like abilities """
@@ -15,10 +17,3 @@ class NXGraphState(graphstate.GraphState, nx.Graph):
         for key, (x, y, z) in pos.items():
             self.node[key]["position"] = util.xyz(x, y, z)
 
-    def add_vops(self):
-        """ Automatically add vops if they're not present """
-        for key in self.node:
-            if not "vop" in self.node[key]:
-                self.node[key]["vop"] = clifford.identity
-
-        
