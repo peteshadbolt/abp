@@ -1,4 +1,4 @@
-from abp.fancy import GraphState
+from abp import GraphState, VizClient
 from abp.util import xyz
 import numpy as np
 import time
@@ -31,14 +31,16 @@ def lattice(unit_cell, size):
 
 nodes, edges = lattice(threedee_unit_cell, (4, 4, 4))
 
-psi = GraphState()
+v = VizClient()
 while True:
+    psi = GraphState()
     for node in nodes:
+        v.update(psi, 0.1)
         psi.add_qubit(str(node), position=xyz(node[0], node[1], node[2]), vop="identity")
-    psi.update(0.1)
 
     for edge in edges:
+        v.update(psi, 0.1)
         psi.act_cz(str(edge[0]), str(edge[1]))
-    psi.update(0.1)
+    del psi
 
 
