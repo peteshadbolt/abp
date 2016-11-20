@@ -112,6 +112,11 @@ class GraphState(object):
             else:
                 self.act_local_rotation(node, operation)
 
+    def act_czs(self, *pairs):
+        """ Shorthand to act many CZs """
+        for a, b in pairs:
+            self.act_cz(a, b)
+
     def _add_edge(self, v1, v2, data={}):
         """ Add an edge between two vertices """
         self.adj[v1][v2] = data

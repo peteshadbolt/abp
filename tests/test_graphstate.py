@@ -83,6 +83,13 @@ def test_cz():
     assert g.has_edge(0, 1)
 
 
+def test_czs():
+    """ Test multiple CZ shorthand """
+    g = GraphState([0, 1, 2])
+    g.act_czs((0, 1), (1, 2))
+    assert len(g.edgelist()) == 2
+
+
 def test_local_complementation():
     """ Test that local complementation works okay """
     pairs = (0, 1), (0, 3), (1, 3), (1, 2), 
