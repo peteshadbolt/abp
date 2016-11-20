@@ -1,4 +1,4 @@
-from abp.fancy import GraphState
+from abp import GraphState, VizClient
 from abp.util import xyz
 import itertools
 
@@ -19,5 +19,6 @@ def grid_2d(width, height):
 
 if __name__ == '__main__':
     psi = grid_2d(5, 5)
-    psi.update()
+    v = VizClient()
+    v.update(psi)
 
