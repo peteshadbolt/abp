@@ -162,13 +162,14 @@ First, run ``abpserver -v`` in a terminal:
     $ abpserver -v
     Listening on port 5000 for clients..
 
-This ought to pop open a browser window at ``http://localhost:5001/``. You can run ``abpserver --help`` for help.  Now, in another terminal, use ``abp.fancy.GraphState`` to run a Clifford circuit::
+This ought to pop open a browser window at ``http://localhost:5001/``. You can run ``abpserver --help`` for help.  Now use an instance of ``abp.VizClient`` to show the state in the browser::
 
-    >>> from abp.fancy import GraphState
+    >>> from abp import GraphState, VizClient
     >>> g = GraphState(10)
     >>> g.act_circuit([(i, "hadamard") for i in range(10)])
     >>> g.act_circuit([((i, i+1), "cz") for i in range(9)])
-    >>> g.update()
+    >>> v = VizClient()
+    >>> v.update(g)
 
 And you should see a 3D visualization of the state. You can call ``update()`` in a loop to see an animation.
 
