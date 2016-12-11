@@ -1,7 +1,7 @@
 var materials = {};
 
 var curveProperties = {
-    splineDensity: 10,
+    splineDensity: 1,
     curvature: 20
 };
 
@@ -12,7 +12,7 @@ materials.prepare = function() {
     materials.edge = new THREE.LineBasicMaterial({
         color: "gray",
         transparent: false,
-        linewidth: 2
+        linewidth: 3
     });
     materials.qubit = new THREE.PointsMaterial({
         size: 0.3,
