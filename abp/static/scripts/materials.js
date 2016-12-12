@@ -1,7 +1,7 @@
 var materials = {};
 
 var curveProperties = {
-    splineDensity: 10,
+    splineDensity: 1,
     curvature: 20
 };
 
@@ -12,8 +12,9 @@ materials.prepare = function() {
     materials.edge = new THREE.LineBasicMaterial({
         color: "gray",
         transparent: false,
-        linewidth: 2
+        linewidth: 3
     });
+    materials.edge.depthTest = false;
     materials.qubit = new THREE.PointsMaterial({
         size: 0.3,
         map: ballSprite,
@@ -21,7 +22,10 @@ materials.prepare = function() {
         transparent: true,
         vertexColors: THREE.VertexColors
     });
+    materials.edge.depthTest = false;
 };
+
+console.log("what");
 
 materials.makeCurve = function(a, b) {
     var length = new THREE.Vector3().subVectors(a, b).length();

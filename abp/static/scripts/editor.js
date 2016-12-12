@@ -124,6 +124,7 @@ editor.setOrientation = function(orientation) {
 editor.makeGrid = function() {
     editor.grid = new THREE.GridHelper(10, 1);
     editor.grid.setColors(0xbbbbbb, 0xeeeeee);
+    editor.grid.renderOrder = 1000;
     editor.setOrientation(0);
     gui.scene.add(editor.grid);
 };
