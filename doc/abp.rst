@@ -36,7 +36,7 @@ abp.clifford module
     :show-inheritance:
 
 abp.nxgraphstate module
--------------------
+-----------------------
 
 .. automodule:: abp.nxgraphstate
     :members:
