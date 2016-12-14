@@ -10,7 +10,7 @@ materials.prepare = function() {
     var ballSprite = new THREE.Texture(document.getElementById("ball"));
     ballSprite.needsUpdate = true;
     materials.edge = new THREE.LineBasicMaterial({
-        color: "gray",
+        color: "red",
         transparent: false,
         linewidth: 3
     });
