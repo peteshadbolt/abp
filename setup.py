@@ -6,7 +6,7 @@ STATIC = glob("abp/static/*.*")+glob("abp/static/img/*.*")+glob("abp/static/scri
 
 setup(
     name = "abp",
-    version = "0.4.25",
+    version = "0.4.26",
     packages = ["abp", "abp.static"],
     test_suite = "tests",
     author = "Pete Shadbolt",
