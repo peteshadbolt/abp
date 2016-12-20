@@ -1,4 +1,4 @@
-console.log("abp v0.4.24");
+console.log("abp v0.4.26");
 
 window.onload = function() {
     graph.prepare();
