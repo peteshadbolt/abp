@@ -127,6 +127,7 @@ editor.makeGrid = function() {
     editor.grid.renderOrder = 1000;
     editor.setOrientation(0);
     gui.scene.add(editor.grid);
+    gui.scene.children[0].renderOrder = -3000;
 };
 
 editor.update = function() {};
