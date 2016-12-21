@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
     # Change to the right working dir
     where = os.path.abspath(resource_filename("abp.static", ""))
-    print "abpserver 0.4.24"
+    print "abpserver 0.4.25"
     print where
     print "Open http://localhost:5001 in a browser!"
     os.chdir(where)
