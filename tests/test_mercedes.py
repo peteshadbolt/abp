@@ -4,8 +4,8 @@ from mock import simple_graph
 
 def linear_cluster(n):
     g = GraphState(range(n), vop="hadamard")
-    g.act_circuit([(i, "hadamard") for i in range(n)])
-    g.act_circuit([((i, i+1), "cz") for i in range(n-1)])
+    g.act_circuit([("hadamard", i) for i in range(n)])
+    g.act_circuit([("cz", (i, i+1)) for i in range(n-1)])
     return g 
 
 

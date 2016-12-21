@@ -42,7 +42,7 @@ class AndersWrapper(graphsim.GraphRegister):
         return self.to_json() == other.to_json()
 
     def act_circuit(self, circuit):
-        for node, operation in circuit:
+        for operation, node in circuit:
             if operation == "cz":
                 self.act_cz(*node)
             else:
@@ -106,8 +106,8 @@ def named_node_graph():
     """ A graph with named nodes"""
     edges = (0, 1), (1, 2), (2, 0), (0, 3), (100, 200), (200, "named")
     g = ABPWrapper([0, 1, 2, 3, 100, 200, "named"])
-    g.act_circuit((i, "hadamard") for i in g.node)
-    g.act_circuit((edge, "cz") for edge in edges)
+    g.act_circuit(("hadamard", i) for i in g.node)
+    g.act_circuit(("cz", edge) for edge in edges)
     return g
 
 
@@ -115,8 +115,8 @@ def simple_graph():
     """ A simple graph to test with"""
     edges = (0, 1), (1, 2), (2, 0), (0, 3), (100, 200)
     g = ABPWrapper([0, 1, 2, 3, 100, 200])
-    g.act_circuit((i, "hadamard") for i in g.node)
-    g.act_circuit((edge, "cz") for edge in edges)
+    g.act_circuit(("hadamard", i) for i in g.node)
+    g.act_circuit(("cz", edge) for edge in edges)
     return g
 
 

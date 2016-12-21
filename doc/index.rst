@@ -166,8 +166,8 @@ This ought to pop open a browser window at ``http://localhost:5001/``. You can r
 
     >>> from abp import GraphState, VizClient
     >>> g = GraphState(10)
-    >>> g.act_circuit([(i, "hadamard") for i in range(10)])
-    >>> g.act_circuit([((i, i+1), "cz") for i in range(9)])
+    >>> g.act_circuit([("hadamard", i) for i in range(10)])
+    >>> g.act_circuit([("cz", (i, i+1)) for i in range(9)])
     >>> v = VizClient()
     >>> v.update(g)
 

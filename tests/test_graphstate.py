@@ -94,8 +94,8 @@ def test_local_complementation():
     """ Test that local complementation works okay """
     pairs = (0, 1), (0, 3), (1, 3), (1, 2), 
     psi = GraphState(range(4), vop="hadamard")
-    psi.act_circuit([(i, "hadamard") for i in psi.node])
-    psi.act_circuit([(pair, "cz") for pair in pairs])
+    psi.act_circuit([("hadamard", i) for i in psi.node])
+    psi.act_circuit([("cz", pair) for pair in pairs])
     old_edges = psi.edgelist()
     old_state = psi.to_state_vector()
     psi.local_complementation(1)
