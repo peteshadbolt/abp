@@ -1,8 +1,8 @@
 var materials = {};
 
 var curveProperties = {
-    splineDensity: 1,
-    curvature: 20
+    splineDensity: 20,
+    curvature: 3
 };
 
 // Is called on boot
