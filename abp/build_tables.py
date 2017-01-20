@@ -9,7 +9,7 @@ import itertools as it
 from functools import reduce
 from os.path import dirname, join, split
 import json
-import qi, clifford
+from . import qi, clifford
 
 
 DECOMPOSITIONS = (
@@ -52,8 +52,8 @@ def find_cz(bond, c1, c2, commuters, state_table):
     target = qi.normalize_global_phase(target)
 
     # Choose the sets to search over
-    s1 = commuters if c1 in commuters else xrange(24)
-    s2 = commuters if c2 in commuters else xrange(24)
+    s1 = commuters if c1 in commuters else range(24)
+    s2 = commuters if c2 in commuters else range(24)
 
     # Find a match
     for bondp, c1p, c2p in it.product([0, 1], s1, s2):
@@ -79,9 +79,9 @@ def get_unitaries():
 def get_by_name(unitaries, conjugation_table):
     """ Get a lookup table of cliffords by name """
     a = {name: find_clifford(u, unitaries)
-         for name, u in qi.by_name.items()}
+         for name, u in list(qi.by_name.items())}
     a.update({key + "_h": conjugation_table[value]
-              for key, value in a.items()})
+              for key, value in list(a.items())})
     a.update({clifford.get_name(i): i for i in range(24)})
     a.update({i: i for i in range(24)})
     return a
@@ -101,7 +101,7 @@ def get_times_table(unitaries):
 def get_state_table(unitaries):
     """ Cache a table of state to speed up a little bit """
     state_table = np.zeros((2, 24, 24, 4), dtype=complex)
-    params = list(it.product([0, 1], range(24), range(24)))
+    params = list(it.product([0, 1], list(range(24)), list(range(24))))
     for bond, i, j in tqdm(params, desc="Building state table"):
         state = qi.bond if bond else qi.nobond
         kp = np.kron(unitaries[i], unitaries[j])
@@ -137,7 +137,7 @@ def get_measurement_table():
     This is pretty unintelligible right now, we should probably compute the phase from unitaries instead
     """
     measurement_table = np.zeros((4, 24, 2), dtype=int)
-    for operator, unitary in it.product(range(4), range(24)):
+    for operator, unitary in it.product(list(range(4)), list(range(24))):
         measurement_table[operator, unitary] = get_measurement_entry(
             operator, unitary)
     return measurement_table
@@ -158,7 +158,7 @@ def get_cz_table(unitaries):
     # And now build the CZ table
     cz_table = np.zeros((2, 24, 24, 3), dtype=int)
     rows = list(
-        it.product([0, 1], it.combinations_with_replacement(range(24), 2)))
+        it.product([0, 1], it.combinations_with_replacement(list(range(24)), 2)))
     # CZ is symmetric so we only need combinations
     for bond, (c1, c2) in tqdm(rows, desc="Building CZ table"):
         newbond, c1p, c2p = find_cz(
@@ -174,7 +174,7 @@ def get_display_table(unitaries):
         c = qi.CircuitModel(1)
         c.act_local_rotation(0, u)
         state = c.state.round(2)
-        print "{:.2f}, {:.2f}".format(state[0][0], state[1][0])
+        print("{:.2f}, {:.2f}".format(state[0][0], state[1][0]))
 
 
 def compute_everything():
