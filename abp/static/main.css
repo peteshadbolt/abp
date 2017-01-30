@@ -53,6 +53,10 @@ html, body { margin: 0; padding: 0; overflow: hidden; font-size:  10pt; font-fam
     font-size: 9pt;
 }
 
+#options a {
+    color: gray;
+}
+
 
 #version {
     color:black;

@@ -12,7 +12,7 @@ materials.prepare = function() {
     materials.edge = new THREE.LineBasicMaterial({
         color: "gray",
         transparent: false,
-        linewidth: 5
+        linewidth: 4
     });
     materials.edge.depthTest = false;
     materials.qubit = new THREE.PointsMaterial({

@@ -1,8 +1,37 @@
 var editor = {};
 var pi2 = Math.PI / 2;
 
+vop_name = {
+    0      :     "identity",
+    1      :     "pauli x",
+    2      :     "pauli y",
+    3      :     "pauli z",
+    4      :     "ib",
+    5      :     "sqrtz",
+    6      :     "-sqrtz",
+    7      :     "zb",
+    8      :     "ic",
+    9      :     "-sqrty",
+    10     :     "hadamard",
+    11     :     "sqrty",
+    12     :     "id",
+    13     :     "xd",
+    14     :     "sqrtx",
+    15     :     "-sqrtx",
+    16     :     "ie",
+    17     :     "xe",
+    18     :     "ye",
+    19     :     "ze",
+    20     :     "if",
+    21     :     "xf",
+    22     :     "yf",
+    23     :     "zf",
+};
+
 editor.selection = undefined;
 editor.mouseOver = undefined;
+editor.showGrid = true;
+editor.curveEdges = true;
 
 editor.orientations = [
     new THREE.Euler(pi2, 0, 0),
@@ -10,6 +39,17 @@ editor.orientations = [
     new THREE.Euler(pi2, 0, pi2),
 ];
 
+editor.toggleGrid = function(){
+    editor.grid.visible = !editor.grid.visible;
+    gui.render();
+};
+
+editor.toggleCurves = function(){
+    editor.curveEdges = !editor.curveEdges;
+    curveProperties.splineDensity = editor.curveEdges ? 10 : 1;
+    graph.update();
+    gui.render();
+};
 
 editor.onFreeMove = function() {
     var found = editor.findNodeOnRay(mouse.ray);
@@ -62,7 +102,8 @@ editor.onClick = function() {
         gui.controls.target.copy(abj.node[node].position);
         node_name.innerHTML = "Node " + node;
         node_data.className = "visible";
-        node_vop.innerHTML = "VOP: " + abj.node[node].vop;
+        var vop = abj.node[node].vop;
+        node_vop.innerHTML = "VOP: " + vop_name[vop] + " (#" + vop + ")";
     } else {
         var intersection = mouse.ray.intersectPlane(editor.plane);
         if (intersection !== null) {
