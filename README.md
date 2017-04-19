@@ -1,5 +1,5 @@
 # abp 0.4.27
-Python port of Anders and Briegel' s [method](https://arxiv.org/abs/quant-ph/0504117) for fast simulation of Clifford circuits. 
+Python port of Anders and Briegel' s [method](https://arxiv.org/abs/quant-ph/0504117) for fast simulation of Clifford circuits.
 
 ## Documentation
 You can read the full documentation [here](https://peteshadbolt.co.uk/abp/). You can also build it locally using Sphinx with `make doc`.
@@ -21,7 +21,7 @@ $ python setup.py develop --user --prefix=  # Might be required on OSX
 ```
 If installed from source, check that abp is running your local Python install by ensuring that the first line of `abp/bin/abpserver` matches your local python install (which can be found using `which python`). If not, you will need to change it to your local python path.
 
-Some OSX users may find they need additional modifications to their install. their path to execute `abpserver` from the command line. To add `abpserver` to your path, you must find where it is installed, e.g. using the search:
+Some OSX users may find they need additional modifications to their path to execute `abpserver` from the command line. To add `abpserver` to your path, you must first find where it is installed, e.g. by typing:
 
 ```shell
 $ find / -iname "abpserver"
