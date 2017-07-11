@@ -58,7 +58,7 @@ editor.onClick = function() {
     if (found) {
         editor.focus(found);
         var node=found;
-        editor.grid.position.copy(abj.node[node].position);
+        //editor.grid.position.copy(abj.node[node].position);
         gui.controls.target.copy(abj.node[node].position);
         node_name.innerHTML = "Node " + node;
         node_data.className = "visible";
@@ -98,7 +98,7 @@ editor.prepare = function() {
     mouse.onShiftClick = editor.onShiftClick;
     mouse.onCtrlClick = editor.onCtrlClick;
     document.addEventListener("keydown", editor.onKey, false);
-    editor.makeGrid();
+    //editor.makeGrid();
 };
 
 editor.onKey = function(evt) {

@@ -18,6 +18,8 @@ gui.prepare = function() {
     gui.controls.rotateSpeed = 0.2;
     gui.controls.userPanSpeed = 0.1;
     gui.camera.position.set(0, 0, 10);
+    gui.controls.autoRotate = true;
+    gui.controls.autoRotateSpeed = 0.1;
 };
 
 // Someone resized the window
