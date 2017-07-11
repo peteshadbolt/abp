@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import numpy as np
 from tqdm import tqdm
 import itertools as it
@@ -6,6 +7,8 @@ from abp import build_tables
 from abp import qi
 import nose
 from nose.tools import raises
+from six.moves import range
+from six.moves import zip
 
 
 def identify_pauli(m):
@@ -85,7 +88,7 @@ def test_conjugation():
         raise nose.SkipTest("Original C++ is not available, skipping test")
         
 
-    for operation_index, transform_index in it.product(range(4), range(24)):
+    for operation_index, transform_index in it.product(list(range(4)), list(range(24))):
         transform = graphsim.LocCliffOp(transform_index)
         operation = graphsim.LocCliffOp(operation_index)
 
@@ -103,7 +106,7 @@ def test_cz_table():
     """ Does the CZ code work good? """
     state_table = build_tables.get_state_table(clifford.unitaries)
 
-    rows = it.product([0, 1], it.combinations_with_replacement(range(24), 2))
+    rows = it.product([0, 1], it.combinations_with_replacement(list(range(24)), 2))
 
     for bond, (c1, c2) in rows:
 

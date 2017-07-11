@@ -40,7 +40,10 @@ The complete set of aliases for single-qubit Cliffords is as follows:
 
 """
 
-from tables import *
+from __future__ import absolute_import
+from __future__ import print_function
+from .tables import *
+from six.moves import range
 
 # Aliases
 identity = by_name["identity"]
@@ -58,7 +61,7 @@ def conjugate(operator, unitary):
 def use_old_cz():
     """ Use the CZ lookup table from A&B's code, rather than our own. Useful for testing. """
     global cz_table
-    from anders_cz import cz_table
+    from .anders_cz import cz_table
 
 def get_name(i):
     """ Get the name of this clifford """
@@ -80,7 +83,7 @@ if __name__ == '__main__':
     for i in range(24):
         members = [key for key, value in by_name.items() if value == i and str(key)!=str(i)]
         members = sorted(members, key=len)
-        print "* {}: {}".format(i, ", ".join(members))
+        print("* {}: {}".format(i, ", ".join(members)))
             
 
 

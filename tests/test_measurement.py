@@ -1,9 +1,11 @@
+from __future__ import absolute_import
 import numpy as np
 from abp import GraphState
 from abp import qi, clifford
 from tqdm import tqdm
 import random
 import itertools as it
+from six.moves import range
 
 
 def test_single_qubit_measurements():
@@ -29,7 +31,7 @@ def test_single_qubit_measurements():
 
 def test_type():
     """ Test that the output is always an int """
-    for r, m, f in it.product(range(24), ("px", "py", "pz"), (0, 1)):
+    for r, m, f in it.product(list(range(24)), ("px", "py", "pz"), (0, 1)):
         g = GraphState([0], vop="hadamard")
         g.act_local_rotation(0, r)
         assert str(g.measure(0, m)) in "01"

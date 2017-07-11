@@ -1,8 +1,10 @@
+from __future__ import absolute_import
 import numpy as np
 from abp import qi, GraphState
 from tqdm import tqdm
 import mock
 import nose
+from six.moves import range
 
 DEPTH = 1000
 
@@ -151,7 +153,7 @@ def test_against_chp(n=5):
     # Run a random circuit
     chp.init(n)
     psi = qi.CircuitModel(n)
-    for i in tqdm(range(DEPTH), "Testing CircuitModel against CHP"):
+    for i in tqdm(list(range(DEPTH)), "Testing CircuitModel against CHP"):
         if np.random.rand() > .5:
             a = np.random.randint(0, n - 1)
             chp.act_hadamard(a)
@@ -166,7 +168,7 @@ def test_against_chp(n=5):
 def test_sqrt_notation(n=2):
     """ Test that SQRT notation looks nice """
     c = mock.random_stabilizer_circuit(n)
-    g = GraphState(range(n))
+    g = GraphState(list(range(n)))
     g.act_circuit(c)
 
 def test_indexint():

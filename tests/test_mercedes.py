@@ -1,9 +1,11 @@
+from __future__ import absolute_import
 from abp import GraphState
 from abp.util import xyz
 from mock import simple_graph
+from six.moves import range
 
 def linear_cluster(n):
-    g = GraphState(range(n), vop="hadamard")
+    g = GraphState(list(range(n)), vop="hadamard")
     g.act_circuit([(i, "hadamard") for i in range(n)])
     g.act_circuit([((i, i+1), "cz") for i in range(n-1)])
     return g 

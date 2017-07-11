@@ -4,11 +4,16 @@
 This module implements Anders and Briegel's method for fast simulation of Clifford circuits.
 """
 
+from __future__ import absolute_import
+from __future__ import print_function
 import itertools as it
 import json, random
-import qi, clifford, util
+from . import qi, clifford, util
 import abp
-from stabilizer import Stabilizer
+from .stabilizer import Stabilizer
+import six
+from six.moves import range
+from six.moves import zip
 
 
 class GraphState(object):
@@ -66,7 +71,7 @@ class GraphState(object):
         By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
         """
         if node in self.node:
-            print "Warning: node {} already exists".format(node)
+            print("Warning: node {} already exists".format(node))
             return
 
         default = kwargs.get("default", "identity")
@@ -305,7 +310,7 @@ class GraphState(object):
         """
         forces = forces if forces != None else [
             random.choice([0, 1]) for i in range(len(measurements))]
-        measurements = zip(measurements, forces)
+        measurements = list(zip(measurements, forces))
         results = []
         for (node, basis), force in measurements:
             result = self.measure(node, basis, force, detail)
@@ -333,9 +338,9 @@ class GraphState(object):
             if abp.DETERMINISTIC:
                 friend = sorted(self.adj[node].keys())[0]
             else:
-                friend = next(self.adj[node].iterkeys())
+                friend = next(six.iterkeys(self.adj[node]))
         else:
-            assert friend in self.adj[node].keys()  # TODO: unnecessary assert
+            assert friend in list(self.adj[node].keys())  # TODO: unnecessary assert
 
         # Update the VOPs. TODO: pretty ugly
         if result:

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import json
 import networkx as nx
 from abp import GraphState, NXGraphState

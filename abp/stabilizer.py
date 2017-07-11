@@ -2,8 +2,10 @@
 Implements a simple Stabilizer object.
 """
 
+from __future__ import absolute_import
 import itertools as it
 from abp import clifford
+from six.moves import map
 
 I = clifford.identity
 X = clifford.px
@@ -33,13 +35,14 @@ class Stabilizer(object):
         return {"paulis": self.tableau,
                 "phases": {key: m[value] for key, value in self.phases.items()}}
 
-    def __getitem__(self, (i, j)):
+    def __getitem__(self, xxx_todo_changeme):
         """" Pass straight through to the dictionary """
+        (i, j) = xxx_todo_changeme
         return self.tableau[i][j]
 
     def __str__(self):
         """ Represent as a string """
-        keys = map(str, self.tableau.keys())
+        keys = list(map(str, list(self.tableau.keys())))
         w = max(len(k) for k in keys)
         keys = [k.ljust(w) for k in keys]
         s = "   {}\n".format("  ".join(map(str, keys)))

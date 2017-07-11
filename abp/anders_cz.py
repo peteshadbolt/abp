@@ -2,6 +2,7 @@
 Copied from Anders' original C++ implementation
 S. Anders, H. J. Briegel: Fast Simulation of Stabilizer Circuits using a Graph State Formalism quant-ph/0504117
 """
+from __future__ import absolute_import
 import numpy as np
 cz_table = ((((1, 0, 0), (1, 0, 0), (1, 0, 3), (1, 0, 3), (1, 0, 5), (1, 0, 5), 
    (1, 0, 6), (1, 0, 6), (0, 3, 8), (0, 3, 8), (0, 0, 10), (0, 0, 10), 

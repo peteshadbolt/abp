@@ -6,9 +6,12 @@ Exposes a few basic QI operators
 And a circuit-model simulator
 """
 
+from __future__ import absolute_import
 import numpy as np
 import itertools as it
 from fractions import Fraction
+from six.moves import range
+from six.moves import zip
 
 def hermitian_conjugate(u):
     """ Shortcut to the Hermitian conjugate """
@@ -52,7 +55,7 @@ nobond = np.kron(plus, plus)
 # Labelling stuff
 common_us = id, px, py, pz, ha, ph, sqz, msqz, sqy, msqy, sqx, msqx
 names = "identity", "px", "py", "pz", "hadamard", "phase", "sqz", "msqz", "sqy", "msqy", "sqx", "msqx"
-by_name = dict(zip(names, common_us))
+by_name = dict(list(zip(names, common_us)))
 
 paulis = px, py, pz
 operators = id, px, py, pz
@@ -60,7 +63,7 @@ operators = id, px, py, pz
 
 def normalize_global_phase(m):
     """ Normalize the global phase of a matrix """
-    v = (x for x in m.flatten() if np.abs(x) > 0.001).next()
+    v = next((x for x in m.flatten() if np.abs(x) > 0.001))
     phase = np.arctan2(v.imag, v.real) % np.pi
     rot = np.exp(-1j * phase)
     return rot * m if rot * v > 0 else -rot * m
@@ -78,7 +81,7 @@ class CircuitModel(object):
         """ Act a CU somewhere. """
         control = 1 << control
         target = 1 << target
-        for i in xrange(self.d):
+        for i in range(self.d):
             if (i & control) and (i & target):
                 self.state[i, 0] *= -1
 
