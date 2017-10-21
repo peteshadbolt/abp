@@ -99,14 +99,14 @@ class GraphState(object):
     def act_circuit(self, circuit):
         """ Run many gates in one call.
 
-        :param circuit: An iterable containing tuples of the form ``(node, operation)``.  If ``operation`` is a name for a local operation (e.g. ``6``, ``hadamard``) then that operation is performed on ``node``.  If ``operation`` is ``cz`` then a CZ is performed on the two nodes in ``node``.
+        :param circuit: An iterable containing tuples of the form ``(operation, node)``.  If ``operation`` is a name for a local operation (e.g. ``6``, ``hadamard``) then that operation is performed on ``node``.  If ``operation`` is ``cz`` then a CZ is performed on the two nodes in ``node``.
 
         Example (makes a Bell pair)::
 
-            >>> g.act_circuit([(0, "hadamard"), (1, "hadamard"), ((0, 1), "cz")])
+            >>> g.act_circuit([("hadamard", 0), ("hadamard", 1), ("cz", (0, 1))])
 
         """
-        for node, operation in circuit:
+        for operation, node in circuit:
             if operation == "cz":
                 self.act_cz(*node)
             else:
