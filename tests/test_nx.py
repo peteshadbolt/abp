@@ -3,12 +3,13 @@ import networkx as nx
 from abp import GraphState, NXGraphState
 from abp import clifford
 from abp.util import xyz
-from mock import simple_graph
+import pytest
+mock = pytest.importorskip("mock")
 
 
 def test_json_basic():
     """ Test that we can export to JSON """
-    g = simple_graph()
+    g = mock.simple_graph()
     js = g.to_json()
     assert "adj" in js
     assert "node" in js

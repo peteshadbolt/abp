@@ -6,10 +6,8 @@ import numpy as np
 import abp
 from abp import GraphState, clifford, qi
 from numpy import random
-try:
-    from anders_briegel import graphsim
-except ImportError:
-    raise nose.SkipTest("Original C++ is not available, skipping test")
+import pytest
+from anders_briegel import graphsim
 
 # We always run with A&B's CZ table when we are testing
 clifford.use_old_cz()

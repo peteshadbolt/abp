@@ -1,9 +1,9 @@
 from abp import GraphState, CircuitModel, clifford
 import numpy as np
 from numpy import random
-from tqdm import tqdm
 import itertools as it
-import mock
+import pytest
+mock = pytest.importorskip("mock")
 
 REPEATS = 100
 DEPTH = 100
@@ -38,7 +38,7 @@ def test_cz_table():
 
 def test_cz_hadamard(n=10):
     """ Test CZs and Hadamards at random """
-    for i in tqdm(list(range(REPEATS)), desc="Testing CZ and Hadamard against A&B"):
+    for i in list(range(REPEATS)):
         circuit = random.choice(["cz", "hadamard"], DEPTH)
         circuit = [(mock.random_pair(n), gate) if gate == "cz"
                    else (random.choice(list(range(n))), gate)
@@ -48,7 +48,7 @@ def test_cz_hadamard(n=10):
 
 def test_all(n=10):
     """ Test everything """
-    for i in tqdm(list(range(REPEATS)), desc="Testing CZ and Hadamard against A&B"):
+    for i in list(range(REPEATS)):
         circuit = random.choice(["cz"] * 10 + list(range(24)), DEPTH)
         circuit = [(mock.random_pair(n), gate) if gate == "cz"
                    else (random.choice(list(range(n))), gate)

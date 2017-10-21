@@ -1,6 +1,7 @@
 from abp import GraphState
 from abp.util import xyz
-from mock import simple_graph
+import pytest
+mock = pytest.importorskip("mock")
 
 def linear_cluster(n):
     g = GraphState(list(range(n)), vop="hadamard")
@@ -51,7 +52,7 @@ def test_is_determinate():
 
 def test_copy():
     """ Make a copy of a graph """
-    a = simple_graph()
+    a = mock.simple_graph()
     b = a.copy()
     assert a == b
     

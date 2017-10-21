@@ -16,7 +16,7 @@ setup(
     keywords = "quantum",
     setup_requires = ["numpy"],
     scripts = ["bin/abpserver"],
-    install_requires = ["numpy", "networkx", "tqdm", "websocket-client", "websocket-server"],
+    install_requires = ["numpy", "networkx", "websocket-client", "websocket-server"],
     package_data = {"abp.static": STATIC},
     include_package_data=True
 )

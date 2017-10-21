@@ -1,5 +1,6 @@
-import mock
 import abp
+import pytest
+mock = pytest.importorskip("mock")
 
 def test_json():
     """ Test to_json and from_json """

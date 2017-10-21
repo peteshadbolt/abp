@@ -1,7 +1,7 @@
 import numpy as np
 from abp import qi, GraphState
-from tqdm import tqdm
-import mock
+import pytest
+mock = pytest.importorskip("mock")
 
 DEPTH = 1000
 

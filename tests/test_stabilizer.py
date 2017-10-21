@@ -1,6 +1,6 @@
 from abp import GraphState
-from tqdm import tqdm
-import mock
+import pytest
+mock = pytest.importorskip("mock")
 
 REPEATS = 1000
 
