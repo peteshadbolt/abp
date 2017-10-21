@@ -6,9 +6,9 @@ This module implements Anders and Briegel's method for fast simulation of Cliffo
 
 import itertools as it
 import json, random
-import qi, clifford, util
+from . import qi, clifford, util
 import abp
-from stabilizer import Stabilizer
+from .stabilizer import Stabilizer
 
 
 class GraphState(object):
@@ -30,7 +30,7 @@ class GraphState(object):
             # Cloning from a networkx graph
             self.adj = data.adj.copy()
             self.node = data.node.copy()
-            for key, value in self.node.items():
+            for key, value in list(self.node.items()):
                 self.node[key]["vop"] = data.node[
                     key].get("vop", clifford.identity)
         except AttributeError:
@@ -66,7 +66,7 @@ class GraphState(object):
         By default, nodes are initialized with ``vop=``:math:`I`, i.e. they are in the :math:`|+\\rangle` state.
         """
         if node in self.node:
-            print "Warning: node {} already exists".format(node)
+            print("Warning: node {} already exists".format(node))
             return
 
         default = kwargs.get("default", "identity")
@@ -141,7 +141,7 @@ class GraphState(object):
     def edgelist(self):
         """ Describe a graph as an edgelist # TODO: inefficient """
         edges = set(tuple(sorted((i, n)))
-                    for i, v in self.adj.items()
+                    for i, v in list(self.adj.items())
                     for n in v)
         return tuple(edges)
 
@@ -305,7 +305,7 @@ class GraphState(object):
         """
         forces = forces if forces != None else [
             random.choice([0, 1]) for i in range(len(measurements))]
-        measurements = zip(measurements, forces)
+        measurements = list(zip(measurements, forces))
         results = []
         for (node, basis), force in measurements:
             result = self.measure(node, basis, force, detail)
@@ -333,9 +333,9 @@ class GraphState(object):
             if abp.DETERMINISTIC:
                 friend = sorted(self.adj[node].keys())[0]
             else:
-                friend = next(self.adj[node].iterkeys())
+                friend = next(iter(self.adj[node].keys()))
         else:
-            assert friend in self.adj[node].keys()  # TODO: unnecessary assert
+            assert friend in list(self.adj[node].keys())  # TODO: unnecessary assert
 
         # Update the VOPs. TODO: pretty ugly
         if result:
@@ -427,9 +427,9 @@ class GraphState(object):
 
         """
         if stringify:
-            node = {str(key): value for key, value in self.node.items()}
-            adj = {str(key): {str(key): value for key, value in ngbh.items()}
-                   for key, ngbh in self.adj.items()}
+            node = {str(key): value for key, value in list(self.node.items())}
+            adj = {str(key): {str(key): value for key, value in list(ngbh.items())}
+                   for key, ngbh in list(self.adj.items())}
             return {"node": node, "adj": adj}
         else:
             return {"node": self.node, "adj": self.adj}
@@ -460,7 +460,7 @@ class GraphState(object):
             state.act_hadamard(mapping[n])
         for i, j in self.edgelist():
             state.act_cz(mapping[i], mapping[j])
-        for i, n in self.node.items():
+        for i, n in list(self.node.items()):
             state.act_local_rotation(mapping[i], clifford.unitaries[n["vop"]])
         return state
 

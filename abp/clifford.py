@@ -40,7 +40,7 @@ The complete set of aliases for single-qubit Cliffords is as follows:
 
 """
 
-from tables import *
+from .tables import *
 
 # Aliases
 identity = by_name["identity"]
@@ -58,7 +58,7 @@ def conjugate(operator, unitary):
 def use_old_cz():
     """ Use the CZ lookup table from A&B's code, rather than our own. Useful for testing. """
     global cz_table
-    from anders_cz import cz_table
+    from .anders_cz import cz_table
 
 def get_name(i):
     """ Get the name of this clifford """
@@ -66,7 +66,7 @@ def get_name(i):
 
 def human_name(i):
     """ Get the human-readable name of this clifford - slow """
-    choices = sorted((key for key, value in by_name.items() if value == i), key=len)
+    choices = sorted((key for key, value in list(by_name.items()) if value == i), key=len)
     return choices[-1]
 
 def is_diagonal(v):
@@ -78,9 +78,9 @@ if __name__ == '__main__':
     from itertools import groupby
 
     for i in range(24):
-        members = [key for key, value in by_name.items() if value == i and str(key)!=str(i)]
+        members = [key for key, value in list(by_name.items()) if value == i and str(key)!=str(i)]
         members = sorted(members, key=len)
-        print "* {}: {}".format(i, ", ".join(members))
+        print("* {}: {}".format(i, ", ".join(members)))
             
 
 

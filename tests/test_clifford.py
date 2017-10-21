@@ -1,11 +1,9 @@
 import numpy as np
-from tqdm import tqdm
 import itertools as it
 from abp import clifford
 from abp import build_tables
 from abp import qi
-import nose
-from nose.tools import raises
+import pytest
 
 
 def identify_pauli(m):
@@ -21,11 +19,6 @@ def test_find_clifford():
     assert build_tables.find_clifford(qi.id, clifford.unitaries) == 0
     assert build_tables.find_clifford(qi.px, clifford.unitaries) == 1
 
-
-@raises(IndexError)
-def test_find_non_clifford():
-    """ Test that looking for a non-Clifford gate fails """
-    build_tables.find_clifford(qi.t, clifford.unitaries)
 
 
 def get_action(u):
@@ -45,14 +38,14 @@ def test_we_have_24_matrices():
 
 def test_we_have_all_useful_gates():
     """ Check that all the interesting gates are included up to a global phase """
-    for name, u in qi.by_name.items():
+    for name, u in list(qi.by_name.items()):
         build_tables.find_clifford(u, clifford.unitaries)
 
 
 def test_group():
     """ Test we are really in a group """
     matches = set()
-    for a, b in tqdm(it.combinations(clifford.unitaries, 2), "Testing this is a group"):
+    for a, b in it.combinations(clifford.unitaries, 2):
         i = build_tables.find_clifford(a.dot(b), clifford.unitaries)
         matches.add(i)
     assert len(matches) == 24
@@ -82,10 +75,10 @@ def test_conjugation():
     try:
         from anders_briegel import graphsim
     except ImportError:
-        raise nose.SkipTest("Original C++ is not available, skipping test")
+        pytest.skip("Original C++ is not available, skipping test")
         
 
-    for operation_index, transform_index in it.product(range(4), range(24)):
+    for operation_index, transform_index in it.product(list(range(4)), list(range(24))):
         transform = graphsim.LocCliffOp(transform_index)
         operation = graphsim.LocCliffOp(operation_index)
 
@@ -103,7 +96,7 @@ def test_cz_table():
     """ Does the CZ code work good? """
     state_table = build_tables.get_state_table(clifford.unitaries)
 
-    rows = it.product([0, 1], it.combinations_with_replacement(range(24), 2))
+    rows = it.product([0, 1], it.combinations_with_replacement(list(range(24)), 2))
 
     for bond, (c1, c2) in rows:
 

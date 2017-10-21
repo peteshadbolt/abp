@@ -31,15 +31,16 @@ class Stabilizer(object):
         """ For comparison with old A&B code """
         m = {1: 0, 1j:1, -1: 2, -1j: 3}
         return {"paulis": self.tableau,
-                "phases": {key: m[value] for key, value in self.phases.items()}}
+                "phases": {key: m[value] for key, value in list(self.phases.items())}}
 
-    def __getitem__(self, (i, j)):
+    def __getitem__(self, xxx_todo_changeme):
         """" Pass straight through to the dictionary """
+        (i, j) = xxx_todo_changeme
         return self.tableau[i][j]
 
     def __str__(self):
         """ Represent as a string """
-        keys = map(str, self.tableau.keys())
+        keys = list(map(str, list(self.tableau.keys())))
         w = max(len(k) for k in keys)
         keys = [k.ljust(w) for k in keys]
         s = "   {}\n".format("  ".join(map(str, keys)))

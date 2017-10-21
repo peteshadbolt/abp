@@ -5,7 +5,7 @@ import itertools
 def grid_2d(width, height):
     """ Make a 2D grid """
     psi = GraphState()
-    grid = list(itertools.product(range(width), range(height)))
+    grid = list(itertools.product(list(range(width)), list(range(height))))
 
     for x, y in grid:
         psi.add_qubit((x, y), position=xyz(x, y, 0), vop=0)

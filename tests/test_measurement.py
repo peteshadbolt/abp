@@ -29,7 +29,7 @@ def test_single_qubit_measurements():
 
 def test_type():
     """ Test that the output is always an int """
-    for r, m, f in it.product(range(24), ("px", "py", "pz"), (0, 1)):
+    for r, m, f in it.product(list(range(24)), ("px", "py", "pz"), (0, 1)):
         g = GraphState([0], vop="hadamard")
         g.act_local_rotation(0, r)
         assert str(g.measure(0, m)) in "01"

@@ -3,9 +3,9 @@ import networkx as nx
 import numpy as np
 import websocket
 from socket import error as socket_error
-import clifford
-import util
-import nxgraphstate
+from . import clifford
+from . import util
+from . import nxgraphstate
 
 class VizClient(object):
     def __init__(self, uri = "ws://localhost:5000"):
@@ -21,7 +21,7 @@ class VizClient(object):
         g = nxgraphstate.NXGraphState(graph)
 
         # Automatically perform layout if position is not provided
-        if not all(("position" in node) for node in g.node.values()):
+        if not all(("position" in node) for node in list(g.node.values())):
             g.layout()
 
         # Send data to browser and rate-limit
@@ -29,7 +29,7 @@ class VizClient(object):
             self.ws.send(json.dumps(g.to_json(stringify=True)))
             self.ws.recv()
         except websocket._exceptions.WebSocketTimeoutException:
-            print "Timed out ... you might be pushing a bit hard"
+            print("Timed out ... you might be pushing a bit hard")
         time.sleep(delay)
 
 

@@ -23,7 +23,7 @@ def offset_unit_cell(unit_cell, offset):
 def lattice(unit_cell, size):
     """ Generate a lattice from a unit cell """
     edges = set()
-    for offset in itertools.product(*map(range, size)):
+    for offset in itertools.product(*list(map(range, size))):
         edges |= offset_unit_cell(unit_cell, offset)
 
     nodes = set(itertools.chain(*edges))

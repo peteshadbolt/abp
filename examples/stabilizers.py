@@ -7,5 +7,5 @@ g.act_circuit((edge, "cz") for edge in edges)
 
 g.act_local_rotation(3, 9)
 
-print g.to_stabilizer()
+print(g.to_stabilizer())
 

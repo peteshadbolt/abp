@@ -33,7 +33,7 @@ def offset_unit_cell(unit_cell, offset):
 def lattice(unit_cell, size):
     """ Generate a lattice from a unit cell """
     edges = set()
-    for offset in itertools.product(*map(range, size)):
+    for offset in itertools.product(*list(map(range, size))):
         edges |= offset_unit_cell(unit_cell, offset)
 
     nodes = set(itertools.chain(*edges))
@@ -45,7 +45,7 @@ psi = GraphState()
 for node in nodes:
     x, y, z = node
     color = "red" if (x+y+z) % 2 > 0  else "black"
-    print color
+    print(color)
     psi.add_qubit(node, position=xyz(*node), color=color)
     psi.act_hadamard(node)
 
