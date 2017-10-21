@@ -17,7 +17,7 @@ def test_hadamard():
 
 def test_local_rotations():
     """ Test local rotations """
-    for i in tqdm(list(range(REPEATS)), "Testing local rotations"):
+    for i in list(range(REPEATS)):
         circuit = [(0, random.choice(list(range(24)))) for j in range(DEPTH)]
         mock.test_circuit(circuit, 1)
 
@@ -59,7 +59,7 @@ def test_all(n=10):
 def test_single_qubit_measurement():
     """ Determinstic test of all single-qubit situations """
     space = it.product(list(range(24)), PAULIS, (0, 1))
-    for rotation, measurement, outcome in tqdm(space, "Testing single qubit measurements"):
+    for rotation, measurement, outcome in space:
         a = mock.circuit_to_state(mock.ABPWrapper, 1, [(0, rotation)])
         b = mock.circuit_to_state(mock.AndersWrapper, 1, [(0, rotation)])
         result_a = a.measure(0, measurement, outcome)
@@ -80,7 +80,7 @@ def test_two_qubit_measurement():
 def test_graph_state_measurement(n = 10):
     """ Measuring random graph states """
     space = list(it.product(list(range(REPEATS)), PAULIS, (0, 1)))
-    for i, measurement, outcome in tqdm(space, "Measuring random graph states"):
+    for i, measurement, outcome in space:
         circuit = mock.random_graph_circuit(n, DEPTH)
         a = mock.circuit_to_state(mock.ABPWrapper, n, circuit)
         b = mock.circuit_to_state(mock.AndersWrapper, n, circuit)
@@ -91,7 +91,7 @@ def test_graph_state_measurement(n = 10):
 def test_stabilizer_state_measurement(n = 10):
     """ Measuring random stabilizer states """
     space = list(it.product(list(range(REPEATS)), PAULIS, (0, 1)))
-    for i, measurement, outcome in tqdm(space, "Measuring random stabilizer states"):
+    for i, measurement, outcome in space:
         circuit = mock.random_stabilizer_circuit(n, DEPTH)
         a = mock.circuit_to_state(mock.ABPWrapper, n, circuit)
         b = mock.circuit_to_state(mock.AndersWrapper, n, circuit)

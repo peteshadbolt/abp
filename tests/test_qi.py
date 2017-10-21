@@ -150,7 +150,7 @@ def test_against_chp(n=5):
     # Run a random circuit
     chp.init(n)
     psi = qi.CircuitModel(n)
-    for i in tqdm(list(range(DEPTH)), "Testing CircuitModel against CHP"):
+    for i in list(range(DEPTH)):
         if np.random.rand() > .5:
             a = np.random.randint(0, n - 1)
             chp.act_hadamard(a)

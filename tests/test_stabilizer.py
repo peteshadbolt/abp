@@ -7,7 +7,7 @@ REPEATS = 1000
 def test_stabilizers_against_anders_and_briegel(n=10):
     """ Test that stabilizers are line-for-line equivalent """
     
-    for i in tqdm(list(range(REPEATS)), "Stabilizer representation VS A&B"):
+    for i in list(range(REPEATS)):
         c = mock.random_stabilizer_circuit(n)
         g = mock.AndersWrapper(list(range(n)))
         g.act_circuit(c)
