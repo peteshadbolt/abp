@@ -1,4 +1,4 @@
-# abp 0.5.0
+# abp 0.6.0
 Python port of Anders and Briegel' s [method](https://arxiv.org/abs/quant-ph/0504117) for fast simulation of Clifford circuits.
 
 ## Documentation
@@ -10,7 +10,7 @@ To install Sphinx on OSX, use `pip install sphinx`. If after doing so `make doc`
 It's easiest to install with `pip`:
 
 ```shell
-$ pip install --user abp==0.5.0
+$ pip install --user abp==0.6.0
 ```
 
 Or install from source: clone and install in `develop` mode:

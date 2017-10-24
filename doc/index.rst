@@ -26,7 +26,7 @@ You can install from ``pip``:
 
 .. code-block:: bash
 
-   $ pip install --user abp==0.5.0
+   $ pip install --user abp==0.6.0
 
 Alternatively, clone from the `github repo <https://github.com/peteshadbolt/abp>`_ and run ``setup.py``:
 
