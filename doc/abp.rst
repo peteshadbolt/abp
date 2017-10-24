@@ -6,8 +6,6 @@ Subpackages
 
 .. toctree::
 
-    abp.static
-
 Submodules
 ----------
 

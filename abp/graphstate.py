@@ -494,7 +494,7 @@ class GraphState(object):
         g.adj = self.adj.copy()
         return g
 
-    def show(self):
+    def push(self):
         """ Shares the state on the server and displays browser """
         if self.url == None:
             self.url = requests.get("https://abv.peteshadbolt.co.uk/").url
@@ -502,5 +502,15 @@ class GraphState(object):
         data = json.dumps(self.to_json(stringify=True))
         print("Shared state to {}".format(self.url))
         return requests.post("{}/graph".format(self.url), data=data)
+
+    def pull(self, url=None):
+        """ Loads the state from the server """
+        if url: 
+            self.url = url
+
+        response = requests.get("{}/graph".format(self.url))
+        self.from_json(json.loads(response.content))
+        
+
         
 

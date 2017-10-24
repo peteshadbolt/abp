@@ -52,5 +52,5 @@ for node in nodes:
 for edge in edges:
     psi.act_cz(edge[0], edge[1])
 
-psi.show()
+psi.push()
 

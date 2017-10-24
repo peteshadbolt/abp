@@ -153,27 +153,9 @@ Quantum mechanics is nondeterminstic. However, it's often useful to get determin
 Visualization
 ----------------------
 
-``abp`` comes with a tool to visualize graph states in a WebGL compatible web browser (Chrome, Firefox, Safari etc). It uses a client-server architecture.
+You can visualize states in 3D using the tool at `https://abv.peteshadbolt.co.uk/`. At some point I will merge the code for that server into this repo.
 
-First, run ``abpserver -v`` in a terminal:
-
-.. code-block:: bash
-
-    $ abpserver -v
-    Listening on port 5000 for clients..
-
-This ought to pop open a browser window at ``http://localhost:5001/``. You can run ``abpserver --help`` for help.  Now use an instance of ``abp.VizClient`` to show the state in the browser::
-
-    >>> from abp import GraphState, VizClient
-    >>> g = GraphState(10)
-    >>> g.act_circuit([(i, "hadamard") for i in range(10)])
-    >>> g.act_circuit([((i, i+1), "cz") for i in range(9)])
-    >>> v = VizClient()
-    >>> v.update(g)
-
-And you should see a 3D visualization of the state. You can call ``update()`` in a loop to see an animation.
-
-By default, the graph is automatically laid out in 3D using the Fruchterman-Reingold force-directed algorithm (i.e. springs). If you want to specify geometry, give each node a position attribute::
+In order to visualize states you must give each node a position attribute::
     
     >>> g.add_qubit(0, position={"x": 0, "y":0, "z":0}, vop="identity")
     >>> g.add_qubit(0, position={"x": 1, "y":0, "z":0}, vop="identity")
@@ -182,10 +164,18 @@ There's a utility function in ``abp.util`` to construct those dictionaries::
 
     >>> from abp.util import xyz
     >>> g.add_qubit(0, position=xyz(0, 0, 0), vop="identity")
-    >>> g.add_qubit(1, position=xyz(0, 0, 1), vop="identity")
+    >>> g.add_qubit(1, position=xyz(1, 0, 0), vop="identity")
 
-Note that if **any** nodes are missing a ``position`` attribute, ``abp`` will revert to automatic layout for **all** qubits.
+Then it's really easy to get a 3D picture of the state::
 
+    >>> g.push()
+    Shared state to https://abv.peteshadbolt.co.uk/lamp-moon-india-leopard
+
+That's a secret URL that you can use to collaboratively edit and view graph states in the browser. There are only a few billion such URLs so it should not be considered extremely secure. If you want, you can also load an existing state::
+
+    >>> g = GraphState()
+    >>> g.pull("https://abv.peteshadbolt.co.uk/lamp-moon-india-leopard")
+    >>> g.show()
 
 GraphState API
 -------------------------
