@@ -1,4 +1,4 @@
-from abp import GraphState, VizClient
+from abp import GraphState
 from abp.util import xyz
 import numpy as np
 import time
@@ -52,6 +52,5 @@ for node in nodes:
 for edge in edges:
     psi.act_cz(edge[0], edge[1])
 
-v = VizClient()
-v.update(psi)
+psi.show()
 

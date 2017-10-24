@@ -9,6 +9,7 @@ import json, random
 from . import qi, clifford, util
 import abp
 from .stabilizer import Stabilizer
+import requests
 
 
 class GraphState(object):
@@ -26,6 +27,7 @@ class GraphState(object):
         """
 
         self.adj, self.node = {}, {}
+        self.url = None
         try:
             # Cloning from a networkx graph
             self.adj = data.adj.copy()
@@ -491,4 +493,14 @@ class GraphState(object):
         g.node = self.node.copy()
         g.adj = self.adj.copy()
         return g
+
+    def show(self):
+        """ Shares the state on the server and displays browser """
+        if self.url == None:
+            self.url = requests.get("https://abv.peteshadbolt.co.uk/").url
+
+        data = json.dumps(self.to_json(stringify=True))
+        print("Shared state to {}".format(self.url))
+        return requests.post("{}/graph".format(self.url), data=data)
+        
 
