@@ -192,5 +192,5 @@ pseudoxml:
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
 
 deploy:
-	rsync -uav ./_build/html/* rpi:abp/
+	rsync -rv ./_build/html/ pete@pete:site/static/abp/ 
 
