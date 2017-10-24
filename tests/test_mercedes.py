@@ -1,7 +1,6 @@
 from abp import GraphState
 from abp.util import xyz
-import pytest
-mock = pytest.importorskip("mock")
+import mock
 
 def linear_cluster(n):
     g = GraphState(list(range(n)), vop="hadamard")

@@ -40,7 +40,7 @@ The complete set of aliases for single-qubit Cliffords is as follows:
 
 """
 
-from .tables import *
+from tables import *
 
 # Aliases
 identity = by_name["identity"]

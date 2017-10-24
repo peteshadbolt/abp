@@ -3,8 +3,7 @@ import networkx as nx
 from abp import GraphState, NXGraphState
 from abp import clifford
 from abp.util import xyz
-import pytest
-mock = pytest.importorskip("mock")
+import mock
 
 
 def test_json_basic():

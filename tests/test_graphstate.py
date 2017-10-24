@@ -2,8 +2,7 @@ from abp import GraphState, CircuitModel, clifford
 import random
 import numpy as np
 import networkx as nx
-import pytest
-mock = pytest.importorskip("mock")
+import mock
 
 REPEATS = 100
 DEPTH = 100

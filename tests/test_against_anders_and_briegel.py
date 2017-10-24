@@ -3,7 +3,9 @@ import numpy as np
 from numpy import random
 import itertools as it
 import pytest
-mock = pytest.importorskip("mock")
+import mock
+ab = pytest.importorskip("ab")
+
 
 REPEATS = 100
 DEPTH = 100
@@ -12,28 +14,28 @@ PAULIS = ("px", "py", "pz")
 def test_hadamard():
     """ Test hadamards """
     circuit = [(0, "hadamard")]
-    mock.test_circuit(circuit, 1)
+    ab.test_circuit(circuit, 1)
 
 
 def test_local_rotations():
     """ Test local rotations """
     for i in list(range(REPEATS)):
         circuit = [(0, random.choice(list(range(24)))) for j in range(DEPTH)]
-        mock.test_circuit(circuit, 1)
+        ab.test_circuit(circuit, 1)
 
 
 def test_times_table():
     """ Test times table """
     for i, j in it.product(list(range(24)), list(range(24))):
         circuit = [(0, i), (0, j)]
-        mock.test_circuit(circuit, 1)
+        ab.test_circuit(circuit, 1)
 
 
 def test_cz_table():
     """ Test the CZ table """
     for i, j in it.product(list(range(24)), list(range(24))):
         circuit = [(0, i), (1, j), ((0, 1), "cz")]
-        mock.test_circuit(circuit, 2)
+        ab.test_circuit(circuit, 2)
 
 
 def test_cz_hadamard(n=10):
@@ -43,7 +45,7 @@ def test_cz_hadamard(n=10):
         circuit = [(mock.random_pair(n), gate) if gate == "cz"
                    else (random.choice(list(range(n))), gate)
                    for gate in circuit]
-        mock.test_circuit(circuit, n)
+        ab.test_circuit(circuit, n)
 
 
 def test_all(n=10):
@@ -53,7 +55,7 @@ def test_all(n=10):
         circuit = [(mock.random_pair(n), gate) if gate == "cz"
                    else (random.choice(list(range(n))), gate)
                    for gate in circuit]
-        mock.test_circuit(circuit, n)
+        ab.test_circuit(circuit, n)
 
 
 def test_single_qubit_measurement():

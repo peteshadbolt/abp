@@ -7,44 +7,9 @@ import abp
 from abp import GraphState, clifford, qi
 from numpy import random
 import pytest
-from anders_briegel import graphsim
 
 # We always run with A&B's CZ table when we are testing
 clifford.use_old_cz()
-
-
-class AndersWrapper(graphsim.GraphRegister):
-
-    """ A wrapper for A&B to make the interface identical and enable equality testing """
-
-    def __init__(self, nodes):
-        assert list(nodes) == list(range(len(nodes)))
-        super(AndersWrapper, self).__init__(len(nodes))
-
-    def act_local_rotation(self, qubit, operation):
-        operation = clifford.by_name[str(operation)]
-        op = graphsim.LocCliffOp(operation)
-        super(AndersWrapper, self).local_op(qubit, op)
-
-    def act_cz(self, a, b):
-        super(AndersWrapper, self).cphase(a, b)
-
-    def measure(self, qubit, basis, force):
-        basis = {1: graphsim.lco_X,
-                 2: graphsim.lco_Y,
-                 3: graphsim.lco_Z}[clifford.by_name[str(basis)]]
-        return super(AndersWrapper, self).measure(qubit, basis, None, force)
-
-    def __eq__(self, other):
-        return self.to_json() == other.to_json()
-
-    def act_circuit(self, circuit):
-        for operation, node in circuit:
-            if operation == "cz":
-                self.act_cz(*node)
-            else:
-                self.act_local_rotation(node, operation)
-
 
 class ABPWrapper(GraphState):
 
@@ -103,8 +68,8 @@ def named_node_graph():
     """ A graph with named nodes"""
     edges = (0, 1), (1, 2), (2, 0), (0, 3), (100, 200), (200, "named")
     g = ABPWrapper([0, 1, 2, 3, 100, 200, "named"])
-    g.act_circuit(("hadamard", i) for i in g.node)
-    g.act_circuit(("cz", edge) for edge in edges)
+    g.act_circuit((i, "hadamard") for i in g.node)
+    g.act_circuit((edge, "cz") for edge in edges)
     return g
 
 
@@ -112,8 +77,8 @@ def simple_graph():
     """ A simple graph to test with"""
     edges = (0, 1), (1, 2), (2, 0), (0, 3), (100, 200)
     g = ABPWrapper([0, 1, 2, 3, 100, 200])
-    g.act_circuit(("hadamard", i) for i in g.node)
-    g.act_circuit(("cz", edge) for edge in edges)
+    g.act_circuit((i, "hadamard") for i in g.node)
+    g.act_circuit((edge, "cz") for edge in edges)
     return g
 
 
@@ -123,12 +88,6 @@ def circuit_to_state(Base, n, circuit):
     g.act_circuit(circuit)
     return g
 
-
-def test_circuit(circuit, n):
-    """ Check that two classes exhibit the same behaviour for a given circuit """
-    a = circuit_to_state(ABPWrapper, n, circuit)
-    b = circuit_to_state(AndersWrapper, n, circuit)
-    assert a == b
 
 
 if __name__ == '__main__':

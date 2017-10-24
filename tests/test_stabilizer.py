@@ -1,6 +1,7 @@
 from abp import GraphState
+import mock
 import pytest
-mock = pytest.importorskip("mock")
+ab = pytest.importorskip("ab")
 
 REPEATS = 1000
 
@@ -9,7 +10,7 @@ def test_stabilizers_against_anders_and_briegel(n=10):
     
     for i in list(range(REPEATS)):
         c = mock.random_stabilizer_circuit(n)
-        g = mock.AndersWrapper(list(range(n)))
+        g = ab.AndersWrapper(list(range(n)))
         g.act_circuit(c)
         da = g.get_full_stabilizer().to_dictionary()
 

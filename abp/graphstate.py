@@ -108,7 +108,7 @@ class GraphState(object):
             >>> g.act_circuit([("hadamard", 0), ("hadamard", 1), ("cz", (0, 1))])
 
         """
-        for operation, node in circuit:
+        for node, operation in circuit:
             if operation == "cz":
                 self.act_cz(*node)
             else:
