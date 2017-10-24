@@ -4,7 +4,7 @@ from os import path
 
 setup(
     name = "abp",
-    version = "0.4.27",
+    version = "0.5.0",
     packages = ["abp"],
     test_suite = "tests",
     author = "Pete Shadbolt",
