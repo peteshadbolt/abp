@@ -13,5 +13,5 @@ setup(
     description = "Port of C++ due to Simon Anders and Hans J Briegel",
     keywords = "quantum",
     setup_requires = ["numpy"],
-    install_requires = ["numpy", "networkx", "websocket-client", "websocket-server"],
+    install_requires = ["numpy", "networkx", "requests"],
 )
