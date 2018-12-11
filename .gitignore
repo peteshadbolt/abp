@@ -76,3 +76,4 @@ target/
 
 # PYC 
 *.pyc
+.DS_Store
